@@ -1,6 +1,7 @@
 package com.unnamed.conectareparo.service;
 
 import com.unnamed.conectareparo.dto.MaintenanceResponseDto;
+import com.unnamed.conectareparo.dto.MaintenanceUpdateDto;
 import com.unnamed.conectareparo.dto.NewMaintenanceRequestDto;
 import com.unnamed.conectareparo.entity.Maintenance;
 import com.unnamed.conectareparo.exception.ResourceNotFoundException;
@@ -42,6 +43,18 @@ public class MaintenanceService {
     public MaintenanceResponseDto getMaintenanceByPublicId(String publicId) {
         Maintenance maintenance = maintenanceRepository.findByPublicId(UUID.fromString(publicId))
                 .orElseThrow(() -> new ResourceNotFoundException("Maintenance not found"));
+        return maintenanceMapper.toResponseDto(maintenance);
+    }
+
+    public MaintenanceResponseDto updateMaintenance(UUID publicId, MaintenanceUpdateDto updateDto){
+        Maintenance maintenance = maintenanceRepository.findByPublicId(publicId)
+                .orElseThrow(() -> new ResourceNotFoundException("Maintenance not found"));
+        maintenance.updateDetails(
+                updateDto.title(),
+                updateDto.description(),
+                updateDto.category());
+        maintenance.changeStatus(updateDto.status());
+        maintenanceRepository.save(maintenance);
         return maintenanceMapper.toResponseDto(maintenance);
     }
 }

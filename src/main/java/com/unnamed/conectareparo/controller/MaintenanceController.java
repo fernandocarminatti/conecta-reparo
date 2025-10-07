@@ -1,6 +1,7 @@
 package com.unnamed.conectareparo.controller;
 
 import com.unnamed.conectareparo.dto.MaintenanceResponseDto;
+import com.unnamed.conectareparo.dto.MaintenanceUpdateDto;
 import com.unnamed.conectareparo.dto.NewMaintenanceRequestDto;
 import com.unnamed.conectareparo.service.MaintenanceService;
 import jakarta.validation.Valid;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/maintenances")
@@ -43,5 +45,13 @@ public class MaintenanceController {
     public ResponseEntity<MaintenanceResponseDto> getMaintenanceByPublicId(@PathVariable String publicId) {
         MaintenanceResponseDto foundMaintenance = maintenanceService.getMaintenanceByPublicId(publicId);
         return ResponseEntity.ok(foundMaintenance);
+    }
+
+    @PatchMapping("/{publicId}")
+    public ResponseEntity<MaintenanceResponseDto> updateMaintenance(
+            @PathVariable UUID publicId,
+            @Valid @RequestBody MaintenanceUpdateDto updateDto){
+        MaintenanceResponseDto updatedMaintenance = maintenanceService.updateMaintenance(publicId, updateDto);
+        return ResponseEntity.ok(updatedMaintenance);
     }
 }
