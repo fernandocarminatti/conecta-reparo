@@ -29,6 +29,8 @@ spring:
 server:
   port: ${SPRING_SERVER_PORT}
 logging:
+  pattern:
+    console: "%d{yyyy/MM/dd - HH:mm:ss} %highlight{[%-5p]} --- [%-25.25C{1}] : %m%n"
   level:
     root: WARN
     org.hibernate.SQL: DEBUG
@@ -48,8 +50,3 @@ management:
   endpoint:
     health:
       show-details: always
-
-# CAN CREATE RANDOM ATTRIBUTES TO BE REFERENCED INSIDE YOU APP
-# ANY NAME WILL SERVE ITS PURPOSE
-storage:
-  upload-default: ./uploads # ${storage.upload-default} to access internally
