@@ -1,4 +1,4 @@
-package com.unnamed.conecta_reparo.entity;
+package com.unnamed.conectareparo.entity;
 
 public enum MaintenanceCategory {
     PREDIAL,

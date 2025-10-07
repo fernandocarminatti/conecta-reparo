@@ -1,6 +1,6 @@
-package com.unnamed.conecta_reparo.dto;
+package com.unnamed.conectareparo.dto;
 
-import com.unnamed.conecta_reparo.entity.MaintenanceCategory;
+import com.unnamed.conectareparo.entity.MaintenanceCategory;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

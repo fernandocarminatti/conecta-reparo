@@ -1,16 +1,16 @@
-package com.unnamed.conecta_reparo.service;
+package com.unnamed.conectareparo.service;
 
-import com.unnamed.conecta_reparo.dto.MaintenanceResponseDto;
-import com.unnamed.conecta_reparo.dto.NewMaintenanceRequestDto;
-import com.unnamed.conecta_reparo.entity.Maintenance;
-import com.unnamed.conecta_reparo.mapper.MaintenanceMapper;
-import com.unnamed.conecta_reparo.repository.MaintenanceRepository;
+import com.unnamed.conectareparo.dto.MaintenanceResponseDto;
+import com.unnamed.conectareparo.dto.NewMaintenanceRequestDto;
+import com.unnamed.conectareparo.entity.Maintenance;
+import com.unnamed.conectareparo.exception.ResourceNotFoundException;
+import com.unnamed.conectareparo.mapper.MaintenanceMapper;
+import com.unnamed.conectareparo.repository.MaintenanceRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Service
 public class MaintenanceService {
@@ -37,5 +37,11 @@ public class MaintenanceService {
     public Page<MaintenanceResponseDto> getAllMaintenances(Pageable pageable) {
         Page<Maintenance> pageOfMaintenance = maintenanceRepository.findAll(pageable);
         return pageOfMaintenance.map(maintenanceMapper::toResponseDto);
+    }
+
+    public MaintenanceResponseDto getMaintenanceByPublicId(String publicId) {
+        Maintenance maintenance = maintenanceRepository.findByPublicId(UUID.fromString(publicId))
+                .orElseThrow(() -> new ResourceNotFoundException("Maintenance not found"));
+        return maintenanceMapper.toResponseDto(maintenance);
     }
 }

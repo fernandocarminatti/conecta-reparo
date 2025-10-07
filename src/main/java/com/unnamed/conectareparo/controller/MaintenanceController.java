@@ -1,8 +1,8 @@
-package com.unnamed.conecta_reparo.controller;
+package com.unnamed.conectareparo.controller;
 
-import com.unnamed.conecta_reparo.dto.MaintenanceResponseDto;
-import com.unnamed.conecta_reparo.dto.NewMaintenanceRequestDto;
-import com.unnamed.conecta_reparo.service.MaintenanceService;
+import com.unnamed.conectareparo.dto.MaintenanceResponseDto;
+import com.unnamed.conectareparo.dto.NewMaintenanceRequestDto;
+import com.unnamed.conectareparo.service.MaintenanceService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/maintenances")
@@ -38,5 +37,11 @@ public class MaintenanceController {
     public ResponseEntity<Page<MaintenanceResponseDto>> getAllMaintenances(Pageable pageable) {
         Page<MaintenanceResponseDto> foundMaintenances = maintenanceService.getAllMaintenances(pageable);
         return ResponseEntity.ok(foundMaintenances);
+    }
+
+    @GetMapping("/{publicId}")
+    public ResponseEntity<MaintenanceResponseDto> getMaintenanceByPublicId(@PathVariable String publicId) {
+        MaintenanceResponseDto foundMaintenance = maintenanceService.getMaintenanceByPublicId(publicId);
+        return ResponseEntity.ok(foundMaintenance);
     }
 }

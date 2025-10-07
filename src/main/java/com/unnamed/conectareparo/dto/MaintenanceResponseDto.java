@@ -1,6 +1,6 @@
-package com.unnamed.conecta_reparo.dto;
+package com.unnamed.conectareparo.dto;
 
-import com.unnamed.conecta_reparo.entity.MaintenanceCategory;
+import com.unnamed.conectareparo.entity.MaintenanceCategory;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -11,7 +11,7 @@ public record MaintenanceResponseDto(
         String description,
         MaintenanceCategory category,
         LocalDateTime scheduledDate,
-        com.unnamed.conecta_reparo.entity.MaintenanceStatus completed,
+        com.unnamed.conectareparo.entity.MaintenanceStatus completed,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {

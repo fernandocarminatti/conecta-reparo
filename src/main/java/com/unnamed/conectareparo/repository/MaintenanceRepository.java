@@ -1,6 +1,6 @@
-package com.unnamed.conecta_reparo.repository;
+package com.unnamed.conectareparo.repository;
 
-import com.unnamed.conecta_reparo.entity.Maintenance;
+import com.unnamed.conectareparo.entity.Maintenance;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
