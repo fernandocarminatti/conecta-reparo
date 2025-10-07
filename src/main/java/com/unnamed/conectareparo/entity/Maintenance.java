@@ -6,6 +6,10 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * Represents a maintenance task within the system.
+ * This entity tries to follow a Rich Domain Model pattern, encapsulating its own business rules.
+ */
 @Entity
 @Table(name = "maintenance")
 public class Maintenance {
@@ -28,7 +32,7 @@ public class Maintenance {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    Maintenance() {
+    protected Maintenance() {
     }
 
     public Maintenance(String title, String description, MaintenanceCategory category, LocalDateTime scheduledDate) {
@@ -45,84 +49,77 @@ public class Maintenance {
     public Long getId() {
         return id;
     }
-
     public UUID getPublicId() {
         return publicId;
     }
-
     public String getTitle() {
         return title;
     }
-
     public String getDescription() {
         return description;
     }
-
     public MaintenanceCategory getCategory() {
         return category;
     }
-
     public LocalDateTime getScheduledDate() {
         return scheduledDate;
     }
-
     public MaintenanceStatus getStatus() {
         return this.status;
     }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setPublicId(UUID publicId) {
-        this.publicId = publicId;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setCategory(MaintenanceCategory category) {
-        this.category = category;
-    }
-
-    public void setScheduledDate(LocalDateTime scheduledDate) {
-        this.scheduledDate = scheduledDate;
-    }
-
-    public void updateStatus(MaintenanceStatus statusUpdate) {
+    public void changeStatus(MaintenanceStatus statusUpdate) {
+        if (statusUpdate == null) {
+            return;
+        }
+        if (this.status == MaintenanceStatus.COMPLETED){
+            throw new IllegalStateException("Cannot change status of a completed maintenance.");
+        }
+        if (this.status == MaintenanceStatus.CANCELLED){
+            throw new IllegalStateException("Cannot change status of a cancelled maintenance.");
+        }
+        if (this.status == MaintenanceStatus.IN_PROGRESS && statusUpdate == MaintenanceStatus.OPEN){
+            throw new IllegalStateException("Cannot revert status from IN_PROGRESS to OPEN.");
+        }
         this.status = statusUpdate;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    private void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    public void updateDetails(String title, String description, MaintenanceCategory category) {
+        if (title != null && !title.isBlank()) {
+            this.title = title;
+        }
+        if (description != null) {
+            this.description = description;
+        }
+        if (category != null) {
+            this.category = category;
+        }
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        setUpdatedAt(LocalDateTime.now());
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Maintenance that = (Maintenance) o;
-        return Objects.equals(id, that.id) && Objects.equals(publicId, that.publicId) && Objects.equals(createdAt, that.createdAt);
+        return Objects.equals(publicId, that.publicId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, publicId, createdAt);
+        return Objects.hashCode(publicId);
     }
 }
