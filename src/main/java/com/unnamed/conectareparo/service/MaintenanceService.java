@@ -40,8 +40,8 @@ public class MaintenanceService {
         return pageOfMaintenance.map(maintenanceMapper::toResponseDto);
     }
 
-    public MaintenanceResponseDto getMaintenanceByPublicId(String publicId) {
-        Maintenance maintenance = maintenanceRepository.findByPublicId(UUID.fromString(publicId))
+    public MaintenanceResponseDto getMaintenanceByPublicId(UUID publicId) {
+        Maintenance maintenance = maintenanceRepository.findByPublicId(publicId)
                 .orElseThrow(() -> new ResourceNotFoundException("Maintenance not found"));
         return maintenanceMapper.toResponseDto(maintenance);
     }

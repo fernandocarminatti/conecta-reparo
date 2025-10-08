@@ -42,7 +42,7 @@ public class MaintenanceController {
     }
 
     @GetMapping("/{publicId}")
-    public ResponseEntity<MaintenanceResponseDto> getMaintenanceByPublicId(@PathVariable String publicId) {
+    public ResponseEntity<MaintenanceResponseDto> getMaintenanceByPublicId(@PathVariable UUID publicId) {
         MaintenanceResponseDto foundMaintenance = maintenanceService.getMaintenanceByPublicId(publicId);
         return ResponseEntity.ok(foundMaintenance);
     }
