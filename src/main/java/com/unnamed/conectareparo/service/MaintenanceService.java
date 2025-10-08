@@ -57,4 +57,9 @@ public class MaintenanceService {
         maintenanceRepository.save(maintenance);
         return maintenanceMapper.toResponseDto(maintenance);
     }
+
+    protected Maintenance getMaintenanceEntityByPublicId(UUID publicId) {
+        return maintenanceRepository.findByPublicId(publicId)
+                .orElseThrow(() -> new ResourceNotFoundException("Maintenance not found"));
+    }
 }

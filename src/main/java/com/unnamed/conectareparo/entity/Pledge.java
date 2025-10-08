@@ -1,0 +1,125 @@
+package com.unnamed.conectareparo.entity;
+
+import jakarta.persistence.*;
+
+import java.time.ZonedDateTime;
+import java.util.Objects;
+import java.util.UUID;
+
+@Entity
+@Table(name = "pledge")
+public class Pledge {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private UUID publicId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "maintenance_id", nullable = false)
+    private Maintenance maintenance;
+
+    @Column(name = "volunteer_name")
+    private String volunteerName;
+    @Column(name = "volunteer_contact")
+    private String volunteerContact;
+    private String description;
+    @Enumerated(EnumType.STRING)
+    private PledgeType type;
+    @Enumerated(EnumType.STRING)
+    private PledgeStatus status;
+    @Column(name = "created_at")
+    private ZonedDateTime createdAt;
+    @Column(name = "updated_at")
+    private ZonedDateTime updatedAt;
+
+    Pledge() {}
+
+    public Pledge(Maintenance maintenance, String volunteerName, String volunteerContact, String description, PledgeType type) {
+        this.publicId = UUID.randomUUID();
+        this.maintenance = maintenance;
+        this.volunteerName = volunteerName;
+        this.volunteerContact = volunteerContact;
+        this.description = description;
+        this.type = type;
+        this.status = PledgeStatus.PENDING;
+        this.createdAt = ZonedDateTime.now();
+        this.updatedAt = ZonedDateTime.now();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public UUID getPublicId() {
+        return publicId;
+    }
+
+    public Maintenance getMaintenanceId() {
+        return maintenance;
+    }
+
+    public String getVolunteerName() {
+        return volunteerName;
+    }
+
+    public String getVolunteerContact() {
+        return volunteerContact;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public PledgeType getType() {
+        return type;
+    }
+
+    public PledgeStatus getStatus() {
+        return status;
+    }
+
+    public ZonedDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public ZonedDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    private void updateDetails(String volunteerName, String volunteerContact, String description, PledgeType type) {
+        if (volunteerName != null && !volunteerName.isBlank()) {
+            this.volunteerName = volunteerName;
+
+        }
+        if (volunteerContact != null && !volunteerContact.isBlank()) {
+            this.volunteerContact = volunteerContact;
+        }
+        if (description != null && !description.isBlank()) {
+            this.description = description;
+        }
+        if (type != null){
+            this.type = type;
+        }
+    }
+
+    private void changeStatus(PledgeStatus status) {
+        this.status = status;
+    }
+
+    @PrePersist
+    public void onUpdate(){
+        this.updatedAt = ZonedDateTime.now();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Pledge pledge = (Pledge) o;
+        return Objects.equals(publicId, pledge.publicId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(publicId);
+    }
+}
