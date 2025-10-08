@@ -86,7 +86,7 @@ public class Pledge {
         return updatedAt;
     }
 
-    private void updateDetails(String volunteerName, String volunteerContact, String description, PledgeType type) {
+    public void updateDetails(String volunteerName, String volunteerContact, String description, PledgeType type) {
         if (volunteerName != null && !volunteerName.isBlank()) {
             this.volunteerName = volunteerName;
 
@@ -102,11 +102,33 @@ public class Pledge {
         }
     }
 
-    private void changeStatus(PledgeStatus status) {
-        this.status = status;
+/**
+ * Atualiza o status de um compromisso (pledge), aplicando regras de validação para impedir alterações indevidas em estados finais.
+ * As seguintes restrições são aplicadas:
+ * - Um compromisso cancelado não pode ter o status alterado.
+ * - Um compromisso concluído não pode ter o status alterado.
+ * - Um compromisso rejeitado não pode ter o status alterado.
+ * - Se o novo status for nulo, nenhuma alteração será feita.
+ * @param status novo status a ser aplicado
+ * @throws IllegalStateException se o compromisso estiver cancelado, concluído ou rejeitado
+ */
+
+    public void updateStatus(PledgeStatus status) {
+        if(this.status == PledgeStatus.CANCELED){
+            throw new IllegalStateException("Cannot change status of a canceled pledge.");
+        }
+        if(this.status == PledgeStatus.COMPLETED) {
+            throw new IllegalStateException("Cannot change status of a completed pledge.");
+        }
+        if(this.status == PledgeStatus.REJECTED) {
+            throw new IllegalStateException("Cannot change status of a rejected pledge.");
+        }
+        if (status != null) {
+            this.status = status;
+        }
     }
 
-    @PrePersist
+    @PreUpdate
     public void onUpdate(){
         this.updatedAt = ZonedDateTime.now();
     }

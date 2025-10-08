@@ -2,6 +2,7 @@ package com.unnamed.conectareparo.controller;
 
 import com.unnamed.conectareparo.dto.NewPledgeRequestDto;
 import com.unnamed.conectareparo.dto.PledgeResponseDto;
+import com.unnamed.conectareparo.dto.PledgeUpdateDto;
 import com.unnamed.conectareparo.service.PledgeService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -32,5 +33,13 @@ public class PledgeController {
     public ResponseEntity<Page<PledgeResponseDto>> getPledgesForMaintenanceId(@RequestParam UUID maintenanceId, Pageable pageable) {
         Page<PledgeResponseDto> pledges = pledgeService.getPledgesByMaintenanceId(pageable, maintenanceId);
         return ResponseEntity.ok(pledges);
+    }
+
+    @PatchMapping("/{pledgeId}")
+    public ResponseEntity<PledgeResponseDto> updatePledgeStatus(
+            @PathVariable UUID pledgeId,
+            @Valid @RequestBody PledgeUpdateDto pledgeUpdateDto) {
+        PledgeResponseDto updatedPledge = pledgeService.updatePledge(pledgeId, pledgeUpdateDto);
+        return ResponseEntity.ok(updatedPledge);
     }
 }
