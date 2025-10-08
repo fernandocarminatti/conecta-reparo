@@ -2,7 +2,7 @@ package com.unnamed.conectareparo.entity;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -24,26 +24,26 @@ public class Maintenance {
     @Enumerated(EnumType.STRING)
     private MaintenanceCategory category;
     @Column(name = "scheduled_date")
-    private LocalDateTime scheduledDate;
+    private ZonedDateTime scheduledDate;
     @Enumerated(EnumType.STRING)
     private MaintenanceStatus status;
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private ZonedDateTime updatedAt;
 
     protected Maintenance() {
     }
 
-    public Maintenance(String title, String description, MaintenanceCategory category, LocalDateTime scheduledDate) {
+    public Maintenance(String title, String description, MaintenanceCategory category, ZonedDateTime scheduledDate) {
         this.publicId = UUID.randomUUID();
         this.title = title;
         this.description = description;
         this.category = category;
         this.scheduledDate = scheduledDate;
         this.status = MaintenanceStatus.OPEN;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.createdAt = ZonedDateTime.now();
+        this.updatedAt = ZonedDateTime.now();
     }
 
     public Long getId() {
@@ -61,16 +61,16 @@ public class Maintenance {
     public MaintenanceCategory getCategory() {
         return category;
     }
-    public LocalDateTime getScheduledDate() {
+    public ZonedDateTime getScheduledDate() {
         return scheduledDate;
     }
     public MaintenanceStatus getStatus() {
         return this.status;
     }
-    public LocalDateTime getCreatedAt() {
+    public ZonedDateTime getCreatedAt() {
         return createdAt;
     }
-    public LocalDateTime getUpdatedAt() {
+    public ZonedDateTime getUpdatedAt() {
         return updatedAt;
     }
 
@@ -90,7 +90,7 @@ public class Maintenance {
         this.status = statusUpdate;
     }
 
-    private void setUpdatedAt(LocalDateTime updatedAt) {
+    private void setUpdatedAt(ZonedDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -108,7 +108,7 @@ public class Maintenance {
 
     @PreUpdate
     public void onUpdate() {
-        setUpdatedAt(LocalDateTime.now());
+        setUpdatedAt(ZonedDateTime.now());
     }
 
     @Override

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 public record NewMaintenanceRequestDto(
         @NotBlank
@@ -16,6 +17,6 @@ public record NewMaintenanceRequestDto(
         MaintenanceCategory category,
         @NotNull
         @FutureOrPresent
-        LocalDateTime scheduledDate
+        ZonedDateTime scheduledDate
         ) {
 }

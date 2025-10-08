@@ -3,6 +3,7 @@ package com.unnamed.conectareparo.dto;
 import com.unnamed.conectareparo.entity.MaintenanceCategory;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 public record MaintenanceResponseDto(
@@ -10,9 +11,9 @@ public record MaintenanceResponseDto(
         String title,
         String description,
         MaintenanceCategory category,
-        LocalDateTime scheduledDate,
+        ZonedDateTime scheduledDate,
         com.unnamed.conectareparo.entity.MaintenanceStatus completed,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        ZonedDateTime createdAt,
+        ZonedDateTime updatedAt
 ) {
 }
