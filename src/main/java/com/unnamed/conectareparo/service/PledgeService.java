@@ -6,7 +6,11 @@ import com.unnamed.conectareparo.entity.Maintenance;
 import com.unnamed.conectareparo.entity.Pledge;
 import com.unnamed.conectareparo.mapper.PledgeMapper;
 import com.unnamed.conectareparo.repository.PledgeRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class PledgeService {
@@ -26,5 +30,10 @@ public class PledgeService {
         Pledge pledge = pledgeMapper.toEntity(foundMaintenance, pledgeRequestDto);
         pledgeRepository.save(pledge);
         return pledgeMapper.toResponseDto(pledge);
+    }
+
+    public Page<PledgeResponseDto> getPledgesByMaintenanceId(Pageable pageable, UUID maintenanceId) {
+        Page<Pledge> pledges = pledgeRepository.findAllByMaintenancePublicId(maintenanceId, pageable);
+        return pledges.map(pledgeMapper::toResponseDto);
     }
 }
