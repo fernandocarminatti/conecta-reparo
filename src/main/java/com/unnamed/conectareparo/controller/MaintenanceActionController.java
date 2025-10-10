@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -33,5 +34,11 @@ public class MaintenanceActionController {
                 .buildAndExpand(responseDto.publicId())
                 .toUri();
         return ResponseEntity.status(HttpStatus.CREATED).location(resourceLocation).body(responseDto);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<MaintenanceActionResponseDto>> getMaintenanceActions(@PathVariable UUID maintenancePublicId) {
+        List<MaintenanceActionResponseDto> actionsList = maintenanceActionService.getMaintenanceActions(maintenancePublicId);
+        return ResponseEntity.ok(actionsList);
     }
 }

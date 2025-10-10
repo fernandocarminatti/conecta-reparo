@@ -9,6 +9,7 @@ import com.unnamed.conectareparo.repository.MaintenanceActionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -33,5 +34,13 @@ public class MaintenanceActionService {
         MaintenanceAction newMaintenanceAction = maintenanceActionMapper.toEntity(newMaintenanceActionDto, existingMaintenance);
         maintenanceActionRepository.save(newMaintenanceAction);
         return maintenanceActionMapper.toResponseDto(newMaintenanceAction);
+    }
+
+    public List<MaintenanceActionResponseDto> getMaintenanceActions(UUID maintenancePublicId) {
+        Maintenance existingMaintenance = maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId);
+        List<MaintenanceAction> actionsList = maintenanceActionRepository.findAllByMaintenanceWithMaterials(existingMaintenance);
+        return actionsList.stream()
+                .map(maintenanceActionMapper::toResponseDto)
+                .toList();
     }
 }
