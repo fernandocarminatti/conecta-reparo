@@ -90,6 +90,10 @@ public class Maintenance {
         this.status = statusUpdate;
     }
 
+    public boolean isCompleted(){
+        return this.status == MaintenanceStatus.COMPLETED;
+    }
+
     private void setUpdatedAt(ZonedDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
