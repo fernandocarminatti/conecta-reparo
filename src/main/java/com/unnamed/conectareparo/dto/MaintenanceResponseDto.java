@@ -2,7 +2,6 @@ package com.unnamed.conectareparo.dto;
 
 import com.unnamed.conectareparo.entity.MaintenanceCategory;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
