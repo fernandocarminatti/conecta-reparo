@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface MaintenanceActionRepository extends JpaRepository<MaintenanceAction, Long> {
@@ -22,4 +24,10 @@ public interface MaintenanceActionRepository extends JpaRepository<MaintenanceAc
      */
     @Query("SELECT ma FROM MaintenanceAction ma LEFT JOIN FETCH ma.materialsUsed WHERE ma.maintenance = :maintenance ORDER BY ma.createdAt DESC")
     List<MaintenanceAction> findAllByMaintenanceWithMaterials(@Param("maintenance") Maintenance maintenance);
+
+    @Query("SELECT ma FROM MaintenanceAction ma LEFT JOIN FETCH ma.materialsUsed WHERE ma.maintenance = :maintenance AND ma.publicId = :actionPublicId")
+    Optional<MaintenanceAction> findByMaintenanceAndActionPublicId(
+            @Param("maintenance") Maintenance maintenance,
+            @Param("actionPublicId") UUID actionPublicId);
+
 }

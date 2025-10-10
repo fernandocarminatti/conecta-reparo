@@ -41,4 +41,12 @@ public class MaintenanceActionController {
         List<MaintenanceActionResponseDto> actionsList = maintenanceActionService.getMaintenanceActions(maintenancePublicId);
         return ResponseEntity.ok(actionsList);
     }
+
+    @GetMapping("/{actionPublicId}")
+    public ResponseEntity<MaintenanceActionResponseDto> getSingleMaintenanceAction(
+            @PathVariable UUID maintenancePublicId,
+            @PathVariable UUID actionPublicId) {
+        MaintenanceActionResponseDto actionDto = maintenanceActionService.getSingleMaintenanceAction(maintenancePublicId, actionPublicId);
+        return ResponseEntity.ok(actionDto);
+    }
 }

@@ -4,6 +4,7 @@ import com.unnamed.conectareparo.dto.MaintenanceActionResponseDto;
 import com.unnamed.conectareparo.dto.NewMaintenanceActionDto;
 import com.unnamed.conectareparo.entity.Maintenance;
 import com.unnamed.conectareparo.entity.MaintenanceAction;
+import com.unnamed.conectareparo.exception.ResourceNotFoundException;
 import com.unnamed.conectareparo.mapper.MaintenanceActionMapper;
 import com.unnamed.conectareparo.repository.MaintenanceActionRepository;
 import jakarta.transaction.Transactional;
@@ -42,5 +43,12 @@ public class MaintenanceActionService {
         return actionsList.stream()
                 .map(maintenanceActionMapper::toResponseDto)
                 .toList();
+    }
+
+    public MaintenanceActionResponseDto getSingleMaintenanceAction(UUID maintenancePublicId, UUID actionPublicId) {
+        Maintenance existingMaintenance = maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId);
+        MaintenanceAction action = maintenanceActionRepository.findByMaintenanceAndActionPublicId(existingMaintenance, actionPublicId)
+                .orElseThrow(() -> new ResourceNotFoundException("Action with ID " + actionPublicId + " not found for the specified maintenance."));
+        return maintenanceActionMapper.toResponseDto(action);
     }
 }
