@@ -30,8 +30,8 @@ public class MaintenanceActionController {
         MaintenanceActionResponseDto responseDto = maintenanceActionService.createMaintenanceAction(maintenancePublicId, newMaintenanceActionDto);
         URI resourceLocation = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
-                .path("/api/v1/actions/{id}")
-                .buildAndExpand(responseDto.publicId())
+                .path("/api/v1/maintenances/{maintenancePublicId}/actions/{actionPublicId}")
+                .buildAndExpand(maintenancePublicId, responseDto.publicId())
                 .toUri();
         return ResponseEntity.status(HttpStatus.CREATED).location(resourceLocation).body(responseDto);
     }
@@ -48,5 +48,14 @@ public class MaintenanceActionController {
             @PathVariable UUID actionPublicId) {
         MaintenanceActionResponseDto actionDto = maintenanceActionService.getSingleMaintenanceAction(maintenancePublicId, actionPublicId);
         return ResponseEntity.ok(actionDto);
+    }
+
+    @PutMapping("/{actionPublicId}")
+    public ResponseEntity<MaintenanceActionResponseDto> updateMaintenanceAction(
+            @PathVariable UUID maintenancePublicId,
+            @PathVariable UUID actionPublicId,
+            @Valid @RequestBody NewMaintenanceActionDto updatedActionDto) {
+        MaintenanceActionResponseDto updatedDto = maintenanceActionService.updateMaintenanceAction(maintenancePublicId, actionPublicId, updatedActionDto);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedDto);
     }
 }

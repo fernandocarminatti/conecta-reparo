@@ -1,5 +1,6 @@
 package com.unnamed.conectareparo.entity;
 
+import com.unnamed.conectareparo.dto.NewActionMaterialDto;
 import jakarta.persistence.*;
 
 import java.time.ZonedDateTime;
@@ -23,7 +24,8 @@ public class MaintenanceAction {
 
     @OneToMany(
             mappedBy = "maintenanceAction",
-            cascade = CascadeType.ALL
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
     private List<ActionMaterial> materialsUsed = new ArrayList<>();
 
@@ -118,6 +120,16 @@ public class MaintenanceAction {
     public void addMaterial(ActionMaterial material) {
         this.materialsUsed.add(material);
         material.setMaintenanceAction(this);
+    }
+
+    public void updateMaterialsUsed(List<NewActionMaterialDto> newMaterials) {
+        this.materialsUsed.clear();
+        if (newMaterials != null) {;
+            newMaterials.forEach(dto -> {
+                ActionMaterial newMaterial = new ActionMaterial(dto.itemName(), dto.quantity(), dto.unitOfMeasure());
+                this.addMaterial(newMaterial);
+            });
+        }
     }
 
     @PreUpdate

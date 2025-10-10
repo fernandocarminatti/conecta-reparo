@@ -51,4 +51,23 @@ public class MaintenanceActionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Action with ID " + actionPublicId + " not found for the specified maintenance."));
         return maintenanceActionMapper.toResponseDto(action);
     }
+
+    public MaintenanceActionResponseDto updateMaintenanceAction(UUID maintenancePublicId, UUID actionPublicId, NewMaintenanceActionDto updatedActionDto) {
+        Maintenance existingMaintenance = maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId);
+        if (existingMaintenance.isCompleted()){
+            throw new IllegalStateException("Cannot update action of a completed maintenance.");
+        }
+        MaintenanceAction existingAction = maintenanceActionRepository.findByMaintenanceAndActionPublicId(existingMaintenance, actionPublicId)
+                .orElseThrow(() -> new ResourceNotFoundException("Action with ID " + actionPublicId + " not found for the specified maintenance."));
+        existingAction.updateDetails(
+                updatedActionDto.executedBy(),
+                updatedActionDto.startDate(),
+                updatedActionDto.completionDate(),
+                updatedActionDto.actionDescription(),
+                updatedActionDto.outcomeStatus()
+        );
+        existingAction.updateMaterialsUsed(updatedActionDto.materialsUsed());
+        maintenanceActionRepository.save(existingAction);
+        return maintenanceActionMapper.toResponseDto(existingAction);
+    }
 }
