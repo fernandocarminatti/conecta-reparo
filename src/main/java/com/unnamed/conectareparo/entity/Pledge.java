@@ -52,7 +52,7 @@ public class Pledge {
         this.volunteerContact = volunteerContact;
         this.description = description;
         this.type = type;
-        this.status = PledgeStatus.PENDING;
+        this.status = PledgeStatus.OFFERED;
         this.createdAt = ZonedDateTime.now();
         this.updatedAt = ZonedDateTime.now();
     }
