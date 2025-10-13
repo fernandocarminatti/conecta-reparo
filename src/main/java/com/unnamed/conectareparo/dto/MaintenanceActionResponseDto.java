@@ -8,7 +8,7 @@ import java.util.UUID;
 
 /**
  * Data Transfer Object for {@link MaintenanceAction} Response
- * @param publicId public facing identifier as UUID
+ * @param id public facing identifier as UUID
  * @param executedBy the name of the person who executed the action
  * @param startDate the date and time when the action started
  * @param completionDate the date and time when the action was completed
@@ -18,7 +18,7 @@ import java.util.UUID;
  * @param createdAt the date and time when the action record was created
  */
 public record MaintenanceActionResponseDto(
-        UUID publicId,
+        UUID id,
         String executedBy,
         ZonedDateTime startDate,
         ZonedDateTime completionDate,

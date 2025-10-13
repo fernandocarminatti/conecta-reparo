@@ -32,7 +32,7 @@ public class MaintenanceActionController {
         URI resourceLocation = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
                 .path("/api/v1/maintenances/{maintenancePublicId}/actions/{actionPublicId}")
-                .buildAndExpand(maintenancePublicId, responseDto.publicId())
+                .buildAndExpand(maintenancePublicId, responseDto.id())
                 .toUri();
         return ResponseEntity.status(HttpStatus.CREATED).location(resourceLocation).body(responseDto);
     }

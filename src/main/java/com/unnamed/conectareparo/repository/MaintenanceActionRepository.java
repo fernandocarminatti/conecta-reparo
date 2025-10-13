@@ -26,9 +26,9 @@ public interface MaintenanceActionRepository extends JpaRepository<MaintenanceAc
     List<MaintenanceAction> findAllByMaintenanceWithMaterials(@Param("maintenance") Maintenance maintenance);
 
     /**
-     * Finds a specific MaintenanceAction by its publicId within the context of a given Maintenance entity.
+     * Finds a specific MaintenanceAction by its id within the context of a given Maintenance entity.
      * @param maintenance The parent Maintenance entity.
-     * @param actionPublicId The publicId of the MaintenanceAction to find.
+     * @param actionPublicId The public facing id of the MaintenanceAction to find.
      * @return An Optional containing the found MaintenanceAction with its materials initialized, or empty if not found.
      */
     @Query("SELECT ma FROM MaintenanceAction ma LEFT JOIN FETCH ma.materialsUsed WHERE ma.maintenance = :maintenance AND ma.publicId = :actionPublicId")

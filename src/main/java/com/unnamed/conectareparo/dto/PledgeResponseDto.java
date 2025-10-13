@@ -18,7 +18,7 @@ import java.util.UUID;
  * @param updatedAt date and time when the pledge was last updated
  */
 public record PledgeResponseDto(
-        UUID publicId,
+        UUID id,
         String volunteerName,
         String volunteerContact,
         String description,
