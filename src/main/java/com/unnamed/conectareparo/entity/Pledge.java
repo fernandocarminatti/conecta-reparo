@@ -6,6 +6,17 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * Entity representing a pledge made by a volunteer for a maintenance event.
+ * It includes details about the volunteer, the type of pledge, its status, and timestamps.
+ * Each pledge is linked to a specific maintenance record.
+ * Pledge status can be PENDING, APPROVED, REJECTED, CANCELED, or COMPLETED.
+ * - PENDING: The pledge has been made but not yet reviewed.
+ * - APPROVED: The pledge has been reviewed and accepted.
+ * - REJECTED: The pledge has been reviewed and declined.
+ * - CANCELED: The pledge has been withdrawn by the volunteer or an admin.
+ * - COMPLETED: The pledge has been fulfilled.
+ */
 @Entity
 @Table(name = "pledge")
 public class Pledge {

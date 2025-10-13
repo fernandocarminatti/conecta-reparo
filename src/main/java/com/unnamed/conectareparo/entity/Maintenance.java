@@ -8,7 +8,16 @@ import java.util.UUID;
 
 /**
  * Represents a maintenance task within the system.
- * This entity tries to follow a Rich Domain Model pattern, encapsulating its own business rules.
+ * Each maintenance task has a unique public identifier, title, description,
+ * category, scheduled date, status, and timestamps for creation and last update.
+ * The status of the maintenance can be changed, but certain rules apply to prevent
+ * invalid state transitions.
+ * A maintenance task can be in one of the following states: OPEN, IN_PROGRESS, COMPLETED, CANCELED:
+ *  - OPEN: The maintenance task is created and awaiting action.
+ *  - IN_PROGRESS: The maintenance task is currently being worked on.
+ *  - COMPLETED: The maintenance task has been finished successfully.
+ *  - CANCELED: The maintenance task has been canceled and will not be completed.
+ *  - Once a maintenance task is marked as COMPLETED or CANCELLED, its status cannot be changed.
  */
 @Entity
 @Table(name = "maintenance")
@@ -81,7 +90,7 @@ public class Maintenance {
         if (this.status == MaintenanceStatus.COMPLETED){
             throw new IllegalStateException("Cannot change status of a completed maintenance.");
         }
-        if (this.status == MaintenanceStatus.CANCELLED){
+        if (this.status == MaintenanceStatus.CANCELED){
             throw new IllegalStateException("Cannot change status of a cancelled maintenance.");
         }
         if (this.status == MaintenanceStatus.IN_PROGRESS && statusUpdate == MaintenanceStatus.OPEN){

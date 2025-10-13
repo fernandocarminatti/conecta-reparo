@@ -8,6 +8,15 @@ import jakarta.validation.constraints.Size;
 
 import java.util.UUID;
 
+/**
+ * Data Transfer Object for {@link Pledge} Creation
+ * @param maintenanceId public facing id of the maintenance as UUID
+ * @param volunteerName name of the volunteer making the pledge
+ * @param volunteerContact contact information of the volunteer (e.g., email or phone)
+ * @param description detailed description of the pledge
+ * @param type type of the pledge
+ * @param status current status of the pledge
+ */
 public record NewPledgeRequestDto(
         @NotNull
         UUID maintenanceId,

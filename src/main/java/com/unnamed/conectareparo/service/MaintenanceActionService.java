@@ -15,6 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Service layer for managing Maintenance Actions.
+ * This service orchestrates the creation, retrieval, and modification of maintenance action reports,
+ * enforcing business rules that span across the Maintenance and MaintenanceAction domains.
+ */
 @Service
 @Transactional(readOnly = true)
 public class MaintenanceActionService {
@@ -29,6 +34,16 @@ public class MaintenanceActionService {
         this.maintenanceActionMapper = maintenanceActionMapper;
     }
 
+    /**
+     * Creates a new maintenance action record for a given maintenance task.
+     * Business rule: Actions can only be added to maintenance tasks that are not in a terminal state (e.g., COMPLETED).
+     *
+     * @param maintenancePublicId The public ID of the parent Maintenance task.
+     * @param newMaintenanceActionDto The DTO containing the data for the new action.
+     * @return A DTO representing the newly created maintenance action.
+     * @throws ResourceNotFoundException if the parent Maintenance is not found.
+     * @throws IllegalStateException if the parent Maintenance is already completed.
+     */
     @Transactional
     public MaintenanceActionResponseDto createMaintenanceAction(UUID maintenancePublicId, NewMaintenanceActionDto newMaintenanceActionDto) {
         Maintenance existingMaintenance = maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId);
@@ -40,6 +55,14 @@ public class MaintenanceActionService {
         return maintenanceActionMapper.toResponseDto(savedMaintenance);
     }
 
+    /**
+     * Retrieves a list of all maintenance actions associated with a specific maintenance task.
+     * The associated materials for each action are eagerly fetched to prevent N+1 query issues.
+     *
+     * @param maintenancePublicId The public ID of the parent Maintenance task.
+     * @return A list of DTOs representing the maintenance actions.
+     * @throws ResourceNotFoundException if the parent Maintenance is not found.
+     */
     public List<MaintenanceActionResponseDto> getMaintenanceActions(UUID maintenancePublicId) {
         Maintenance existingMaintenance = maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId);
         List<MaintenanceAction> actionsList = maintenanceActionRepository.findAllByMaintenanceWithMaterials(existingMaintenance);
@@ -48,6 +71,14 @@ public class MaintenanceActionService {
                 .toList();
     }
 
+    /**
+     * Retrieves a single, specific maintenance action by its public ID, ensuring it belongs to the correct parent maintenance task.
+     *
+     * @param maintenancePublicId The public ID of the parent Maintenance task.
+     * @param actionPublicId The public ID of the MaintenanceAction to retrieve.
+     * @return A DTO representing the requested maintenance action.
+     * @throws ResourceNotFoundException if the Maintenance or the specific MaintenanceAction is not found for the given parent.
+     */
     public MaintenanceActionResponseDto getSingleMaintenanceAction(UUID maintenancePublicId, UUID actionPublicId) {
         Maintenance existingMaintenance = maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId);
         MaintenanceAction action = maintenanceActionRepository.findByMaintenanceAndActionPublicId(existingMaintenance, actionPublicId)
@@ -55,6 +86,18 @@ public class MaintenanceActionService {
         return maintenanceActionMapper.toResponseDto(action);
     }
 
+    /**
+     * Updates an existing maintenance action by replacing its state with the provided data.
+     * This method follows a PUT-like semantic, replacing the list of materials entirely.
+     * Business rule: Actions cannot be updated if the parent maintenance task is in a terminal state.
+     *
+     * @param maintenancePublicId The public ID of the parent Maintenance task.
+     * @param actionPublicId The public ID of the MaintenanceAction to update.
+     * @param updatedActionDto The DTO containing the full, updated state of the action.
+     * @return A DTO representing the updated maintenance action.
+     * @throws ResourceNotFoundException if the Maintenance or the specific MaintenanceAction is not found.
+     * @throws IllegalStateException if the parent Maintenance is already completed.
+     */
     @Transactional
     public MaintenanceActionResponseDto updateMaintenanceAction(UUID maintenancePublicId, UUID actionPublicId, UpdateMaintenanceActionDto updatedActionDto) {
         Maintenance existingMaintenance = maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId);

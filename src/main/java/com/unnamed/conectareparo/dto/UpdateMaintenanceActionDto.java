@@ -9,6 +9,15 @@ import jakarta.validation.constraints.Size;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+/**
+ * Data Transfer Object for {@link MaintenanceAction} Update
+ * @param executedBy the name of the person who executed the action
+ * @param startDate the date and time when the action started
+ * @param completionDate the date and time when the action was completed
+ * @param actionDescription a description of the maintenance action
+ * @param materialsUsed a list of materials used during the action
+ * @param outcomeStatus the outcome status of the action (e.g., SUCCESSFUL, PARTIAL_SUCESS, FAILED)
+ */
 public record UpdateMaintenanceActionDto(
         @NotBlank(message = "Executed by must not be blank")
         @Size(min = 3, max = 100, message = "Executed by must be between 3 and 100 characters long")

@@ -16,6 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+/**
+ * Service layer for managing community pledges (offers of help).
+ * This service handles the business logic for creating, retrieving, and updating pledges,
+ * including enforcing rules that depend on the state of the parent Maintenance task.
+ */
 @Service
 @Transactional(readOnly = true)
 public class PledgeService {
@@ -30,10 +35,20 @@ public class PledgeService {
         this.maintenanceService = maintenanceService;
     }
 
+    /**
+     * Creates a new pledge for a specific maintenance task.
+     * It enforces the business rule that pledges cannot be added to a maintenance task
+     * that is already in a terminal state (COMPLETED or CANCELLED).
+     *
+     * @param pledgeRequestDto The DTO containing the data for the new pledge.
+     * @return A DTO representing the newly created pledge.
+     * @throws ResourceNotFoundException if the parent Maintenance task is not found.
+     * @throws IllegalStateException if the parent Maintenance task is in a terminal state.
+     */
     @Transactional
     public PledgeResponseDto createPledge(NewPledgeRequestDto pledgeRequestDto) {
         Maintenance foundMaintenance = maintenanceService.getMaintenanceEntityByPublicId(pledgeRequestDto.maintenanceId());
-        if (foundMaintenance.getStatus() == MaintenanceStatus.COMPLETED || foundMaintenance.getStatus() == MaintenanceStatus.CANCELLED) {
+        if (foundMaintenance.getStatus() == MaintenanceStatus.COMPLETED || foundMaintenance.getStatus() == MaintenanceStatus.CANCELED) {
             throw new IllegalStateException("Cannot create a pledge for a maintenance that is in a terminal state.");
         }
         Pledge pledge = pledgeMapper.toEntity(foundMaintenance, pledgeRequestDto);
@@ -41,11 +56,28 @@ public class PledgeService {
         return pledgeMapper.toResponseDto(pledge);
     }
 
+    /**
+     * Retrieves a paginated list of all pledges associated with a specific maintenance task.
+     *
+     * @param pageable The pagination information (page, size, sort).
+     * @param maintenanceId The public UUID of the parent Maintenance task.
+     * @return A {@link Page} of DTOs representing the pledges for the given maintenance task.
+     */
     public Page<PledgeResponseDto> getPledgesByMaintenanceId(Pageable pageable, UUID maintenanceId) {
         Page<Pledge> pledges = pledgeRepository.findAllByMaintenancePublicId(maintenanceId, pageable);
         return pledges.map(pledgeMapper::toResponseDto);
     }
 
+    /**
+     * Updates an existing pledge with the provided data.
+     * The update logic is delegated to the rich domain model of the Pledge entity.
+     *
+     * @param pledgeId The public UUID of the pledge to update.
+     * @param pledgeUpdateDto The DTO containing the fields to be updated.
+     * @return A DTO representing the updated state of the pledge.
+     * @throws ResourceNotFoundException if no pledge with the given public ID is found.
+     * @throws IllegalStateException if the update violates a business rule within the entity (e.g., invalid status transition).
+     */
     @Transactional
     public PledgeResponseDto updatePledge(UUID pledgeId, PledgeUpdateDto pledgeUpdateDto) {
         Pledge existingPledge = pledgeRepository.findByPublicId(pledgeId)

@@ -6,6 +6,10 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
+/**
+ * Entity representing a material used during a maintenance action.
+ * It includes details such as the item name, quantity, and unit of measure.
+ */
 @Entity
 @Table(name = "action_material")
 public class ActionMaterial {

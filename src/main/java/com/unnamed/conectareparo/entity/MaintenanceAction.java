@@ -1,6 +1,5 @@
 package com.unnamed.conectareparo.entity;
 
-import com.unnamed.conectareparo.dto.NewActionMaterialDto;
 import jakarta.persistence.*;
 
 import java.time.ZonedDateTime;
@@ -8,6 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Entity representing an action taken during a maintenance event.
+ * It includes details about the action, materials used, and timestamps.
+ * Each action is linked to a specific maintenance record.
+ * The entity aims to be treated as a document event though it is stored in a relational database.
+ * Outcome status can be SUCCESS, FAILURE, or PENDING.
+ *  - SUCCESS: The action was completed successfully.
+ *  - FAILURE: The action was attempted but did not succeed.
+ *  - PENDING: The action is planned or in progress but not yet completed.
+ *
+ */
 @Entity
 @Table(name = "maintenance_action")
 public class MaintenanceAction {
