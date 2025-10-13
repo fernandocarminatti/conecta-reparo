@@ -32,7 +32,7 @@ public class Maintenance {
     @Column(name = "updated_at")
     private ZonedDateTime updatedAt;
 
-    protected Maintenance() {
+    public Maintenance() {
     }
 
     public Maintenance(String title, String description, MaintenanceCategory category, ZonedDateTime scheduledDate) {
