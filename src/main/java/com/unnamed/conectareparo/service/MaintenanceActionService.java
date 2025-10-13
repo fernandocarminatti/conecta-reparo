@@ -52,6 +52,7 @@ public class MaintenanceActionService {
         return maintenanceActionMapper.toResponseDto(action);
     }
 
+    @Transactional
     public MaintenanceActionResponseDto updateMaintenanceAction(UUID maintenancePublicId, UUID actionPublicId, NewMaintenanceActionDto updatedActionDto) {
         Maintenance existingMaintenance = maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId);
         if (existingMaintenance.isCompleted()){

@@ -10,10 +10,12 @@ import com.unnamed.conectareparo.repository.MaintenanceRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 @Service
+@Transactional(readOnly = true)
 public class MaintenanceService {
 
     private final MaintenanceRepository maintenanceRepository;
@@ -24,6 +26,7 @@ public class MaintenanceService {
         this.maintenanceMapper = maintenanceMapper;
     }
 
+    @Transactional
     public MaintenanceResponseDto createMaintenance(NewMaintenanceRequestDto maintenanceDTO) {
         Maintenance maintenance = new Maintenance(
                 maintenanceDTO.title(),
@@ -46,6 +49,7 @@ public class MaintenanceService {
         return maintenanceMapper.toResponseDto(maintenance);
     }
 
+    @Transactional
     public MaintenanceResponseDto updateMaintenance(UUID publicId, MaintenanceUpdateDto updateDto){
         Maintenance maintenance = maintenanceRepository.findByPublicId(publicId)
                 .orElseThrow(() -> new ResourceNotFoundException("Maintenance not found"));
@@ -54,8 +58,8 @@ public class MaintenanceService {
                 updateDto.description(),
                 updateDto.category());
         maintenance.changeStatus(updateDto.status());
-        maintenanceRepository.save(maintenance);
-        return maintenanceMapper.toResponseDto(maintenance);
+        Maintenance updatedMaintenance = maintenanceRepository.save(maintenance);
+        return maintenanceMapper.toResponseDto(updatedMaintenance);
     }
 
     protected Maintenance getMaintenanceEntityByPublicId(UUID publicId) {

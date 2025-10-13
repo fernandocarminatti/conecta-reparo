@@ -8,6 +8,7 @@ import com.unnamed.conectareparo.entity.Pledge;
 import com.unnamed.conectareparo.exception.ResourceNotFoundException;
 import com.unnamed.conectareparo.mapper.PledgeMapper;
 import com.unnamed.conectareparo.repository.PledgeRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class PledgeService {
         this.maintenanceService = maintenanceService;
     }
 
+    @Transactional
     public PledgeResponseDto createPledge(NewPledgeRequestDto pledgeRequestDto) {
         Maintenance foundMaintenance = maintenanceService.getMaintenanceEntityByPublicId(pledgeRequestDto.maintenanceId());
         Pledge pledge = pledgeMapper.toEntity(foundMaintenance, pledgeRequestDto);
@@ -39,6 +41,7 @@ public class PledgeService {
         return pledges.map(pledgeMapper::toResponseDto);
     }
 
+    @Transactional
     public PledgeResponseDto updatePledge(UUID pledgeId, PledgeUpdateDto pledgeUpdateDto) {
         Pledge existingPledge = pledgeRepository.findByPublicId(pledgeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Pledge not found with id: " + pledgeId));
