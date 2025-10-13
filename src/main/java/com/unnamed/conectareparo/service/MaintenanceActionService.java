@@ -2,18 +2,21 @@ package com.unnamed.conectareparo.service;
 
 import com.unnamed.conectareparo.dto.MaintenanceActionResponseDto;
 import com.unnamed.conectareparo.dto.NewMaintenanceActionDto;
+import com.unnamed.conectareparo.dto.UpdateMaintenanceActionDto;
+import com.unnamed.conectareparo.entity.ActionMaterial;
 import com.unnamed.conectareparo.entity.Maintenance;
 import com.unnamed.conectareparo.entity.MaintenanceAction;
 import com.unnamed.conectareparo.exception.ResourceNotFoundException;
 import com.unnamed.conectareparo.mapper.MaintenanceActionMapper;
 import com.unnamed.conectareparo.repository.MaintenanceActionRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional(readOnly = true)
 public class MaintenanceActionService {
 
     MaintenanceActionRepository maintenanceActionRepository;
@@ -33,8 +36,8 @@ public class MaintenanceActionService {
             throw new IllegalStateException("Cannot add action to a completed maintenance.");
         }
         MaintenanceAction newMaintenanceAction = maintenanceActionMapper.toEntity(newMaintenanceActionDto, existingMaintenance);
-        maintenanceActionRepository.save(newMaintenanceAction);
-        return maintenanceActionMapper.toResponseDto(newMaintenanceAction);
+        MaintenanceAction savedMaintenance = maintenanceActionRepository.save(newMaintenanceAction);
+        return maintenanceActionMapper.toResponseDto(savedMaintenance);
     }
 
     public List<MaintenanceActionResponseDto> getMaintenanceActions(UUID maintenancePublicId) {
@@ -53,7 +56,7 @@ public class MaintenanceActionService {
     }
 
     @Transactional
-    public MaintenanceActionResponseDto updateMaintenanceAction(UUID maintenancePublicId, UUID actionPublicId, NewMaintenanceActionDto updatedActionDto) {
+    public MaintenanceActionResponseDto updateMaintenanceAction(UUID maintenancePublicId, UUID actionPublicId, UpdateMaintenanceActionDto updatedActionDto) {
         Maintenance existingMaintenance = maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId);
         if (existingMaintenance.isCompleted()){
             throw new IllegalStateException("Cannot update action of a completed maintenance.");
@@ -67,8 +70,11 @@ public class MaintenanceActionService {
                 updatedActionDto.actionDescription(),
                 updatedActionDto.outcomeStatus()
         );
-        existingAction.updateMaterialsUsed(updatedActionDto.materialsUsed());
-        maintenanceActionRepository.save(existingAction);
-        return maintenanceActionMapper.toResponseDto(existingAction);
+        List<ActionMaterial> newMaterials = updatedActionDto.materialsUsed().stream()
+                .map(maintenanceActionMapper::toMaterialEntity)
+                .toList();
+        existingAction.updateMaterialsUsed(newMaterials);
+        MaintenanceAction updatedAction = maintenanceActionRepository.save(existingAction);
+        return maintenanceActionMapper.toResponseDto(updatedAction);
     }
 }

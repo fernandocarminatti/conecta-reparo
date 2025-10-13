@@ -122,14 +122,9 @@ public class MaintenanceAction {
         material.setMaintenanceAction(this);
     }
 
-    public void updateMaterialsUsed(List<NewActionMaterialDto> newMaterials) {
+    public void updateMaterialsUsed(List<ActionMaterial> newMaterials) {
         this.materialsUsed.clear();
-        if (newMaterials != null) {;
-            newMaterials.forEach(dto -> {
-                ActionMaterial newMaterial = new ActionMaterial(dto.itemName(), dto.quantity(), dto.unitOfMeasure());
-                this.addMaterial(newMaterial);
-            });
-        }
+        this.materialsUsed.addAll(newMaterials);
     }
 
     @PreUpdate

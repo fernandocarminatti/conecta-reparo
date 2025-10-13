@@ -61,7 +61,7 @@ public class MaintenanceActionMapper {
         return newAction;
     }
 
-    private ActionMaterialResponseDto toMaterialResponseDto(ActionMaterial material) {
+    public ActionMaterialResponseDto toMaterialResponseDto(ActionMaterial material) {
         return new ActionMaterialResponseDto(
                 material.getPublicId(),
                 material.getItemName(),
@@ -70,7 +70,7 @@ public class MaintenanceActionMapper {
         );
     }
 
-    private ActionMaterial toMaterialEntity(NewActionMaterialDto materialDto) {
+    public ActionMaterial toMaterialEntity(NewActionMaterialDto materialDto) {
         return new ActionMaterial(
                 materialDto.itemName(),
                 materialDto.quantity(),

@@ -2,6 +2,7 @@ package com.unnamed.conectareparo.controller;
 
 import com.unnamed.conectareparo.dto.MaintenanceActionResponseDto;
 import com.unnamed.conectareparo.dto.NewMaintenanceActionDto;
+import com.unnamed.conectareparo.dto.UpdateMaintenanceActionDto;
 import com.unnamed.conectareparo.service.MaintenanceActionService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -54,7 +55,7 @@ public class MaintenanceActionController {
     public ResponseEntity<MaintenanceActionResponseDto> updateMaintenanceAction(
             @PathVariable UUID maintenancePublicId,
             @PathVariable UUID actionPublicId,
-            @Valid @RequestBody NewMaintenanceActionDto updatedActionDto) {
+            @Valid @RequestBody UpdateMaintenanceActionDto updatedActionDto) {
         MaintenanceActionResponseDto updatedDto = maintenanceActionService.updateMaintenanceAction(maintenancePublicId, actionPublicId, updatedActionDto);
         return ResponseEntity.status(HttpStatus.OK).body(updatedDto);
     }
