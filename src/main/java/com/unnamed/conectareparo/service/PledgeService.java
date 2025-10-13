@@ -4,18 +4,20 @@ import com.unnamed.conectareparo.dto.NewPledgeRequestDto;
 import com.unnamed.conectareparo.dto.PledgeResponseDto;
 import com.unnamed.conectareparo.dto.PledgeUpdateDto;
 import com.unnamed.conectareparo.entity.Maintenance;
+import com.unnamed.conectareparo.entity.MaintenanceStatus;
 import com.unnamed.conectareparo.entity.Pledge;
 import com.unnamed.conectareparo.exception.ResourceNotFoundException;
 import com.unnamed.conectareparo.mapper.PledgeMapper;
 import com.unnamed.conectareparo.repository.PledgeRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 @Service
+@Transactional(readOnly = true)
 public class PledgeService {
 
     private final PledgeRepository pledgeRepository;
@@ -31,6 +33,9 @@ public class PledgeService {
     @Transactional
     public PledgeResponseDto createPledge(NewPledgeRequestDto pledgeRequestDto) {
         Maintenance foundMaintenance = maintenanceService.getMaintenanceEntityByPublicId(pledgeRequestDto.maintenanceId());
+        if (foundMaintenance.getStatus() == MaintenanceStatus.COMPLETED || foundMaintenance.getStatus() == MaintenanceStatus.CANCELLED) {
+            throw new IllegalStateException("Cannot create a pledge for a maintenance that is in a terminal state.");
+        }
         Pledge pledge = pledgeMapper.toEntity(foundMaintenance, pledgeRequestDto);
         pledgeRepository.save(pledge);
         return pledgeMapper.toResponseDto(pledge);
