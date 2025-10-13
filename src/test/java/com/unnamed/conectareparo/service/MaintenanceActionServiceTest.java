@@ -59,7 +59,6 @@ class MaintenanceActionServiceTest {
         maintenance = new Maintenance();
         ReflectionTestUtils.setField(maintenance, "id", 1L);
         ReflectionTestUtils.setField(maintenance, "publicId", maintenancePublicId);
-        ReflectionTestUtils.setField(maintenance, "publicId", maintenancePublicId);
 
         maintenanceAction = new MaintenanceAction(
                 maintenance,

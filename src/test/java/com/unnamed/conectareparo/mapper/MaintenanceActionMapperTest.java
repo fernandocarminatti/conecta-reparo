@@ -70,7 +70,7 @@ class MaintenanceActionMapperTest {
 
         assertAll(
                 () -> assertNotNull(dto),
-                () -> assertEquals(maintenanceAction.getPublicId(), dto.publicId()),
+                () -> assertEquals(maintenanceAction.getPublicId(), dto.id()),
                 () -> assertEquals("John Doe", dto.executedBy()),
                 () -> assertEquals(now, dto.completionDate()),
                 () -> assertEquals("Replaced the main circuit breaker.", dto.actionDescription()),

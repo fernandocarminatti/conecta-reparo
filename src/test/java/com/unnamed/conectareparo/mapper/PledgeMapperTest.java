@@ -77,7 +77,7 @@ class PledgeMapperTest {
 
         assertAll(
                 () -> assertNotNull(resultDto),
-                () -> assertEquals(pledgeEntity.getPublicId(), resultDto.publicId()),
+                () -> assertEquals(pledgeEntity.getPublicId(), resultDto.id()),
                 () -> assertEquals("John Doe", resultDto.volunteerName()),
                 () -> assertEquals("john.doe@example.com", resultDto.volunteerContact()),
                 () -> assertEquals("I can help on Saturday.", resultDto.description()),

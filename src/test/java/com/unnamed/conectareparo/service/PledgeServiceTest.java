@@ -145,7 +145,6 @@ class PledgeServiceTest {
     @Test
     @DisplayName("Should update a pledge successfully when found")
     void updatePledge_whenFound_shouldUpdateAndReturnDto() {
-        // Given
         PledgeUpdateDto updateDto = new PledgeUpdateDto(
                 "Jane Doe",
                 "555-5678",
@@ -206,7 +205,6 @@ class PledgeServiceTest {
     @Test
     @DisplayName("Should throw IllegalStateException when creating pledge for a completed maintenance")
     void createPledge_whenMaintenanceIsCompleted_shouldThrowException() {
-        // Given
         NewPledgeRequestDto requestDto = new NewPledgeRequestDto(
                 maintenancePublicId,
                 "John Doe",
@@ -217,7 +215,6 @@ class PledgeServiceTest {
 
         when(maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId)).thenReturn(maintenance);
 
-        // When & Then
         assertThrows(IllegalStateException.class, () -> pledgeService.createPledge(requestDto));
         verify(pledgeRepository, never()).save(any());
     }
