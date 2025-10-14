@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -45,14 +46,14 @@ public class MaintenanceFlowIntegrationTest {
                 "Lifecycle Test: Fix Window",
                 "Window is cracked.",
                 MaintenanceCategory.PREDIAL,
-                null
+                ZonedDateTime.now().plusDays(10)
         );
 
         MvcResult createResult = mockMvc.perform(post("/api/v1/maintenances")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createDto)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.publicId").exists())
+                .andExpect(jsonPath("$.id").exists())
                 .andReturn();
 
         UUID createdId = objectMapper.readValue(createResult.getResponse().getContentAsString(), MaintenanceResponseDto.class).id();
@@ -77,7 +78,7 @@ public class MaintenanceFlowIntegrationTest {
 
         mockMvc.perform(get("/api/v1/maintenances"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[?(@.publicId == '" + createdId + "')].status").value("COMPLETED"));
+                .andExpect(jsonPath("$.content[?(@.id == '" + createdId + "')].status").value(MaintenanceStatus.COMPLETED.toString()));
     }
 
 
