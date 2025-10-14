@@ -6,6 +6,7 @@ import com.unnamed.conectareparo.dto.UpdateMaintenanceActionDto;
 import com.unnamed.conectareparo.entity.ActionMaterial;
 import com.unnamed.conectareparo.entity.Maintenance;
 import com.unnamed.conectareparo.entity.MaintenanceAction;
+import com.unnamed.conectareparo.exception.MaintenanceAlreadyCompletedException;
 import com.unnamed.conectareparo.exception.ResourceNotFoundException;
 import com.unnamed.conectareparo.mapper.MaintenanceActionMapper;
 import com.unnamed.conectareparo.repository.MaintenanceActionRepository;
@@ -48,7 +49,7 @@ public class MaintenanceActionService {
     public MaintenanceActionResponseDto createMaintenanceAction(UUID maintenancePublicId, NewMaintenanceActionDto newMaintenanceActionDto) {
         Maintenance existingMaintenance = maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId);
         if (existingMaintenance.isCompleted()){
-            throw new IllegalStateException("Cannot add action to a completed maintenance.");
+            throw new MaintenanceAlreadyCompletedException("Cannot add action to a completed maintenance.");
         }
         MaintenanceAction newMaintenanceAction = maintenanceActionMapper.toEntity(newMaintenanceActionDto, existingMaintenance);
         MaintenanceAction savedMaintenance = maintenanceActionRepository.save(newMaintenanceAction);
@@ -102,7 +103,7 @@ public class MaintenanceActionService {
     public MaintenanceActionResponseDto updateMaintenanceAction(UUID maintenancePublicId, UUID actionPublicId, UpdateMaintenanceActionDto updatedActionDto) {
         Maintenance existingMaintenance = maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId);
         if (existingMaintenance.isCompleted()){
-            throw new IllegalStateException("Cannot update action of a completed maintenance.");
+            throw new MaintenanceAlreadyCompletedException("Cannot update action of a completed maintenance.");
         }
         MaintenanceAction existingAction = maintenanceActionRepository.findByMaintenanceAndActionPublicId(existingMaintenance, actionPublicId)
                 .orElseThrow(() -> new ResourceNotFoundException("Action with ID " + actionPublicId + " not found for the specified maintenance."));

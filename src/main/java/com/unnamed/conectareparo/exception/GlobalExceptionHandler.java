@@ -113,4 +113,16 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(MaintenanceAlreadyCompletedException.class)
+    public ResponseEntity<ErrorResponse> handleMaintenanceAlreadyCompletedException(MaintenanceAlreadyCompletedException ex, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                "Maintenance Already Completed cannot be modified.",
+                ex.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
 }
