@@ -2,6 +2,7 @@ package com.unnamed.conectareparo.service;
 
 import com.unnamed.conectareparo.dto.*;
 import com.unnamed.conectareparo.entity.*;
+import com.unnamed.conectareparo.exception.MaintenanceAlreadyCompletedException;
 import com.unnamed.conectareparo.exception.ResourceNotFoundException;
 import com.unnamed.conectareparo.mapper.MaintenanceActionMapper;
 import com.unnamed.conectareparo.repository.MaintenanceActionRepository;
@@ -105,7 +106,7 @@ class MaintenanceActionServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw IllegalStateException when creating action for a completed Maintenance")
+    @DisplayName("Should throw MaintenanceAlreadyCompletedException when creating action for a completed Maintenance")
     void createMaintenanceAction_whenMaintenanceIsCompleted_shouldThrowException() {
         ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.COMPLETED);
         NewMaintenanceActionDto requestDto = new NewMaintenanceActionDto(
@@ -119,7 +120,7 @@ class MaintenanceActionServiceTest {
 
         when(maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId)).thenReturn(maintenance);
 
-        assertThrows(IllegalStateException.class, () ->
+        assertThrows(MaintenanceAlreadyCompletedException.class, () ->
                 maintenanceActionService.createMaintenanceAction(maintenancePublicId, requestDto)
         );
         verify(maintenanceActionRepository, never()).save(any());
@@ -206,7 +207,7 @@ class MaintenanceActionServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw IllegalStateException when updating action for a completed maintenance")
+    @DisplayName("Should throw MaintenanceAlreadyCompletedException when updating action for a completed maintenance")
     void updateMaintenanceAction_whenMaintenanceIsCompleted_shouldThrowException() {
         ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.COMPLETED);
         UpdateMaintenanceActionDto requestDto = new UpdateMaintenanceActionDto(
@@ -220,7 +221,7 @@ class MaintenanceActionServiceTest {
 
         when(maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId)).thenReturn(maintenance);
 
-        assertThrows(IllegalStateException.class, () ->
+        assertThrows(MaintenanceAlreadyCompletedException.class, () ->
                 maintenanceActionService.updateMaintenanceAction(maintenancePublicId, actionPublicId, requestDto)
         );
         verify(maintenanceActionRepository, never()).save(any());
