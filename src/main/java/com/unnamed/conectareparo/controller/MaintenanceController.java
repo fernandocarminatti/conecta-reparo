@@ -3,8 +3,17 @@ package com.unnamed.conectareparo.controller;
 import com.unnamed.conectareparo.dto.MaintenanceResponseDto;
 import com.unnamed.conectareparo.dto.MaintenanceUpdateDto;
 import com.unnamed.conectareparo.dto.NewMaintenanceRequestDto;
+import com.unnamed.conectareparo.exception.ErrorResponse;
 import com.unnamed.conectareparo.service.MaintenanceService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -17,6 +26,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/maintenances")
+@Tag(name = "Maintenance", description = "Endpoints for managing maintenances")
 public class MaintenanceController {
 
     private final MaintenanceService maintenanceService;
@@ -25,6 +35,28 @@ public class MaintenanceController {
         this.maintenanceService = maintenanceService;
     }
 
+    @Operation(
+        summary = "Creates a new maintenance.",
+        description = "Registers a new maintenance in the system."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "201",
+            description = "Maintenance created successfully.",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = MaintenanceResponseDto.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid request data.",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     @PostMapping()
     public ResponseEntity<MaintenanceResponseDto> createMaintenance(@Valid @RequestBody NewMaintenanceRequestDto maintenanceDTO) {
         MaintenanceResponseDto createdMaintenance = maintenanceService.createMaintenance(maintenanceDTO);
@@ -35,18 +67,91 @@ public class MaintenanceController {
         return ResponseEntity.status(HttpStatus.CREATED).location(resourceLocation).body(createdMaintenance);
     }
 
+    @Operation(
+        summary = "Retrieves all maintenances.",
+        description = "Fetches a paginated list of all maintenances in the system."
+    )
+    @ApiResponse(
+        responseCode = "200",
+        description = "Maintenances retrieved successfully.",
+        content = @Content(
+            mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = MaintenanceResponseDto.class))
+        )
+    )
     @GetMapping
-    public ResponseEntity<Page<MaintenanceResponseDto>> getAllMaintenances(Pageable pageable) {
+    public ResponseEntity<Page<MaintenanceResponseDto>> getAllMaintenances(
+            @ParameterObject Pageable pageable) {
         Page<MaintenanceResponseDto> foundMaintenances = maintenanceService.getAllMaintenances(pageable);
         return ResponseEntity.ok(foundMaintenances);
     }
 
+    @Operation(
+        summary = "Retrieve a maintenance by its public ID.",
+        description = "Retrieves the details of a specific maintenance using its public UUID."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Maintenance retrieved successfully.",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = MaintenanceResponseDto.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Maintenance not found.",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid ID format.",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     @GetMapping("/{publicId}")
     public ResponseEntity<MaintenanceResponseDto> getMaintenanceByPublicId(@PathVariable UUID publicId) {
         MaintenanceResponseDto foundMaintenance = maintenanceService.getMaintenanceByPublicId(publicId);
         return ResponseEntity.ok(foundMaintenance);
     }
 
+    @Operation(
+        summary = "Update a maintenance by its public ID.",
+        description = "Updates the details of an existing maintenance identified by its ID."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Maintenance updated successfully.",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = MaintenanceResponseDto.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Maintenance not found.",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid request data.",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     @PatchMapping("/{publicId}")
     public ResponseEntity<MaintenanceResponseDto> updateMaintenance(
             @PathVariable UUID publicId,

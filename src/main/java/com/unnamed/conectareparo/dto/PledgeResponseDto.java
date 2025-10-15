@@ -8,7 +8,7 @@ import java.util.UUID;
 
 /**
  * Data Transfer Object for {@link Pledge} Response
- * @param publicId public facing identifier as UUID
+ * @param id public facing identifier as UUID
  * @param volunteerName name of the volunteer making the pledge
  * @param volunteerContact contact information of the volunteer (e.g., email or phone)
  * @param description detailed description of the pledge
