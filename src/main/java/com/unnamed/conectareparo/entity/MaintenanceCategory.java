@@ -4,8 +4,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Represents the category of a maintenance request.
- *
- * <p>Each category identifies the main area or type of maintenance work performed.</p>
+ * <p>Possible values:</p>
+ * <ul>
+ *   <li><b>BUILDING</b> – Building-related maintenance issues, such as structural repairs or renovations.</li>
+ *   <li><b>ELECTRICAL</b> – Electrical system maintenance, including wiring, outlets, and lighting.</li>
+ *   <li><b>PLUMBING</b> – Plumbing-related maintenance, such as leaks, pipe repairs, and fixture installations.</li>
+ *   <li><b>HVAC</b> – Heating, ventilation, and air conditioning (HVAC) system maintenance.</li>
+ *   <li><b>FURNITURE</b> – Appliance repairs and maintenance, including refrigerators, ovens, and washing machines.</li>
+ *   <li><b>GARDENING</b> – Landscaping and outdoor maintenance, such as lawn care and tree trimming.</li>
+ *   <li><b>SECURITY</b> – Security-related maintenance, including locks, alarms, and surveillance systems.</li>
+ *   <li><b>OTHERS</b> – Other maintenance issues that do not fit into the predefined categories.</li>
+ * </ul>
  */
 public enum MaintenanceCategory {
     @Schema(description = "Building-related maintenance issues, such as structural repairs or renovations.")

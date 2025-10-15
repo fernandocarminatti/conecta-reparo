@@ -1,6 +1,7 @@
 package com.unnamed.conectareparo.dto;
 
 import com.unnamed.conectareparo.entity.ActionOutcomeStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,18 +11,15 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
- * Data Transfer Object for {@link MaintenanceAction} Update
- * @param executedBy the name of the person who executed the action
- * @param startDate the date and time when the action started
- * @param completionDate the date and time when the action was completed
- * @param actionDescription a description of the maintenance action
- * @param materialsUsed a list of materials used during the action
- * @param outcomeStatus the outcome status of the action (e.g., SUCCESSFUL, PARTIAL_SUCESS, FAILED)
+ * Data Transfer Object for updating {@link com.unnamed.conectareparo.entity.MaintenanceAction} via http request.
  */
+@Schema(description = "Data Transfer Object for updating a maintenance action")
 public record UpdateMaintenanceActionDto(
+        @Schema(description = "The name of the person who executed the action.", example = "Jane Smith")
         @NotBlank(message = "Executed by must not be blank")
         @Size(min = 3, max = 100, message = "Executed by must be between 3 and 100 characters long")
         String executedBy,
+        @Schema(description = "The start date and time of the maintenance action in ISO 8601 format.", example = "2025-10-10T10:10:10Z")
         @NotNull(message = "Start date must not be null")
         ZonedDateTime startDate,
         @NotNull(message = "Completion date must not be null")
