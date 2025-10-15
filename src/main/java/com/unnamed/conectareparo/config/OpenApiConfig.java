@@ -16,6 +16,6 @@ public class OpenApiConfig {
                         .title("Conecta Reparo API")
                         .version("v1")
                         .description("API para a plataforma Conecta Reparo, que conecta necessidades de manutenção de centros de saúde com voluntários da comunidade.")
-                        .license(new License().name("Apache 2.0").url("http://springdoc.org")));
+                        .license(new License().name("Apache 2.0").url("https://www.apache.org/licenses/LICENSE-2.0.txt")));
     }
 }
