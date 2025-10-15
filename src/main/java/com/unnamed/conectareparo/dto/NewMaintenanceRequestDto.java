@@ -21,7 +21,6 @@ public record NewMaintenanceRequestDto(
         @NotNull
         MaintenanceCategory category,
         @NotNull
-        @FutureOrPresent
         ZonedDateTime scheduledDate
         ) {
 }
