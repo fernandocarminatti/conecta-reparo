@@ -130,7 +130,7 @@ class MaintenanceActionFlowIntegrationTest {
         NewMaintenanceRequestDto requestDto = new NewMaintenanceRequestDto(
                 title,
                 "Test Description",
-                MaintenanceCategory.OUTROS,
+                MaintenanceCategory.OTHERS,
                 ZonedDateTime.now().plusDays(10)
         );
         MvcResult result = mockMvc.perform(post("/api/v1/maintenances")

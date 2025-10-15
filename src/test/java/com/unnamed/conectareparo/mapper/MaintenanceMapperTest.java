@@ -32,13 +32,13 @@ class MaintenanceMapperTest {
         newMaintenanceRequestDto = new NewMaintenanceRequestDto(
                 "Leaking Pipe",
                 "Water leaking from the pipe under the main sink.",
-                MaintenanceCategory.HIDRAULICA,
+                MaintenanceCategory.PLUMBING,
                 now.plusDays(1)
         );
         maintenanceEntity = new Maintenance(
                 "Power Outage in Wing B",
                 "Circuit breaker for Wing B keeps tripping.",
-                MaintenanceCategory.ELETRICA,
+                MaintenanceCategory.ELECTRICAL,
                 now.plusHours(2)
         );
         ReflectionTestUtils.setField(maintenanceEntity, "publicId", publicId);
@@ -56,7 +56,7 @@ class MaintenanceMapperTest {
                 () -> assertNotNull(resultEntity),
                 () -> assertEquals("Leaking Pipe", resultEntity.getTitle()),
                 () -> assertEquals("Water leaking from the pipe under the main sink.", resultEntity.getDescription()),
-                () -> assertEquals(MaintenanceCategory.HIDRAULICA, resultEntity.getCategory()),
+                () -> assertEquals(MaintenanceCategory.PLUMBING, resultEntity.getCategory()),
                 () -> assertEquals(now.plusDays(1), resultEntity.getScheduledDate()),
                 () -> assertNotNull(resultEntity.getPublicId()),
                 () -> assertEquals(MaintenanceStatus.OPEN, resultEntity.getStatus())
@@ -73,7 +73,7 @@ class MaintenanceMapperTest {
                 () -> assertEquals(maintenanceEntity.getPublicId(), resultDto.id()),
                 () -> assertEquals("Power Outage in Wing B", resultDto.title()),
                 () -> assertEquals("Circuit breaker for Wing B keeps tripping.", resultDto.description()),
-                () -> assertEquals(MaintenanceCategory.ELETRICA, resultDto.category()),
+                () -> assertEquals(MaintenanceCategory.ELECTRICAL, resultDto.category()),
                 () -> assertEquals(now.plusHours(2), resultDto.scheduledDate()),
                 () -> assertEquals(MaintenanceStatus.OPEN, resultDto.status()),
                 () -> assertEquals(now, resultDto.createdAt()),

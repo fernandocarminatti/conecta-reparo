@@ -125,7 +125,7 @@ class MaintenanceActionMapperTest {
         ActionMaterialResponseDto dto = mapper.toMaterialResponseDto(material);
 
         assertAll(
-                () -> assertEquals(material.getPublicId(), dto.publicId()),
+                () -> assertEquals(material.getPublicId(), dto.id()),
                 () -> assertEquals("Test Item", dto.itemName()),
                 () -> assertEquals(BigDecimal.valueOf(12.5), dto.quantity()),
                 () -> assertEquals("kg", dto.unitOfMeasure())

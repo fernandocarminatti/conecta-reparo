@@ -137,7 +137,7 @@ class PledgeFlowIntegrationTest {
         NewMaintenanceRequestDto requestDto = new NewMaintenanceRequestDto(
                 "Parent Maintenance for Pledge Test",
                 "Test Description",
-                MaintenanceCategory.OUTROS,
+                MaintenanceCategory.OTHERS,
                 ZonedDateTime.now().plusDays(10)
         );
 

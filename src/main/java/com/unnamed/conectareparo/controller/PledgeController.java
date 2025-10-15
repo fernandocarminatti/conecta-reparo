@@ -1,6 +1,5 @@
 package com.unnamed.conectareparo.controller;
 
-import com.unnamed.conectareparo.dto.MaintenanceResponseDto;
 import com.unnamed.conectareparo.dto.NewPledgeRequestDto;
 import com.unnamed.conectareparo.dto.PledgeResponseDto;
 import com.unnamed.conectareparo.dto.PledgeUpdateDto;
@@ -13,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -83,7 +83,7 @@ public class PledgeController {
         )
     })
     @GetMapping
-    public ResponseEntity<Page<PledgeResponseDto>> getPledgesForMaintenanceId(@RequestParam UUID maintenanceId, Pageable pageable) {
+    public ResponseEntity<Page<PledgeResponseDto>> getPledgesForMaintenanceId(@RequestParam UUID maintenanceId, @ParameterObject Pageable pageable) {
         Page<PledgeResponseDto> pledges = pledgeService.getPledgesByMaintenanceId(pageable, maintenanceId);
         return ResponseEntity.ok(pledges);
     }

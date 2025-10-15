@@ -22,7 +22,7 @@ class MaintenanceTest {
         maintenance = new Maintenance(
                 "Initial Title",
                 "Initial Description",
-                MaintenanceCategory.ELETRICA,
+                MaintenanceCategory.ELECTRICAL,
                 ZonedDateTime.parse("2025-10-10T10:00:00Z"));
     }
 
@@ -90,12 +90,12 @@ class MaintenanceTest {
         @Test
         @DisplayName("Should update all provided fields")
         void shouldUpdateAllProvidedFields() {
-            maintenance.updateDetails("New Title", "New Description", MaintenanceCategory.HIDRAULICA);
+            maintenance.updateDetails("New Title", "New Description", MaintenanceCategory.PLUMBING);
 
             assertAll(
                     () -> assertEquals("New Title", maintenance.getTitle()),
                     () -> assertEquals("New Description", maintenance.getDescription()),
-                    () -> assertEquals(MaintenanceCategory.HIDRAULICA, maintenance.getCategory())
+                    () -> assertEquals(MaintenanceCategory.PLUMBING, maintenance.getCategory())
             );
         }
 
@@ -107,7 +107,7 @@ class MaintenanceTest {
             assertAll(
                     () -> assertEquals("New Title Only", maintenance.getTitle()),
                     () -> assertEquals("Initial Description", maintenance.getDescription()),
-                    () -> assertEquals(MaintenanceCategory.ELETRICA, maintenance.getCategory())
+                    () -> assertEquals(MaintenanceCategory.ELECTRICAL, maintenance.getCategory())
             );
         }
 

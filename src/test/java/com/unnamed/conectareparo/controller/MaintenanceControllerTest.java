@@ -57,7 +57,7 @@ class MaintenanceControllerTest {
         notFoundPublicId = UUID.randomUUID();
         validDate = ZonedDateTime.parse("3333-10-10T10:10:00Z");
         maintenanceResponseDto = new MaintenanceResponseDto(
-                validPublicId, "Test Title", "Test Desc", MaintenanceCategory.ELETRICA,
+                validPublicId, "Test Title", "Test Desc", MaintenanceCategory.ELECTRICAL,
                 validDate, MaintenanceStatus.OPEN, ZonedDateTime.now(), ZonedDateTime.now()
         );
     }
@@ -71,7 +71,7 @@ class MaintenanceControllerTest {
             NewMaintenanceRequestDto requestDto = new NewMaintenanceRequestDto(
                     "New Title",
                     "New Desc",
-                    MaintenanceCategory.ELETRICA,
+                    MaintenanceCategory.ELECTRICAL,
                     validDate);
             when(maintenanceService.createMaintenance(any(NewMaintenanceRequestDto.class))).thenReturn(maintenanceResponseDto);
 
@@ -87,7 +87,7 @@ class MaintenanceControllerTest {
         @Test
         @DisplayName("Should return 400 Bad Request when title is blank")
         void shouldReturn400_whenTitleIsBlank() throws Exception {
-            NewMaintenanceRequestDto requestDto = new NewMaintenanceRequestDto("", "Desc", MaintenanceCategory.ELETRICA, null);
+            NewMaintenanceRequestDto requestDto = new NewMaintenanceRequestDto("", "Desc", MaintenanceCategory.ELECTRICAL, null);
 
             mockMvc.perform(post("/api/v1/maintenances")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -143,7 +143,7 @@ class MaintenanceControllerTest {
         @DisplayName("Should return 200 OK with updated data when request is valid")
         void shouldReturn200_whenRequestIsValid() throws Exception {
             MaintenanceUpdateDto updateDto = new MaintenanceUpdateDto("Updated Title", null, null, null);
-            MaintenanceResponseDto updatedResponse = new MaintenanceResponseDto(validPublicId, "Updated Title", "Test Desc", MaintenanceCategory.ELETRICA, null, MaintenanceStatus.OPEN, ZonedDateTime.now(), ZonedDateTime.now());
+            MaintenanceResponseDto updatedResponse = new MaintenanceResponseDto(validPublicId, "Updated Title", "Test Desc", MaintenanceCategory.ELECTRICAL, null, MaintenanceStatus.OPEN, ZonedDateTime.now(), ZonedDateTime.now());
 
             when(maintenanceService.updateMaintenance(eq(validPublicId), any(MaintenanceUpdateDto.class))).thenReturn(updatedResponse);
 

@@ -55,7 +55,7 @@ class MaintenanceServiceTest {
         publicId = UUID.fromString("a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6");
         scheduledDate = fixedCreationTime.plusDays(1);
 
-        persistedMaintenance = new Maintenance("Test Title", "Test Description", MaintenanceCategory.ELETRICA, scheduledDate);
+        persistedMaintenance = new Maintenance("Test Title", "Test Description", MaintenanceCategory.ELECTRICAL, scheduledDate);
         ReflectionTestUtils.setField(persistedMaintenance, "publicId", publicId);
         ReflectionTestUtils.setField(persistedMaintenance, "status", MaintenanceStatus.OPEN);
         ReflectionTestUtils.setField(persistedMaintenance, "createdAt", fixedCreationTime);
@@ -65,7 +65,7 @@ class MaintenanceServiceTest {
                 publicId,
                 "Test Title",
                 "Test Description",
-                MaintenanceCategory.ELETRICA,
+                MaintenanceCategory.ELECTRICAL,
                 scheduledDate,
                 MaintenanceStatus.OPEN,
                 fixedCreationTime,
@@ -149,7 +149,7 @@ class MaintenanceServiceTest {
     @Test
     @DisplayName("Should create a maintenance record successfully")
     void createMaintenance_shouldSaveAndReturnDto() {
-        NewMaintenanceRequestDto requestDto = new NewMaintenanceRequestDto("Test Title", "Test Description", MaintenanceCategory.ELETRICA, scheduledDate);
+        NewMaintenanceRequestDto requestDto = new NewMaintenanceRequestDto("Test Title", "Test Description", MaintenanceCategory.ELECTRICAL, scheduledDate);
         when(maintenanceRepository.save(any(Maintenance.class))).thenReturn(persistedMaintenance);
         when(maintenanceMapper.toResponseDto(any(Maintenance.class))).thenReturn(persistedMaintenanceResponseDto);
 
@@ -207,12 +207,12 @@ class MaintenanceServiceTest {
         MaintenanceUpdateDto updateDto = new MaintenanceUpdateDto(
                 "Updated Title",
                 "Updated Desc",
-                MaintenanceCategory.CLIMATIZACAO,
+                MaintenanceCategory.HVAC,
                 MaintenanceStatus.IN_PROGRESS
         );
         Maintenance spiedMaintenance = spy(persistedMaintenance);
         MaintenanceResponseDto expectedResponseDto = new MaintenanceResponseDto(
-                publicId, "Updated Title", "Updated Desc", MaintenanceCategory.CLIMATIZACAO,
+                publicId, "Updated Title", "Updated Desc", MaintenanceCategory.HVAC,
                 scheduledDate, MaintenanceStatus.IN_PROGRESS, fixedCreationTime, ZonedDateTime.now() // `updatedAt` will be different
         );
         when(maintenanceRepository.findByPublicId(publicId)).thenReturn(Optional.of(spiedMaintenance));

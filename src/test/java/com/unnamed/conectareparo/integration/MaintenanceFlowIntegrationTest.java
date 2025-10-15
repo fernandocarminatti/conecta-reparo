@@ -45,7 +45,7 @@ public class MaintenanceFlowIntegrationTest {
         NewMaintenanceRequestDto createDto = new NewMaintenanceRequestDto(
                 "Lifecycle Test: Fix Window",
                 "Window is cracked.",
-                MaintenanceCategory.PREDIAL,
+                MaintenanceCategory.BUILDING,
                 ZonedDateTime.now().plusDays(10)
         );
 
