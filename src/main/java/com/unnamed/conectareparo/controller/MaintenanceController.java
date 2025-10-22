@@ -87,6 +87,35 @@ public class MaintenanceController {
     }
 
     @Operation(
+        summary = "Retrieves maintenances with OPEN and IN_PROGRESS status.",
+        description = "Fetches a paginated list of maintenances that are currently Active."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Maintenances with OPEN and IN_PROGRESS status retrieved successfully.",
+                content = @Content(
+                    mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = MaintenanceResponseDto.class))
+                )
+            ),
+            @ApiResponse(
+                responseCode = "400",
+                description = "Invalid request parameters.",
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)
+                )
+            )
+    })
+    @GetMapping("/active")
+    public ResponseEntity<Page<MaintenanceResponseDto>> getActiveMaintenances(
+            @ParameterObject Pageable pageable) {
+        Page<MaintenanceResponseDto> foundMaintenances = maintenanceService.getActiveMaintenances();
+        return ResponseEntity.ok(foundMaintenances);
+    }
+
+    @Operation(
         summary = "Retrieve a maintenance by its public ID.",
         description = "Retrieves the details of a specific maintenance using its public UUID."
     )

@@ -4,6 +4,7 @@ import com.unnamed.conectareparo.dto.MaintenanceResponseDto;
 import com.unnamed.conectareparo.dto.MaintenanceUpdateDto;
 import com.unnamed.conectareparo.dto.NewMaintenanceRequestDto;
 import com.unnamed.conectareparo.entity.Maintenance;
+import com.unnamed.conectareparo.entity.MaintenanceStatus;
 import com.unnamed.conectareparo.exception.ResourceNotFoundException;
 import com.unnamed.conectareparo.mapper.MaintenanceMapper;
 import com.unnamed.conectareparo.repository.MaintenanceRepository;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -97,6 +99,17 @@ public class MaintenanceService {
         maintenance.changeStatus(updateDto.status());
         Maintenance updatedMaintenance = maintenanceRepository.save(maintenance);
         return maintenanceMapper.toResponseDto(updatedMaintenance);
+    }
+
+    public Page<MaintenanceResponseDto> getActiveMaintenances(){
+        List<MaintenanceStatus> statusFilters = List.of(
+                MaintenanceStatus.OPEN,
+                MaintenanceStatus.IN_PROGRESS
+        );
+        Page<Maintenance> pageOfMaintenance = maintenanceRepository.findByStatusIn(
+                statusFilters,
+                Pageable.unpaged());
+        return pageOfMaintenance.map(maintenanceMapper::toResponseDto);
     }
 
     /**
