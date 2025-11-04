@@ -103,9 +103,11 @@ class MaintenanceControllerTest {
         @DisplayName("Should return 200 OK with a page of maintenances")
         void shouldReturn200_withPageOfMaintenances() throws Exception {
             Page<MaintenanceResponseDto> page = new PageImpl<>(List.of(maintenanceResponseDto), PageRequest.of(0, 10), 1);
-            when(maintenanceService.getAllMaintenances(any(PageRequest.class))).thenReturn(page);
+            when(maintenanceService.getAllMaintenances(any(), any(), any(PageRequest.class))).thenReturn(page);
 
-            mockMvc.perform(get("/api/v1/maintenances?page=0&size=10"))
+            mockMvc.perform(get("/api/v1/maintenances")
+                            .param("status", "open")
+                            .param("search", ""))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.content[0].id").value(validPublicId.toString()))
                     .andExpect(jsonPath("$.totalPages").value(1))

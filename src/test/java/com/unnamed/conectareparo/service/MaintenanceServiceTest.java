@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.ZonedDateTime;
@@ -88,19 +89,19 @@ class MaintenanceServiceTest {
     }
 
 
-    @DisplayName("Get Empty Page of Maintenances - Success")
+    @DisplayName("Get Empty Page of Maintenances")
     @Test
     void getAllMaintenances_whenNoMaintenances_shouldReturnEmptyPage() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Maintenance> emptyPage = Page.empty(pageable);
 
-        when(maintenanceRepository.findAll(pageable)).thenReturn(emptyPage);
+        when(maintenanceRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
 
-        Page<MaintenanceResponseDto> resultPage = maintenanceService.getAllMaintenances(pageable);
+        Page<MaintenanceResponseDto> resultPage = maintenanceService.getAllMaintenances(null, null, pageable);
 
         assertNotNull(resultPage);
         assertTrue(resultPage.isEmpty());
-        verify(maintenanceRepository, times(1)).findAll(pageable);
+        verify(maintenanceRepository, times(1)).findAll(any(Specification.class), eq(pageable));
         verify(maintenanceMapper, never()).toResponseDto(any());
     }
 
@@ -189,10 +190,11 @@ class MaintenanceServiceTest {
     void getAllMaintenances_shouldReturnPageOfDtos() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Maintenance> maintenancePage = new PageImpl<>(List.of(persistedMaintenance), pageable, 1);
-        when(maintenanceRepository.findAll(pageable)).thenReturn(maintenancePage);
+        when(maintenanceRepository.findAll(any(Specification.class), eq(pageable
+        ))).thenReturn(maintenancePage);
         when(maintenanceMapper.toResponseDto(persistedMaintenance)).thenReturn(persistedMaintenanceResponseDto);
 
-        Page<MaintenanceResponseDto> resultPage = maintenanceService.getAllMaintenances(pageable);
+        Page<MaintenanceResponseDto> resultPage = maintenanceService.getAllMaintenances(null, null, pageable);
 
         assertAll(
                 () -> assertNotNull(resultPage),
