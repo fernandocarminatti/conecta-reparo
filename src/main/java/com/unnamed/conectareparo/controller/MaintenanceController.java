@@ -80,38 +80,11 @@ public class MaintenanceController {
         )
     )
     @GetMapping
-    public ResponseEntity<Page<MaintenanceResponseDto>> getAllMaintenances(
+    public ResponseEntity<Page<MaintenanceResponseDto>> getMaintenances(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String search,
             @ParameterObject Pageable pageable) {
-        Page<MaintenanceResponseDto> foundMaintenances = maintenanceService.getAllMaintenances(pageable);
-        return ResponseEntity.ok(foundMaintenances);
-    }
-
-    @Operation(
-        summary = "Retrieves maintenances with OPEN and IN_PROGRESS status.",
-        description = "Fetches a paginated list of maintenances that are currently Active."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "Maintenances with OPEN and IN_PROGRESS status retrieved successfully.",
-                content = @Content(
-                    mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = MaintenanceResponseDto.class))
-                )
-            ),
-            @ApiResponse(
-                responseCode = "400",
-                description = "Invalid request parameters.",
-                content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = ErrorResponse.class)
-                )
-            )
-    })
-    @GetMapping("/active")
-    public ResponseEntity<Page<MaintenanceResponseDto>> getActiveMaintenances(
-            @ParameterObject Pageable pageable) {
-        Page<MaintenanceResponseDto> foundMaintenances = maintenanceService.getActiveMaintenances();
+        Page<MaintenanceResponseDto> foundMaintenances = maintenanceService.getAllMaintenances(status, search, pageable);
         return ResponseEntity.ok(foundMaintenances);
     }
 

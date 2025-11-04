@@ -8,8 +8,10 @@ import com.unnamed.conectareparo.entity.MaintenanceStatus;
 import com.unnamed.conectareparo.exception.ResourceNotFoundException;
 import com.unnamed.conectareparo.mapper.MaintenanceMapper;
 import com.unnamed.conectareparo.repository.MaintenanceRepository;
+import com.unnamed.conectareparo.specification.MaintenanceSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,9 +61,10 @@ public class MaintenanceService {
      * @param pageable The pagination information (page number, size, and sorting).
      * @return A {@link Page} of DTOs representing the maintenance tasks.
      */
-    public Page<MaintenanceResponseDto> getAllMaintenances(Pageable pageable) {
-        Page<Maintenance> pageOfMaintenance = maintenanceRepository.findAll(pageable);
-        return pageOfMaintenance.map(maintenanceMapper::toResponseDto);
+    public Page<MaintenanceResponseDto> getAllMaintenances(String status, String search, Pageable pageable) {
+        Specification<Maintenance> spec = Specification
+                .allOf(List.of(MaintenanceSpecification.hasStatus(status), MaintenanceSpecification.searchByTerm(search)));
+        return maintenanceRepository.findAll(spec, pageable).map(maintenanceMapper::toResponseDto);
     }
 
     /**
