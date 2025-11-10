@@ -1,10 +1,10 @@
 package com.unnamed.conectareparo.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.unnamed.conectareparo.dto.MaintenanceActionDto;
 import com.unnamed.conectareparo.dto.MaintenanceActionResponseDto;
-import com.unnamed.conectareparo.dto.NewMaintenanceActionDto;
-import com.unnamed.conectareparo.dto.UpdateMaintenanceActionDto;
-import com.unnamed.conectareparo.entity.ActionOutcomeStatus;
+import com.unnamed.conectareparo.dto.MaintenanceActionUpdateDto;
+import com.unnamed.conectareparo.entity.ActionStatus;
 import com.unnamed.conectareparo.exception.ResourceNotFoundException;
 import com.unnamed.conectareparo.service.MaintenanceActionService;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,7 +63,7 @@ class MaintenanceActionControllerTest {
                 ZonedDateTime.now(),
                 "Action performed",
                 Collections.emptyList(),
-                ActionOutcomeStatus.SUCCESS,
+                ActionStatus.SUCCESS,
                 randomPointInTime
         );
     }
@@ -74,14 +74,14 @@ class MaintenanceActionControllerTest {
         @Test
         @DisplayName("Should return 201 Created when request is valid")
         void shouldReturn201_whenRequestIsValid() throws Exception {
-            NewMaintenanceActionDto requestDto = new NewMaintenanceActionDto(
+            MaintenanceActionDto requestDto = new MaintenanceActionDto(
                     "John Doe",
                     randomPointInTime,
                     randomPointInTime,
                     "Action performed",
                     Collections.emptyList(),
-                    ActionOutcomeStatus.SUCCESS);
-            when(maintenanceActionService.createMaintenanceAction(eq(validMaintenanceId), any(NewMaintenanceActionDto.class))).thenReturn(actionResponseDto);
+                    ActionStatus.SUCCESS);
+            when(maintenanceActionService.createMaintenanceAction(eq(validMaintenanceId), any(MaintenanceActionDto.class))).thenReturn(actionResponseDto);
 
             mockMvc.perform(post("/api/v1/maintenances/{maintenancePublicId}/actions", validMaintenanceId)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -136,13 +136,13 @@ class MaintenanceActionControllerTest {
         @Test
         @DisplayName("Should return 200 OK with updated data when request is valid")
         void shouldReturn200_whenRequestIsValid() throws Exception {
-            UpdateMaintenanceActionDto updateDto = new UpdateMaintenanceActionDto(
+            MaintenanceActionUpdateDto updateDto = new MaintenanceActionUpdateDto(
                     "Jane Doe",
                     randomPointInTime,
                     randomPointInTime,
                     "Updated action",
                     Collections.emptyList(),
-                    ActionOutcomeStatus.PARTIAL_SUCCESS);
+                    ActionStatus.PARTIAL_SUCCESS);
             MaintenanceActionResponseDto updatedResponse = new MaintenanceActionResponseDto(
                     validActionId,
                     "Jane Doe",
@@ -150,10 +150,10 @@ class MaintenanceActionControllerTest {
                     randomPointInTime,
                     "Updated action",
                     Collections.emptyList(),
-                    ActionOutcomeStatus.SUCCESS,
+                    ActionStatus.SUCCESS,
                     randomPointInTime);
 
-            when(maintenanceActionService.updateMaintenanceAction(eq(validMaintenanceId), eq(validActionId), any(UpdateMaintenanceActionDto.class))).thenReturn(updatedResponse);
+            when(maintenanceActionService.updateMaintenanceAction(eq(validMaintenanceId), eq(validActionId), any(MaintenanceActionUpdateDto.class))).thenReturn(updatedResponse);
 
             mockMvc.perform(put("/api/v1/maintenances/{maintenancePublicId}/actions/{actionPublicId}", validMaintenanceId, validActionId)
                             .contentType(MediaType.APPLICATION_JSON)

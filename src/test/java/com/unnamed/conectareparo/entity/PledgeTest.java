@@ -24,7 +24,7 @@ class PledgeTest {
                 "Initial Volunteer",
                 "initial@contact.com",
                 "Initial Description",
-                PledgeType.LABOR
+                PledgeCategory.LABOR
         );
     }
 
@@ -80,13 +80,13 @@ class PledgeTest {
         @Test
         @DisplayName("Should update all provided fields")
         void shouldUpdateAllProvidedFields() {
-            pledge.updateDetails("New Volunteer", "new@contact.com", "New Description", PledgeType.MATERIAL);
+            pledge.updateDetails("New Volunteer", "new@contact.com", "New Description", PledgeCategory.MATERIAL);
 
             assertAll(
                     () -> assertEquals("New Volunteer", pledge.getVolunteerName()),
                     () -> assertEquals("new@contact.com", pledge.getVolunteerContact()),
                     () -> assertEquals("New Description", pledge.getDescription()),
-                    () -> assertEquals(PledgeType.MATERIAL, pledge.getType())
+                    () -> assertEquals(PledgeCategory.MATERIAL, pledge.getType())
             );
         }
 
@@ -99,7 +99,7 @@ class PledgeTest {
                     () -> assertEquals("Updated Volunteer Only", pledge.getVolunteerName()),
                     () -> assertEquals("initial@contact.com", pledge.getVolunteerContact()),
                     () -> assertEquals("Initial Description", pledge.getDescription()),
-                    () -> assertEquals(PledgeType.LABOR, pledge.getType())
+                    () -> assertEquals(PledgeCategory.LABOR, pledge.getType())
             );
         }
 

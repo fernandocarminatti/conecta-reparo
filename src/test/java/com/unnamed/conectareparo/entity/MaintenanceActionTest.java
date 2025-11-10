@@ -27,7 +27,7 @@ class MaintenanceActionTest {
                 now.minusHours(2),
                 now,
                 "Initial action description.",
-                ActionOutcomeStatus.SUCCESS
+                ActionStatus.SUCCESS
         );
     }
 
@@ -46,7 +46,7 @@ class MaintenanceActionTest {
                     newStartDate,
                     newCompletionDate,
                     "Updated description.",
-                    ActionOutcomeStatus.PARTIAL_SUCCESS
+                    ActionStatus.PARTIAL_SUCCESS
             );
 
             assertAll(
@@ -54,7 +54,7 @@ class MaintenanceActionTest {
                     () -> assertEquals(newStartDate, maintenanceAction.getStartDate()),
                     () -> assertEquals(newCompletionDate, maintenanceAction.getCompletionDate()),
                     () -> assertEquals("Updated description.", maintenanceAction.getActionDescription()),
-                    () -> assertEquals(ActionOutcomeStatus.PARTIAL_SUCCESS, maintenanceAction.getOutcomeStatus())
+                    () -> assertEquals(ActionStatus.PARTIAL_SUCCESS, maintenanceAction.getOutcomeStatus())
             );
         }
 
@@ -68,7 +68,7 @@ class MaintenanceActionTest {
                     () -> assertEquals(now.minusHours(2), maintenanceAction.getStartDate()), // Unchanged
                     () -> assertEquals(now, maintenanceAction.getCompletionDate()), // Unchanged
                     () -> assertEquals("Initial action description.", maintenanceAction.getActionDescription()), // Unchanged
-                    () -> assertEquals(ActionOutcomeStatus.SUCCESS, maintenanceAction.getOutcomeStatus()) // Unchanged
+                    () -> assertEquals(ActionStatus.SUCCESS, maintenanceAction.getOutcomeStatus()) // Unchanged
             );
         }
 

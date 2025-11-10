@@ -1,7 +1,7 @@
 package com.unnamed.conectareparo.mapper;
 
+import com.unnamed.conectareparo.dto.MaintenanceDto;
 import com.unnamed.conectareparo.dto.MaintenanceResponseDto;
-import com.unnamed.conectareparo.dto.NewMaintenanceRequestDto;
 import com.unnamed.conectareparo.entity.Maintenance;
 import com.unnamed.conectareparo.entity.MaintenanceCategory;
 import com.unnamed.conectareparo.entity.MaintenanceStatus;
@@ -19,7 +19,7 @@ class MaintenanceMapperTest {
     private MaintenanceMapper mapper;
 
     private Maintenance maintenanceEntity;
-    private NewMaintenanceRequestDto newMaintenanceRequestDto;
+    private MaintenanceDto maintenanceDto;
     private ZonedDateTime now;
     private UUID publicId;
 
@@ -29,7 +29,7 @@ class MaintenanceMapperTest {
         now = ZonedDateTime.parse("2025-10-08T10:00:00Z");
         publicId = UUID.randomUUID();
 
-        newMaintenanceRequestDto = new NewMaintenanceRequestDto(
+        maintenanceDto = new MaintenanceDto(
                 "Leaking Pipe",
                 "Water leaking from the pipe under the main sink.",
                 MaintenanceCategory.PLUMBING,
@@ -48,9 +48,9 @@ class MaintenanceMapperTest {
     }
 
     @Test
-    @DisplayName("Should correctly map NewMaintenanceRequestDto to a new Maintenance Entity")
+    @DisplayName("Should correctly map MaintenanceDto to a new Maintenance Entity")
     void toEntity_shouldMapAllFieldsFromRequestDto() {
-        Maintenance resultEntity = mapper.toEntity(newMaintenanceRequestDto);
+        Maintenance resultEntity = mapper.toEntity(maintenanceDto);
 
         assertAll(
                 () -> assertNotNull(resultEntity),

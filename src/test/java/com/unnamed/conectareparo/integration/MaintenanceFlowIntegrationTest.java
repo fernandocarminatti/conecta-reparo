@@ -1,9 +1,9 @@
 package com.unnamed.conectareparo.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.unnamed.conectareparo.dto.MaintenanceDto;
 import com.unnamed.conectareparo.dto.MaintenanceResponseDto;
 import com.unnamed.conectareparo.dto.MaintenanceUpdateDto;
-import com.unnamed.conectareparo.dto.NewMaintenanceRequestDto;
 import com.unnamed.conectareparo.entity.MaintenanceCategory;
 import com.unnamed.conectareparo.entity.MaintenanceStatus;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +42,7 @@ public class MaintenanceFlowIntegrationTest {
     @Test
     @DisplayName("Should create, retrieve, update, and appear in list successfully")
     void shouldExecuteFullLifecycle() throws Exception {
-        NewMaintenanceRequestDto createDto = new NewMaintenanceRequestDto(
+        MaintenanceDto createDto = new MaintenanceDto(
                 "Lifecycle Test: Fix Window",
                 "Window is cracked.",
                 MaintenanceCategory.BUILDING,
@@ -85,7 +85,7 @@ public class MaintenanceFlowIntegrationTest {
     @Test
     @DisplayName("Unhappy Path: Should return 400 for invalid creation request")
     void createMaintenance_withInvalidData_shouldReturn400() throws Exception {
-        NewMaintenanceRequestDto requestDto = new NewMaintenanceRequestDto(
+        MaintenanceDto requestDto = new MaintenanceDto(
                 "",
                 "Desc",
                 null,

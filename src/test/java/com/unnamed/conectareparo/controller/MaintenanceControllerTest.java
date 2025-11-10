@@ -1,8 +1,8 @@
 package com.unnamed.conectareparo.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.unnamed.conectareparo.dto.MaintenanceDto;
 import com.unnamed.conectareparo.dto.MaintenanceResponseDto;
-import com.unnamed.conectareparo.dto.NewMaintenanceRequestDto;
 import com.unnamed.conectareparo.dto.MaintenanceUpdateDto;
 import com.unnamed.conectareparo.entity.MaintenanceCategory;
 import com.unnamed.conectareparo.entity.MaintenanceStatus;
@@ -68,12 +68,12 @@ class MaintenanceControllerTest {
         @Test
         @DisplayName("Should return 201 Created when request is valid")
         void shouldReturn201_whenRequestIsValid() throws Exception {
-            NewMaintenanceRequestDto requestDto = new NewMaintenanceRequestDto(
+            MaintenanceDto requestDto = new MaintenanceDto(
                     "New Title",
                     "New Desc",
                     MaintenanceCategory.ELECTRICAL,
                     validDate);
-            when(maintenanceService.createMaintenance(any(NewMaintenanceRequestDto.class))).thenReturn(maintenanceResponseDto);
+            when(maintenanceService.createMaintenance(any(MaintenanceDto.class))).thenReturn(maintenanceResponseDto);
 
             mockMvc.perform(post("/api/v1/maintenances")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -87,7 +87,7 @@ class MaintenanceControllerTest {
         @Test
         @DisplayName("Should return 400 Bad Request when title is blank")
         void shouldReturn400_whenTitleIsBlank() throws Exception {
-            NewMaintenanceRequestDto requestDto = new NewMaintenanceRequestDto("", "Desc", MaintenanceCategory.ELECTRICAL, null);
+            MaintenanceDto requestDto = new MaintenanceDto("", "Desc", MaintenanceCategory.ELECTRICAL, null);
 
             mockMvc.perform(post("/api/v1/maintenances")
                             .contentType(MediaType.APPLICATION_JSON)

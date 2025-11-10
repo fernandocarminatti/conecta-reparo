@@ -3,8 +3,8 @@ package com.unnamed.conectareparo.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unnamed.conectareparo.dto.*;
 import com.unnamed.conectareparo.entity.MaintenanceCategory;
+import com.unnamed.conectareparo.entity.PledgeCategory;
 import com.unnamed.conectareparo.entity.PledgeStatus;
-import com.unnamed.conectareparo.entity.PledgeType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,12 +50,12 @@ class PledgeFlowIntegrationTest {
     @Test
     @DisplayName("Happy Path: Should create, list, and update a pledge successfully")
     void shouldExecutePledgeLifecycleSuccessfully() throws Exception {
-        NewPledgeRequestDto createPledgeDto = new NewPledgeRequestDto(
+        PledgeDto createPledgeDto = new PledgeDto(
                 parentMaintenanceId,
                 "Volunteer Alice",
                 "alice@example.com",
                 "Offering to paint",
-                PledgeType.LABOR,
+                PledgeCategory.LABOR,
                 PledgeStatus.OFFERED
         );
 
@@ -97,12 +97,12 @@ class PledgeFlowIntegrationTest {
     @DisplayName("Unhappy Path: Should return 404 when creating a pledge for a non-existent maintenance")
     void createPledge_withNonExistentMaintenance_shouldReturn404() throws Exception {
         UUID nonExistentMaintenanceId = UUID.randomUUID();
-        NewPledgeRequestDto createPledgeDto = new NewPledgeRequestDto(
+        PledgeDto createPledgeDto = new PledgeDto(
                 nonExistentMaintenanceId,
                 "Volunteer Bob",
                 "bob@example.com",
                 "Offering help",
-                PledgeType.LABOR,
+                PledgeCategory.LABOR,
                 PledgeStatus.OFFERED
         );
 
@@ -115,7 +115,7 @@ class PledgeFlowIntegrationTest {
     @Test
     @DisplayName("Unhappy Path: Should return 400 for invalid data when creating a pledge")
     void createPledge_withInvalidData_shouldReturn400() throws Exception {
-        NewPledgeRequestDto createPledgeDto = new NewPledgeRequestDto(
+        PledgeDto createPledgeDto = new PledgeDto(
                 parentMaintenanceId,
                 "",
                 "",
@@ -134,7 +134,7 @@ class PledgeFlowIntegrationTest {
      * Helper method to create a Maintenance record via the API for test setup.
      */
     private UUID createMaintenanceAndGetId() throws Exception {
-        NewMaintenanceRequestDto requestDto = new NewMaintenanceRequestDto(
+        MaintenanceDto requestDto = new MaintenanceDto(
                 "Parent Maintenance for Pledge Test",
                 "Test Description",
                 MaintenanceCategory.OTHERS,

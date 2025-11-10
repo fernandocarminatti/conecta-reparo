@@ -1,11 +1,11 @@
 package com.unnamed.conectareparo.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.unnamed.conectareparo.dto.NewPledgeRequestDto;
+import com.unnamed.conectareparo.dto.PledgeDto;
 import com.unnamed.conectareparo.dto.PledgeResponseDto;
 import com.unnamed.conectareparo.dto.PledgeUpdateDto;
+import com.unnamed.conectareparo.entity.PledgeCategory;
 import com.unnamed.conectareparo.entity.PledgeStatus;
-import com.unnamed.conectareparo.entity.PledgeType;
 import com.unnamed.conectareparo.exception.ResourceNotFoundException;
 import com.unnamed.conectareparo.service.PledgeService;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,7 +64,7 @@ class PledgeControllerTest {
                 "John Doe",
                 "555-1234",
                 "I can help",
-                PledgeType.LABOR,
+                PledgeCategory.LABOR,
                 PledgeStatus.PENDING,
                 now,
                 now
@@ -77,14 +77,14 @@ class PledgeControllerTest {
         @Test
         @DisplayName("Should return 201 Created when request is valid")
         void shouldReturn201_whenRequestIsValid() throws Exception {
-            NewPledgeRequestDto requestDto = new NewPledgeRequestDto(
+            PledgeDto requestDto = new PledgeDto(
                     validMaintenanceId,
                     "John Doe",
                     "555-1234",
                     "I can help",
-                    PledgeType.LABOR,
+                    PledgeCategory.LABOR,
                     PledgeStatus.OFFERED);
-            when(pledgeService.createPledge(any(NewPledgeRequestDto.class))).thenReturn(pledgeResponseDto);
+            when(pledgeService.createPledge(any(PledgeDto.class))).thenReturn(pledgeResponseDto);
 
             mockMvc.perform(post("/api/v1/pledges")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -97,12 +97,12 @@ class PledgeControllerTest {
         @Test
         @DisplayName("Should return 400 Bad Request when maintenanceId is null")
         void shouldReturn400_whenMaintenanceIdIsNull() throws Exception {
-            NewPledgeRequestDto requestDto = new NewPledgeRequestDto(
+            PledgeDto requestDto = new PledgeDto(
                     null,
                     "John Doe",
                     "555-1234",
                     "I can help",
-                    PledgeType.MATERIAL,
+                    PledgeCategory.MATERIAL,
                     PledgeStatus.OFFERED);
 
             mockMvc.perform(post("/api/v1/pledges")
@@ -149,7 +149,7 @@ class PledgeControllerTest {
                     "John Doe",
                     "555-1234",
                     "I can help",
-                    PledgeType.MATERIAL,
+                    PledgeCategory.MATERIAL,
                     PledgeStatus.COMPLETED,
                     now,
                     now);

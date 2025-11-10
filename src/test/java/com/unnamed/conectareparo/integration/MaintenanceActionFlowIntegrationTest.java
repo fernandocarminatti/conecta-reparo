@@ -2,7 +2,7 @@ package com.unnamed.conectareparo.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unnamed.conectareparo.dto.*;
-import com.unnamed.conectareparo.entity.ActionOutcomeStatus;
+import com.unnamed.conectareparo.entity.ActionStatus;
 import com.unnamed.conectareparo.entity.MaintenanceCategory;
 import com.unnamed.conectareparo.entity.MaintenanceStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,17 +54,17 @@ class MaintenanceActionFlowIntegrationTest {
     @Test
     @DisplayName("Happy Path: Should create, get, and update a maintenance action successfully")
     void shouldExecuteActionLifecycleSuccessfully() throws Exception {
-        NewActionMaterialDto materialDto = new NewActionMaterialDto(
+        MaterialDto materialDto = new MaterialDto(
                 "Wrench",
                 BigDecimal.ONE,
                 "unit");
-        NewMaintenanceActionDto createActionDto = new NewMaintenanceActionDto(
+        MaintenanceActionDto createActionDto = new MaintenanceActionDto(
                 "Mechanic Bob",
                 ZonedDateTime.now(),
                 ZonedDateTime.now().plusHours(1),
                 "Tightened all bolts.",
                 List.of(materialDto),
-                ActionOutcomeStatus.PARTIAL_SUCCESS
+                ActionStatus.PARTIAL_SUCCESS
         );
 
         MvcResult createResult = mockMvc.perform(post("/api/v1/maintenances/{maintId}/actions", maintenancePublicId)
@@ -84,17 +84,17 @@ class MaintenanceActionFlowIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(createdActionId.toString()));
 
-        NewActionMaterialDto updatedMaterialDto = new NewActionMaterialDto(
+        MaterialDto updatedMaterialDto = new MaterialDto(
                 "Hammer",
                 BigDecimal.TEN,
                 "unit");
-        UpdateMaintenanceActionDto updateDto = new UpdateMaintenanceActionDto(
+        MaintenanceActionUpdateDto updateDto = new MaintenanceActionUpdateDto(
                 "Mechanic Bob",
                 ZonedDateTime.now(),
                 ZonedDateTime.now().plusHours(2),
                 "Tightened bolts and hammered panel.",
                 List.of(updatedMaterialDto),
-                ActionOutcomeStatus.SUCCESS
+                ActionStatus.SUCCESS
         );
 
         mockMvc.perform(put("/api/v1/maintenances/{maintId}/actions/{actionId}", maintenancePublicId, createdActionId)
@@ -104,20 +104,20 @@ class MaintenanceActionFlowIntegrationTest {
                 .andExpect(jsonPath("$.actionDescription").value("Tightened bolts and hammered panel."))
                 .andExpect(jsonPath("$.materialsUsed", hasSize(1)))
                 .andExpect(jsonPath("$.materialsUsed[0].itemName").value("Hammer"))
-                .andExpect(jsonPath("$.outcomeStatus").value(ActionOutcomeStatus.SUCCESS.toString()));
+                .andExpect(jsonPath("$.outcomeStatus").value(ActionStatus.SUCCESS.toString()));
     }
 
     @Test
     @DisplayName("Unhappy Path: Should return 409 when creating an action for an COMPLETED maintenance")
     void createAction_forOpenMaintenance_shouldReturn409() throws Exception {
         completeMaintenance(maintenancePublicId);
-        NewMaintenanceActionDto createActionDto = new NewMaintenanceActionDto(
+        MaintenanceActionDto createActionDto = new MaintenanceActionDto(
                 "Mechanic Bob",
                 ZonedDateTime.now(),
                 ZonedDateTime.now().plusHours(1),
                 "Work in progress",
                 Collections.emptyList(),
-                ActionOutcomeStatus.PARTIAL_SUCCESS
+                ActionStatus.PARTIAL_SUCCESS
         );
 
         mockMvc.perform(post("/api/v1/maintenances/{maintId}/actions", maintenancePublicId)
@@ -127,7 +127,7 @@ class MaintenanceActionFlowIntegrationTest {
     }
 
     private UUID createMaintenanceAndGetId(String title) throws Exception {
-        NewMaintenanceRequestDto requestDto = new NewMaintenanceRequestDto(
+        MaintenanceDto requestDto = new MaintenanceDto(
                 title,
                 "Test Description",
                 MaintenanceCategory.OTHERS,

@@ -1,8 +1,8 @@
 package com.unnamed.conectareparo.service;
 
+import com.unnamed.conectareparo.dto.MaintenanceDto;
 import com.unnamed.conectareparo.dto.MaintenanceResponseDto;
 import com.unnamed.conectareparo.dto.MaintenanceUpdateDto;
-import com.unnamed.conectareparo.dto.NewMaintenanceRequestDto;
 import com.unnamed.conectareparo.entity.Maintenance;
 import com.unnamed.conectareparo.entity.MaintenanceCategory;
 import com.unnamed.conectareparo.entity.MaintenanceStatus;
@@ -150,7 +150,7 @@ class MaintenanceServiceTest {
     @Test
     @DisplayName("Should create a maintenance record successfully")
     void createMaintenance_shouldSaveAndReturnDto() {
-        NewMaintenanceRequestDto requestDto = new NewMaintenanceRequestDto("Test Title", "Test Description", MaintenanceCategory.ELECTRICAL, scheduledDate);
+        MaintenanceDto requestDto = new MaintenanceDto("Test Title", "Test Description", MaintenanceCategory.ELECTRICAL, scheduledDate);
         when(maintenanceRepository.save(any(Maintenance.class))).thenReturn(persistedMaintenance);
         when(maintenanceMapper.toResponseDto(any(Maintenance.class))).thenReturn(persistedMaintenanceResponseDto);
 
@@ -250,7 +250,7 @@ class MaintenanceServiceTest {
     @Test
     @DisplayName("Should propagate exception when repository fails to save")
     void createMaintenance_whenRepositoryFails_shouldThrowException() {
-        NewMaintenanceRequestDto requestDto = new NewMaintenanceRequestDto("Test Title", "Test Desc", null, null);
+        MaintenanceDto requestDto = new MaintenanceDto("Test Title", "Test Desc", null, null);
 
         when(maintenanceRepository.save(any(Maintenance.class)))
                 .thenThrow(new DataIntegrityViolationException("DB Error"));

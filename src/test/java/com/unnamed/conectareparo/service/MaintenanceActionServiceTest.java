@@ -67,7 +67,7 @@ class MaintenanceActionServiceTest {
                 startDate,
                 completionDate,
                 "Fixed it",
-                ActionOutcomeStatus.SUCCESS);
+                ActionStatus.SUCCESS);
         ReflectionTestUtils.setField(maintenanceAction, "publicId", actionPublicId);
     }
 
@@ -75,13 +75,13 @@ class MaintenanceActionServiceTest {
     @DisplayName("Should create action when maintenance is OPEN")
     void createMaintenanceAction_whenMaintenanceIsOpen_shouldSucceed() {
         ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.OPEN);
-        NewMaintenanceActionDto requestDto = new NewMaintenanceActionDto(
+        MaintenanceActionDto requestDto = new MaintenanceActionDto(
                 "John Doe",
                 startDate,
                 completionDate,
                 "Fixed it",
                 Collections.emptyList(),
-                ActionOutcomeStatus.SUCCESS
+                ActionStatus.SUCCESS
         );
         MaintenanceActionResponseDto responseDto = new MaintenanceActionResponseDto(
                 actionPublicId,
@@ -90,7 +90,7 @@ class MaintenanceActionServiceTest {
                 completionDate,
                 "Fixed it",
                 new ArrayList<>(),
-                ActionOutcomeStatus.SUCCESS,
+                ActionStatus.SUCCESS,
                 ZonedDateTime.now()
         );
 
@@ -109,13 +109,13 @@ class MaintenanceActionServiceTest {
     @DisplayName("Should throw MaintenanceAlreadyCompletedException when creating action for a completed Maintenance")
     void createMaintenanceAction_whenMaintenanceIsCompleted_shouldThrowException() {
         ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.COMPLETED);
-        NewMaintenanceActionDto requestDto = new NewMaintenanceActionDto(
+        MaintenanceActionDto requestDto = new MaintenanceActionDto(
                 "John Doe",
                 startDate,
                 completionDate,
                 "Fixed it",
                 Collections.emptyList(),
-                ActionOutcomeStatus.SUCCESS
+                ActionStatus.SUCCESS
         );
 
         when(maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId)).thenReturn(maintenance);
@@ -136,7 +136,7 @@ class MaintenanceActionServiceTest {
                 completionDate,
                 "Fixed it",
                 Collections.emptyList(),
-                ActionOutcomeStatus.SUCCESS,
+                ActionStatus.SUCCESS,
                 ZonedDateTime.now()
         );
         when(maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId))
@@ -168,16 +168,16 @@ class MaintenanceActionServiceTest {
     @DisplayName("Should update action when maintenance is OPEN")
     void updateMaintenanceAction_whenMaintenanceIsOpen_shouldSucceed() {
         ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.OPEN);
-        var updateDto = new UpdateMaintenanceActionDto(
+        var updateDto = new MaintenanceActionUpdateDto(
                 "Jane Doe",
                 startDate.plusHours(1),
                 completionDate.plusHours(1),
                 "Re-fixed it",
-                List.of(new NewActionMaterialDto(
+                List.of(new MaterialDto(
                         "Sample Material 03",
                         BigDecimal.ONE, "ltr"
                 )),
-                ActionOutcomeStatus.PARTIAL_SUCCESS
+                ActionStatus.PARTIAL_SUCCESS
         );
         var responseDto = new MaintenanceActionResponseDto(
                 actionPublicId,
@@ -185,12 +185,12 @@ class MaintenanceActionServiceTest {
                 startDate.plusHours(1),
                 completionDate.plusHours(1),
                 "Re-fixed it",
-                List.of(new ActionMaterialResponseDto(
+                List.of(new MaterialResponseDto(
                         UUID.randomUUID(),
                         "Sample Material 03",
                         BigDecimal.ONE, "ltr"
                 )),
-                ActionOutcomeStatus.PARTIAL_SUCCESS,
+                ActionStatus.PARTIAL_SUCCESS,
                 ZonedDateTime.now()
         );
 
@@ -210,13 +210,13 @@ class MaintenanceActionServiceTest {
     @DisplayName("Should throw MaintenanceAlreadyCompletedException when updating action for a completed maintenance")
     void updateMaintenanceAction_whenMaintenanceIsCompleted_shouldThrowException() {
         ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.COMPLETED);
-        UpdateMaintenanceActionDto requestDto = new UpdateMaintenanceActionDto(
+        MaintenanceActionUpdateDto requestDto = new MaintenanceActionUpdateDto(
                 "John Doe",
                 startDate,
                 completionDate,
                 "Fixed it",
                 Collections.emptyList(),
-                ActionOutcomeStatus.SUCCESS
+                ActionStatus.SUCCESS
         );
 
         when(maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId)).thenReturn(maintenance);
@@ -230,13 +230,13 @@ class MaintenanceActionServiceTest {
     @Test
     @DisplayName("Should throw ResourceNotFoundException when updating an action that is not found")
     void updateMaintenanceAction_whenActionNotFound_shouldThrowException() {
-        UpdateMaintenanceActionDto requestDto = new UpdateMaintenanceActionDto(
+        MaintenanceActionUpdateDto requestDto = new MaintenanceActionUpdateDto(
                 "John Doe",
                 startDate,
                 completionDate,
                 "Fixed it",
                 Collections.emptyList(),
-                ActionOutcomeStatus.SUCCESS
+                ActionStatus.SUCCESS
         );
 
         when(maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId)).thenReturn(maintenance);

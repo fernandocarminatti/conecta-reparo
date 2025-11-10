@@ -1,6 +1,6 @@
 package com.unnamed.conectareparo.service;
 
-import com.unnamed.conectareparo.dto.NewPledgeRequestDto;
+import com.unnamed.conectareparo.dto.PledgeDto;
 import com.unnamed.conectareparo.dto.PledgeResponseDto;
 import com.unnamed.conectareparo.dto.PledgeUpdateDto;
 import com.unnamed.conectareparo.entity.*;
@@ -62,7 +62,7 @@ class PledgeServiceTest {
                 "John Doe",
                 "555-1234",
                 "I can help with painting",
-                PledgeType.LABOR);
+                PledgeCategory.LABOR);
         ReflectionTestUtils.setField(pledge, "publicId", pledgePublicId);
         ReflectionTestUtils.setField(pledge, "status", PledgeStatus.PENDING);
 
@@ -80,12 +80,12 @@ class PledgeServiceTest {
     @Test
     @DisplayName("Should create a pledge successfully when maintenance exists")
     void createPledge_whenMaintenanceExists_shouldCreateAndReturnDto() {
-        NewPledgeRequestDto requestDto = new NewPledgeRequestDto(
+        PledgeDto requestDto = new PledgeDto(
                 maintenancePublicId,
                 "John Doe",
                 "555-1234",
                 "I can help",
-                PledgeType.LABOR,
+                PledgeCategory.LABOR,
                 PledgeStatus.OFFERED);
 
         when(maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId)).thenReturn(maintenance);
@@ -106,12 +106,12 @@ class PledgeServiceTest {
     @Test
     @DisplayName("Should throw ResourceNotFoundException when creating a pledge for a non-existent maintenance")
     void createPledge_whenMaintenanceNotFound_shouldThrowException() {
-        NewPledgeRequestDto requestDto = new NewPledgeRequestDto(
+        PledgeDto requestDto = new PledgeDto(
                 maintenancePublicId,
                 "John Doe",
                 "555-1234",
                 "I can help",
-                PledgeType.LABOR,
+                PledgeCategory.LABOR,
                 PledgeStatus.OFFERED);
 
         when(maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId))
@@ -148,7 +148,7 @@ class PledgeServiceTest {
                 "Jane Doe",
                 "555-5678",
                 "Updated description",
-                PledgeType.LABOR, PledgeStatus.PENDING);
+                PledgeCategory.LABOR, PledgeStatus.PENDING);
 
         Pledge spiedPledge = spy(pledge);
 
@@ -157,7 +157,7 @@ class PledgeServiceTest {
                 "Jane Doe",
                 "555-5678",
                 "Updated description",
-                PledgeType.LABOR,
+                PledgeCategory.LABOR,
                 PledgeStatus.PENDING,
                 fixedCreationTime,
                 fixedCreationTime);
@@ -204,11 +204,11 @@ class PledgeServiceTest {
     @Test
     @DisplayName("Should throw IllegalStateException when creating pledge for a completed maintenance")
     void createPledge_whenMaintenanceIsCompleted_shouldThrowException() {
-        NewPledgeRequestDto requestDto = new NewPledgeRequestDto(
+        PledgeDto requestDto = new PledgeDto(
                 maintenancePublicId,
                 "John Doe",
                 "555-1234",
-                "Too late", PledgeType.LABOR,
+                "Too late", PledgeCategory.LABOR,
                 PledgeStatus.OFFERED);
         ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.COMPLETED);
 

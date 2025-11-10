@@ -1,11 +1,11 @@
 package com.unnamed.conectareparo.mapper;
 
-import com.unnamed.conectareparo.dto.ActionMaterialResponseDto;
+import com.unnamed.conectareparo.dto.MaintenanceActionDto;
 import com.unnamed.conectareparo.dto.MaintenanceActionResponseDto;
-import com.unnamed.conectareparo.dto.NewActionMaterialDto;
-import com.unnamed.conectareparo.dto.NewMaintenanceActionDto;
+import com.unnamed.conectareparo.dto.MaterialDto;
+import com.unnamed.conectareparo.dto.MaterialResponseDto;
 import com.unnamed.conectareparo.entity.ActionMaterial;
-import com.unnamed.conectareparo.entity.ActionOutcomeStatus;
+import com.unnamed.conectareparo.entity.ActionStatus;
 import com.unnamed.conectareparo.entity.Maintenance;
 import com.unnamed.conectareparo.entity.MaintenanceAction;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +25,7 @@ class MaintenanceActionMapperTest {
 
     private Maintenance maintenance;
     private MaintenanceAction maintenanceAction;
-    private NewMaintenanceActionDto newMaintenanceActionDto;
+    private MaintenanceActionDto maintenanceActionDto;
     private ZonedDateTime now;
     private UUID maintenanceActionPublicId;
 
@@ -43,7 +43,7 @@ class MaintenanceActionMapperTest {
                 now.minusHours(2),
                 now,
                 "Replaced the main circuit breaker.",
-                ActionOutcomeStatus.SUCCESS
+                ActionStatus.SUCCESS
         );
         ReflectionTestUtils.setField(maintenanceAction, "publicId", maintenanceActionPublicId);
         ReflectionTestUtils.setField(maintenanceAction, "createdAt", now);
@@ -53,13 +53,13 @@ class MaintenanceActionMapperTest {
         maintenanceAction.addMaterial(material1);
         maintenanceAction.addMaterial(material2);
 
-        newMaintenanceActionDto = new NewMaintenanceActionDto(
+        maintenanceActionDto = new MaintenanceActionDto(
                 "Jane Doe",
                 now.plusDays(1),
                 now.plusDays(1).plusHours(4),
                 "Scheduled filter cleaning.",
-                List.of(new NewActionMaterialDto("Air Filter", BigDecimal.ONE, "unit")),
-                ActionOutcomeStatus.SUCCESS
+                List.of(new MaterialDto("Air Filter", BigDecimal.ONE, "unit")),
+                ActionStatus.SUCCESS
         );
     }
 
@@ -74,7 +74,7 @@ class MaintenanceActionMapperTest {
                 () -> assertEquals("John Doe", dto.executedBy()),
                 () -> assertEquals(now, dto.completionDate()),
                 () -> assertEquals("Replaced the main circuit breaker.", dto.actionDescription()),
-                () -> assertEquals(ActionOutcomeStatus.SUCCESS, dto.outcomeStatus()),
+                () -> assertEquals(ActionStatus.SUCCESS, dto.outcomeStatus()),
                 () -> assertEquals(now, dto.createdAt()),
                 () -> assertNotNull(dto.materialsUsed()),
                 () -> assertEquals(2, dto.materialsUsed().size()),
@@ -91,16 +91,16 @@ class MaintenanceActionMapperTest {
     }
 
     @Test
-    @DisplayName("Should correctly map NewMaintenanceActionDto to a new Entity")
+    @DisplayName("Should correctly map MaintenanceActionDto to a new Entity")
     void toEntity_shouldMapAllFieldsCorrectly() {
-        MaintenanceAction entity = mapper.toEntity(newMaintenanceActionDto, maintenance);
+        MaintenanceAction entity = mapper.toEntity(maintenanceActionDto, maintenance);
 
         assertAll(
                 () -> assertNotNull(entity),
                 () -> assertSame(maintenance, entity.getMaintenance()),
                 () -> assertEquals("Jane Doe", entity.getExecutedBy()),
                 () -> assertEquals(now.plusDays(1).plusHours(4), entity.getCompletionDate()),
-                () -> assertEquals(ActionOutcomeStatus.SUCCESS, entity.getOutcomeStatus()),
+                () -> assertEquals(ActionStatus.SUCCESS, entity.getOutcomeStatus()),
                 () -> assertNotNull(entity.getMaterialsUsed()),
                 () -> assertEquals(1, entity.getMaterialsUsed().size()),
                 () -> assertEquals("Air Filter", entity.getMaterialsUsed().get(0).getItemName()),
@@ -109,7 +109,7 @@ class MaintenanceActionMapperTest {
     }
 
     @Test
-    @DisplayName("Should return null when mapping a null NewMaintenanceActionDto")
+    @DisplayName("Should return null when mapping a null MaintenanceActionDto")
     void toEntity_whenDtoIsNull_shouldReturnNull() {
         MaintenanceAction entity = mapper.toEntity(null, maintenance);
 
@@ -122,7 +122,7 @@ class MaintenanceActionMapperTest {
         ActionMaterial material = new ActionMaterial("Test Item", BigDecimal.valueOf(12.5), "kg");
         ReflectionTestUtils.setField(material, "publicId", UUID.randomUUID());
 
-        ActionMaterialResponseDto dto = mapper.toMaterialResponseDto(material);
+        MaterialResponseDto dto = mapper.toMaterialResponseDto(material);
 
         assertAll(
                 () -> assertEquals(material.getPublicId(), dto.id()),
@@ -133,9 +133,9 @@ class MaintenanceActionMapperTest {
     }
 
     @Test
-    @DisplayName("Should correctly map NewActionMaterialDto to a new Entity")
+    @DisplayName("Should correctly map MaterialDto to a new Entity")
     void toMaterialEntity_shouldMapAllFields() {
-        NewActionMaterialDto dto = new NewActionMaterialDto("New Item", BigDecimal.TEN, "box");
+        MaterialDto dto = new MaterialDto("New Item", BigDecimal.TEN, "box");
 
         ActionMaterial entity = mapper.toMaterialEntity(dto);
 

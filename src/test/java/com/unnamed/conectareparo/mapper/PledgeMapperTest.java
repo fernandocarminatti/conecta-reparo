@@ -1,11 +1,11 @@
 package com.unnamed.conectareparo.mapper;
 
-import com.unnamed.conectareparo.dto.NewPledgeRequestDto;
+import com.unnamed.conectareparo.dto.PledgeDto;
 import com.unnamed.conectareparo.dto.PledgeResponseDto;
 import com.unnamed.conectareparo.entity.Maintenance;
 import com.unnamed.conectareparo.entity.Pledge;
+import com.unnamed.conectareparo.entity.PledgeCategory;
 import com.unnamed.conectareparo.entity.PledgeStatus;
-import com.unnamed.conectareparo.entity.PledgeType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ class PledgeMapperTest {
 
     private Maintenance parentMaintenance;
     private Pledge pledgeEntity;
-    private NewPledgeRequestDto newPledgeRequestDto;
+    private PledgeDto newPledgeRequestDto;
     private ZonedDateTime now;
     private UUID pledgePublicId;
 
@@ -31,12 +31,12 @@ class PledgeMapperTest {
         now = ZonedDateTime.parse("2025-10-08T10:00:00Z");
         pledgePublicId = UUID.randomUUID();
         parentMaintenance = new Maintenance();
-        newPledgeRequestDto = new NewPledgeRequestDto(
+        newPledgeRequestDto = new PledgeDto(
                 UUID.randomUUID(),
                 "Jane Doe",
                 "jane.doe@example.com",
                 "I can donate paint.",
-                PledgeType.MATERIAL,
+                PledgeCategory.MATERIAL,
                 PledgeStatus.OFFERED
         );
 
@@ -45,7 +45,7 @@ class PledgeMapperTest {
                 "John Doe",
                 "john.doe@example.com",
                 "I can help on Saturday.",
-                PledgeType.LABOR
+                PledgeCategory.LABOR
         );
         ReflectionTestUtils.setField(pledgeEntity, "publicId", pledgePublicId);
         ReflectionTestUtils.setField(pledgeEntity, "status", PledgeStatus.PENDING);
@@ -54,7 +54,7 @@ class PledgeMapperTest {
     }
 
     @Test
-    @DisplayName("Should correctly map NewPledgeRequestDto to a new Pledge Entity")
+    @DisplayName("Should correctly map PledgeDto to a new Pledge Entity")
     void toEntity_shouldMapAllFieldsFromRequestDto() {
         Pledge resultEntity = mapper.toEntity(parentMaintenance, newPledgeRequestDto);
 
@@ -64,7 +64,7 @@ class PledgeMapperTest {
                 () -> assertEquals("Jane Doe", resultEntity.getVolunteerName()),
                 () -> assertEquals("jane.doe@example.com", resultEntity.getVolunteerContact()),
                 () -> assertEquals("I can donate paint.", resultEntity.getDescription()),
-                () -> assertEquals(PledgeType.MATERIAL, resultEntity.getType()),
+                () -> assertEquals(PledgeCategory.MATERIAL, resultEntity.getType()),
                 () -> assertNotNull(resultEntity.getPublicId()),
                 () -> assertEquals(PledgeStatus.OFFERED, resultEntity.getStatus())
         );
@@ -81,7 +81,7 @@ class PledgeMapperTest {
                 () -> assertEquals("John Doe", resultDto.volunteerName()),
                 () -> assertEquals("john.doe@example.com", resultDto.volunteerContact()),
                 () -> assertEquals("I can help on Saturday.", resultDto.description()),
-                () -> assertEquals(PledgeType.LABOR, resultDto.type()),
+                () -> assertEquals(PledgeCategory.LABOR, resultDto.type()),
                 () -> assertEquals(PledgeStatus.PENDING, resultDto.status()),
                 () -> assertEquals(now, resultDto.createdAt()),
                 () -> assertEquals(now, resultDto.updatedAt())
