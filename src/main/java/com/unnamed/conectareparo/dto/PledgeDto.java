@@ -1,7 +1,7 @@
 package com.unnamed.conectareparo.dto;
 
+import com.unnamed.conectareparo.entity.PledgeCategory;
 import com.unnamed.conectareparo.entity.PledgeStatus;
-import com.unnamed.conectareparo.entity.PledgeType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +13,7 @@ import java.util.UUID;
  * Data Transfer Object for creating {@link com.unnamed.conectareparo.entity.Pledge} via http request.
  */
 @Schema(description = "Data Transfer Object for creating a new pledge")
-public record NewPledgeRequestDto(
+public record PledgeDto(
         @Schema(description = "ID of the maintenance request associated with this pledge", example = "123e4567-e89b-12d3-a456-426614174000")
         @NotNull
         UUID maintenanceId,
@@ -30,7 +30,7 @@ public record NewPledgeRequestDto(
         @NotBlank(message = "Must provide a description.")
         String description,
         @Schema(description = "Type of pledge being made", example = "LABOR OR MATERIAL")
-        PledgeType type,
+        PledgeCategory type,
         @Schema(description = "Current status of the pledge", example = "OFFERED (Default), PENDING, REJECTED, COMPLETED, CANCELED")
         PledgeStatus status
 ) {

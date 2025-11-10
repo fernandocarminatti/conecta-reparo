@@ -1,6 +1,6 @@
 package com.unnamed.conectareparo.dto;
 
-import com.unnamed.conectareparo.entity.ActionOutcomeStatus;
+import com.unnamed.conectareparo.entity.ActionStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.ZonedDateTime;
@@ -30,9 +30,9 @@ public record MaintenanceActionResponseDto(
                         " {\"materialName\": \"Selante\"," +
                         " \"quantityUsed\": 2}" +
                         "]")
-        List<ActionMaterialResponseDto> materialsUsed,
+        List<MaterialResponseDto> materialsUsed,
         @Schema(description = "Outcome status of the maintenance action", example = "SUCCESS")
-        ActionOutcomeStatus outcomeStatus,
+        ActionStatus outcomeStatus,
         @Schema(description = "Date and time when the maintenance action was created in ISO 8601 format.", example = "2025-10-10T10:10:10Z")
         ZonedDateTime createdAt
 ) {

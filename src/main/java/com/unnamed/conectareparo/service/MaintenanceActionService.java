@@ -1,8 +1,8 @@
 package com.unnamed.conectareparo.service;
 
+import com.unnamed.conectareparo.dto.MaintenanceActionDto;
 import com.unnamed.conectareparo.dto.MaintenanceActionResponseDto;
-import com.unnamed.conectareparo.dto.NewMaintenanceActionDto;
-import com.unnamed.conectareparo.dto.UpdateMaintenanceActionDto;
+import com.unnamed.conectareparo.dto.MaintenanceActionUpdateDto;
 import com.unnamed.conectareparo.entity.ActionMaterial;
 import com.unnamed.conectareparo.entity.Maintenance;
 import com.unnamed.conectareparo.entity.MaintenanceAction;
@@ -40,18 +40,18 @@ public class MaintenanceActionService {
      * Business rule: Actions can only be added to maintenance tasks that are not in a terminal state (e.g., COMPLETED).
      *
      * @param maintenancePublicId The public ID of the parent Maintenance task.
-     * @param newMaintenanceActionDto The DTO containing the data for the new action.
+     * @param maintenanceActionDto The DTO containing the data for the new action.
      * @return A DTO representing the newly created maintenance action.
      * @throws ResourceNotFoundException if the parent Maintenance is not found.
      * @throws IllegalStateException if the parent Maintenance is already completed.
      */
     @Transactional
-    public MaintenanceActionResponseDto createMaintenanceAction(UUID maintenancePublicId, NewMaintenanceActionDto newMaintenanceActionDto) {
+    public MaintenanceActionResponseDto createMaintenanceAction(UUID maintenancePublicId, MaintenanceActionDto maintenanceActionDto) {
         Maintenance existingMaintenance = maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId);
         if (existingMaintenance.isCompleted()){
             throw new MaintenanceAlreadyCompletedException("Cannot add action to a completed maintenance.");
         }
-        MaintenanceAction newMaintenanceAction = maintenanceActionMapper.toEntity(newMaintenanceActionDto, existingMaintenance);
+        MaintenanceAction newMaintenanceAction = maintenanceActionMapper.toEntity(maintenanceActionDto, existingMaintenance);
         MaintenanceAction savedMaintenance = maintenanceActionRepository.save(newMaintenanceAction);
         return maintenanceActionMapper.toResponseDto(savedMaintenance);
     }
@@ -100,7 +100,7 @@ public class MaintenanceActionService {
      * @throws IllegalStateException if the parent Maintenance is already completed.
      */
     @Transactional
-    public MaintenanceActionResponseDto updateMaintenanceAction(UUID maintenancePublicId, UUID actionPublicId, UpdateMaintenanceActionDto updatedActionDto) {
+    public MaintenanceActionResponseDto updateMaintenanceAction(UUID maintenancePublicId, UUID actionPublicId, MaintenanceActionUpdateDto updatedActionDto) {
         Maintenance existingMaintenance = maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId);
         if (existingMaintenance.isCompleted()){
             throw new MaintenanceAlreadyCompletedException("Cannot update action of a completed maintenance.");

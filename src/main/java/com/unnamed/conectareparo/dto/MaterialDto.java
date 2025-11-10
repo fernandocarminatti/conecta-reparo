@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  * Data Transfer Object for creation {@link com.unnamed.conectareparo.entity.ActionMaterial} via http request.
  */
 @Schema(description = "Data Transfer Object for creating a new action material")
-public record NewActionMaterialDto(
+public record MaterialDto(
         @Schema(description = "Name of the material item", example = "Cimento")
         @NotBlank(message = "Item name is mandatory.")
         String itemName,

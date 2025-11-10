@@ -6,11 +6,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.ZonedDateTime;
+
 /**
  * Data Transfer Object for creating {@link com.unnamed.conectareparo.entity.Maintenance} via http request.
  */
 @Schema(description = "Data Transfer Object for creating a new maintenance request")
-public record NewMaintenanceRequestDto(
+public record MaintenanceDto(
         @Schema(description = "Title of the maintenance request", example = "Vazamento na pia da cozinha")
         @NotBlank
         String title,
@@ -23,5 +24,5 @@ public record NewMaintenanceRequestDto(
         @Schema(description = "Scheduled date and time for the maintenance in ISO 8601 format.", example = "2025-10-10T10:10:10Z")
         @NotNull
         ZonedDateTime scheduledDate
-        ) {
+) {
 }

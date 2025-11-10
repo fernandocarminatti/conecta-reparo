@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  *   <li><b>LABOR</b> – Pledge for labor or services.</li>
  * </ul>
  */
-public enum PledgeType {
+public enum PledgeCategory {
     @Schema(description = "Pledge for material resources or items.")
     MATERIAL,
     @Schema(description = "Pledge for labor or services.")

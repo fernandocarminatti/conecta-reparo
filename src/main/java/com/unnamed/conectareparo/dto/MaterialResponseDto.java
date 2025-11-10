@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 import java.util.UUID;
+
 /**
  * <p>Data Transfer Object for {@link com.unnamed.conectareparo.entity.ActionMaterial} http response.</p>
  *
@@ -11,7 +12,7 @@ import java.util.UUID;
  * name, quantity, and unit of measure.</p>
  */
 @Schema(description = "Material information used in a maintenance action")
-public record ActionMaterialResponseDto(
+public record MaterialResponseDto(
         @Schema(description = "Unique identifier of the material", example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
         UUID id,
         @Schema(description = "Name of the material item", example = "Cimento")

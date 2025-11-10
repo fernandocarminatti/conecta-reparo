@@ -1,8 +1,8 @@
 package com.unnamed.conectareparo.controller;
 
+import com.unnamed.conectareparo.dto.MaintenanceActionDto;
 import com.unnamed.conectareparo.dto.MaintenanceActionResponseDto;
-import com.unnamed.conectareparo.dto.NewMaintenanceActionDto;
-import com.unnamed.conectareparo.dto.UpdateMaintenanceActionDto;
+import com.unnamed.conectareparo.dto.MaintenanceActionUpdateDto;
 import com.unnamed.conectareparo.exception.ErrorResponse;
 import com.unnamed.conectareparo.service.MaintenanceActionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,8 +57,8 @@ public class MaintenanceActionController {
     @PostMapping
     public ResponseEntity<MaintenanceActionResponseDto> createMaintenanceAction(
             @PathVariable UUID maintenancePublicId,
-            @Valid @RequestBody NewMaintenanceActionDto newMaintenanceActionDto) {
-        MaintenanceActionResponseDto responseDto = maintenanceActionService.createMaintenanceAction(maintenancePublicId, newMaintenanceActionDto);
+            @Valid @RequestBody MaintenanceActionDto maintenanceActionDto) {
+        MaintenanceActionResponseDto responseDto = maintenanceActionService.createMaintenanceAction(maintenancePublicId, maintenanceActionDto);
         URI resourceLocation = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
                 .path("/api/v1/maintenances/{maintenancePublicId}/actions/{actionPublicId}")
@@ -177,7 +177,7 @@ public class MaintenanceActionController {
     public ResponseEntity<MaintenanceActionResponseDto> updateMaintenanceAction(
             @PathVariable UUID maintenancePublicId,
             @PathVariable UUID actionPublicId,
-            @Valid @RequestBody UpdateMaintenanceActionDto updatedActionDto) {
+            @Valid @RequestBody MaintenanceActionUpdateDto updatedActionDto) {
         MaintenanceActionResponseDto updatedDto = maintenanceActionService.updateMaintenanceAction(maintenancePublicId, actionPublicId, updatedActionDto);
         return ResponseEntity.status(HttpStatus.OK).body(updatedDto);
     }

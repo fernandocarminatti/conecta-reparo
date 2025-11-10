@@ -1,7 +1,7 @@
 package com.unnamed.conectareparo.dto;
 
+import com.unnamed.conectareparo.entity.PledgeCategory;
 import com.unnamed.conectareparo.entity.PledgeStatus;
-import com.unnamed.conectareparo.entity.PledgeType;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
@@ -16,7 +16,7 @@ public record PledgeUpdateDto(
         @Schema(description = "A brief description of the pledge.", example = "Eu consigo ajudar com o conserto de computadores.")
         String description,
         @Schema(description = "The type of pledge being made.", example = "MATERIAL")
-        PledgeType type,
+        PledgeCategory type,
         @Schema(description = "An update status for the pledge.", example = "OFFERED")
         PledgeStatus status
 ) {

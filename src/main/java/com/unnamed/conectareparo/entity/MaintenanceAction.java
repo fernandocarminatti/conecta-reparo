@@ -46,7 +46,7 @@ public class MaintenanceAction {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "outcome_status")
-    private ActionOutcomeStatus outcomeStatus;
+    private ActionStatus outcomeStatus;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private ZonedDateTime createdAt;
@@ -57,7 +57,7 @@ public class MaintenanceAction {
     protected MaintenanceAction() {
     }
 
-    public MaintenanceAction(Maintenance maintenance, String executedBy, ZonedDateTime startDate, ZonedDateTime completionDate, String actionDescription, ActionOutcomeStatus outcomeStatus) {
+    public MaintenanceAction(Maintenance maintenance, String executedBy, ZonedDateTime startDate, ZonedDateTime completionDate, String actionDescription, ActionStatus outcomeStatus) {
         this.publicId = UUID.randomUUID();
         this.maintenance = maintenance;
         this.executedBy = executedBy;
@@ -97,7 +97,7 @@ public class MaintenanceAction {
         return actionDescription;
     }
 
-    public ActionOutcomeStatus getOutcomeStatus() {
+    public ActionStatus getOutcomeStatus() {
         return outcomeStatus;
     }
 
@@ -109,7 +109,7 @@ public class MaintenanceAction {
         return updatedAt;
     }
 
-    public void updateDetails(String executedBy, ZonedDateTime startDate, ZonedDateTime completionDate, String actionDescription, ActionOutcomeStatus outcomeStatus) {
+    public void updateDetails(String executedBy, ZonedDateTime startDate, ZonedDateTime completionDate, String actionDescription, ActionStatus outcomeStatus) {
         if(executedBy != null){
             this.executedBy = executedBy;
         }

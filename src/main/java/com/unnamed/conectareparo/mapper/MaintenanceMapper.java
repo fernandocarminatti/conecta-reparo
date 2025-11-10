@@ -1,14 +1,14 @@
 package com.unnamed.conectareparo.mapper;
 
+import com.unnamed.conectareparo.dto.MaintenanceDto;
 import com.unnamed.conectareparo.dto.MaintenanceResponseDto;
-import com.unnamed.conectareparo.dto.NewMaintenanceRequestDto;
 import com.unnamed.conectareparo.entity.Maintenance;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MaintenanceMapper {
 
-    public Maintenance toEntity(NewMaintenanceRequestDto maintenanceRequestDto){
+    public Maintenance toEntity(MaintenanceDto maintenanceRequestDto) {
         return new Maintenance(
                 maintenanceRequestDto.title(),
                 maintenanceRequestDto.description(),

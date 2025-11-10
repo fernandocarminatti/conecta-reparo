@@ -35,7 +35,7 @@ public class Pledge {
     private String volunteerContact;
     private String description;
     @Enumerated(EnumType.STRING)
-    private PledgeType type;
+    private PledgeCategory type;
     @Enumerated(EnumType.STRING)
     private PledgeStatus status;
     @Column(name = "created_at")
@@ -45,7 +45,7 @@ public class Pledge {
 
     Pledge() {}
 
-    public Pledge(Maintenance maintenance, String volunteerName, String volunteerContact, String description, PledgeType type) {
+    public Pledge(Maintenance maintenance, String volunteerName, String volunteerContact, String description, PledgeCategory type) {
         this.publicId = UUID.randomUUID();
         this.maintenance = maintenance;
         this.volunteerName = volunteerName;
@@ -81,7 +81,7 @@ public class Pledge {
         return description;
     }
 
-    public PledgeType getType() {
+    public PledgeCategory getType() {
         return type;
     }
 
@@ -97,7 +97,7 @@ public class Pledge {
         return updatedAt;
     }
 
-    public void updateDetails(String volunteerName, String volunteerContact, String description, PledgeType type) {
+    public void updateDetails(String volunteerName, String volunteerContact, String description, PledgeCategory type) {
         if (volunteerName != null && !volunteerName.isBlank()) {
             this.volunteerName = volunteerName;
 

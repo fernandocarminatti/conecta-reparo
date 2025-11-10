@@ -1,7 +1,7 @@
 package com.unnamed.conectareparo.dto;
 
+import com.unnamed.conectareparo.entity.PledgeCategory;
 import com.unnamed.conectareparo.entity.PledgeStatus;
-import com.unnamed.conectareparo.entity.PledgeType;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.ZonedDateTime;
@@ -21,7 +21,7 @@ public record PledgeResponseDto(
         @Schema(description = "Detailed description of the pledge.", example = "Eu posso ajudar com o conserto das portas.")
         String description,
         @Schema(description = "Type of the pledge.", example = "LABOR OR MATERIAL")
-        PledgeType type,
+        PledgeCategory type,
         @Schema(description = "Current system status of the Pledge", example = "OFFERED (Default), PENDING, REJECTED, COMPLETED, CANCELED")
         PledgeStatus status,
         @Schema(description = "Timestamp when the pledge was created in ISO 8601 format.", example = "2025-10-10T10:10:10Z")

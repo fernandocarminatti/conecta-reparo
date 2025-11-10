@@ -1,6 +1,6 @@
 package com.unnamed.conectareparo.controller;
 
-import com.unnamed.conectareparo.dto.NewPledgeRequestDto;
+import com.unnamed.conectareparo.dto.PledgeDto;
 import com.unnamed.conectareparo.dto.PledgeResponseDto;
 import com.unnamed.conectareparo.dto.PledgeUpdateDto;
 import com.unnamed.conectareparo.exception.ErrorResponse;
@@ -55,7 +55,7 @@ public class PledgeController {
         )
     })
     @PostMapping
-    public ResponseEntity<PledgeResponseDto> createPledge( @Valid @RequestBody NewPledgeRequestDto pledgeRequestDto) {
+    public ResponseEntity<PledgeResponseDto> createPledge(@Valid @RequestBody PledgeDto pledgeRequestDto) {
         PledgeResponseDto pledgeResponseDto = pledgeService.createPledge(pledgeRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(pledgeResponseDto);
     }

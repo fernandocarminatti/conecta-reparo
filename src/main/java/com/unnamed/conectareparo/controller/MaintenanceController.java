@@ -1,8 +1,8 @@
 package com.unnamed.conectareparo.controller;
 
+import com.unnamed.conectareparo.dto.MaintenanceDto;
 import com.unnamed.conectareparo.dto.MaintenanceResponseDto;
 import com.unnamed.conectareparo.dto.MaintenanceUpdateDto;
-import com.unnamed.conectareparo.dto.NewMaintenanceRequestDto;
 import com.unnamed.conectareparo.exception.ErrorResponse;
 import com.unnamed.conectareparo.service.MaintenanceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,7 +58,7 @@ public class MaintenanceController {
         )
     })
     @PostMapping()
-    public ResponseEntity<MaintenanceResponseDto> createMaintenance(@Valid @RequestBody NewMaintenanceRequestDto maintenanceDTO) {
+    public ResponseEntity<MaintenanceResponseDto> createMaintenance(@Valid @RequestBody MaintenanceDto maintenanceDTO) {
         MaintenanceResponseDto createdMaintenance = maintenanceService.createMaintenance(maintenanceDTO);
         URI resourceLocation = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")

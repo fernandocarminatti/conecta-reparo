@@ -1,6 +1,6 @@
 package com.unnamed.conectareparo.dto;
 
-import com.unnamed.conectareparo.entity.ActionOutcomeStatus;
+import com.unnamed.conectareparo.entity.ActionStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -14,7 +14,7 @@ import java.util.List;
  * Data Transfer Object for creating {@link com.unnamed.conectareparo.entity.MaintenanceAction} via http request.
  */
 @Schema(description = "Data Transfer Object for creating a new maintenance action")
-public record NewMaintenanceActionDto(
+public record MaintenanceActionDto(
         @Schema(description = "Name of the person who executed the maintenance action", example = "João Silva")
         @NotBlank(message = "Executed by must not be blank")
         @Size(min = 3, max = 100, message = "Executed by must be between 3 and 100 characters long")
@@ -40,9 +40,9 @@ public record NewMaintenanceActionDto(
                         " \"unitOfMeasure\": \"un\"}" +
                         "]")
         @Valid
-        List<NewActionMaterialDto> materialsUsed,
+        List<MaterialDto> materialsUsed,
         @Schema(description = "Outcome status of the maintenance action", example = "SUCCESS")
         @NotNull(message = "This action must contain a valid outcome status")
-        ActionOutcomeStatus outcomeStatus
+        ActionStatus outcomeStatus
 ) {
 }

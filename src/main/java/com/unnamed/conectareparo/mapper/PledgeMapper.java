@@ -1,6 +1,6 @@
 package com.unnamed.conectareparo.mapper;
 
-import com.unnamed.conectareparo.dto.NewPledgeRequestDto;
+import com.unnamed.conectareparo.dto.PledgeDto;
 import com.unnamed.conectareparo.dto.PledgeResponseDto;
 import com.unnamed.conectareparo.entity.Maintenance;
 import com.unnamed.conectareparo.entity.Pledge;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PledgeMapper {
 
-    public Pledge toEntity(Maintenance maintenance, NewPledgeRequestDto pledgeRequestDto){
+    public Pledge toEntity(Maintenance maintenance, PledgeDto pledgeRequestDto) {
         return new Pledge(
                 maintenance,
                 pledgeRequestDto.volunteerName(),

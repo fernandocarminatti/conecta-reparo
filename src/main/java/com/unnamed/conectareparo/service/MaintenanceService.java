@@ -1,8 +1,8 @@
 package com.unnamed.conectareparo.service;
 
+import com.unnamed.conectareparo.dto.MaintenanceDto;
 import com.unnamed.conectareparo.dto.MaintenanceResponseDto;
 import com.unnamed.conectareparo.dto.MaintenanceUpdateDto;
-import com.unnamed.conectareparo.dto.NewMaintenanceRequestDto;
 import com.unnamed.conectareparo.entity.Maintenance;
 import com.unnamed.conectareparo.entity.MaintenanceStatus;
 import com.unnamed.conectareparo.exception.ResourceNotFoundException;
@@ -43,7 +43,7 @@ public class MaintenanceService {
      * @return A DTO representing the newly created maintenance task.
      */
     @Transactional
-    public MaintenanceResponseDto createMaintenance(NewMaintenanceRequestDto maintenanceDTO) {
+    public MaintenanceResponseDto createMaintenance(MaintenanceDto maintenanceDTO) {
         Maintenance maintenance = new Maintenance(
                 maintenanceDTO.title(),
                 maintenanceDTO.description(),

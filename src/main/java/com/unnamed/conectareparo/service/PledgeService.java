@@ -1,6 +1,6 @@
 package com.unnamed.conectareparo.service;
 
-import com.unnamed.conectareparo.dto.NewPledgeRequestDto;
+import com.unnamed.conectareparo.dto.PledgeDto;
 import com.unnamed.conectareparo.dto.PledgeResponseDto;
 import com.unnamed.conectareparo.dto.PledgeUpdateDto;
 import com.unnamed.conectareparo.entity.Maintenance;
@@ -46,7 +46,7 @@ public class PledgeService {
      * @throws IllegalStateException if the parent Maintenance task is in a terminal state.
      */
     @Transactional
-    public PledgeResponseDto createPledge(NewPledgeRequestDto pledgeRequestDto) {
+    public PledgeResponseDto createPledge(PledgeDto pledgeRequestDto) {
         Maintenance foundMaintenance = maintenanceService.getMaintenanceEntityByPublicId(pledgeRequestDto.maintenanceId());
         if (foundMaintenance.getStatus() == MaintenanceStatus.COMPLETED || foundMaintenance.getStatus() == MaintenanceStatus.CANCELED) {
             throw new IllegalStateException("Cannot create a pledge for a maintenance that is in a terminal state.");

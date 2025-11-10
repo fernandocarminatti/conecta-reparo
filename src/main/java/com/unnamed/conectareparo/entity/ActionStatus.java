@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  *   <li><b>FAILURE</b> – The action failed to complete.</li>
  * </ul>
  */
-public enum ActionOutcomeStatus {
+public enum ActionStatus {
     @Schema(description = "The action was completed successfully.")
     SUCCESS,
     @Schema(description = "The action was partially successful, with some issues.")

@@ -1,9 +1,9 @@
 package com.unnamed.conectareparo.mapper;
 
-import com.unnamed.conectareparo.dto.ActionMaterialResponseDto;
+import com.unnamed.conectareparo.dto.MaintenanceActionDto;
 import com.unnamed.conectareparo.dto.MaintenanceActionResponseDto;
-import com.unnamed.conectareparo.dto.NewActionMaterialDto;
-import com.unnamed.conectareparo.dto.NewMaintenanceActionDto;
+import com.unnamed.conectareparo.dto.MaterialDto;
+import com.unnamed.conectareparo.dto.MaterialResponseDto;
 import com.unnamed.conectareparo.entity.ActionMaterial;
 import com.unnamed.conectareparo.entity.Maintenance;
 import com.unnamed.conectareparo.entity.MaintenanceAction;
@@ -20,7 +20,7 @@ public class MaintenanceActionMapper {
             return null;
         }
 
-        List<ActionMaterialResponseDto> materialDtos = action.getMaterialsUsed()
+        List<MaterialResponseDto> materialDtos = action.getMaterialsUsed()
                 .stream()
                 .map(this::toMaterialResponseDto)
                 .collect(Collectors.toList());
@@ -37,7 +37,7 @@ public class MaintenanceActionMapper {
         );
     }
 
-    public MaintenanceAction toEntity(NewMaintenanceActionDto dto, Maintenance maintenance) {
+    public MaintenanceAction toEntity(MaintenanceActionDto dto, Maintenance maintenance) {
         if (dto == null) {
             return null;
         }
@@ -61,8 +61,8 @@ public class MaintenanceActionMapper {
         return newAction;
     }
 
-    public ActionMaterialResponseDto toMaterialResponseDto(ActionMaterial material) {
-        return new ActionMaterialResponseDto(
+    public MaterialResponseDto toMaterialResponseDto(ActionMaterial material) {
+        return new MaterialResponseDto(
                 material.getPublicId(),
                 material.getItemName(),
                 material.getQuantity(),
@@ -70,7 +70,7 @@ public class MaintenanceActionMapper {
         );
     }
 
-    public ActionMaterial toMaterialEntity(NewActionMaterialDto materialDto) {
+    public ActionMaterial toMaterialEntity(MaterialDto materialDto) {
         return new ActionMaterial(
                 materialDto.itemName(),
                 materialDto.quantity(),
