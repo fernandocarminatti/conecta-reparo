@@ -1,4 +1,4 @@
-package com.unnamed.conectareparo.entity;
+package com.unnamed.conectareparo.maintenance.entity;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

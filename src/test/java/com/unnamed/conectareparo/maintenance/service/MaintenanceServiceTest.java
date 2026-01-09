@@ -1,14 +1,14 @@
-package com.unnamed.conectareparo.service;
+package com.unnamed.conectareparo.maintenance.service;
 
-import com.unnamed.conectareparo.dto.MaintenanceDto;
-import com.unnamed.conectareparo.dto.MaintenanceResponseDto;
-import com.unnamed.conectareparo.dto.MaintenanceUpdateDto;
-import com.unnamed.conectareparo.entity.Maintenance;
-import com.unnamed.conectareparo.entity.MaintenanceCategory;
-import com.unnamed.conectareparo.entity.MaintenanceStatus;
-import com.unnamed.conectareparo.exception.ResourceNotFoundException;
-import com.unnamed.conectareparo.mapper.MaintenanceMapper;
-import com.unnamed.conectareparo.repository.MaintenanceRepository;
+import com.unnamed.conectareparo.common.exception.ResourceNotFoundException;
+import com.unnamed.conectareparo.maintenance.dto.MaintenanceDto;
+import com.unnamed.conectareparo.maintenance.dto.MaintenanceResponseDto;
+import com.unnamed.conectareparo.maintenance.dto.MaintenanceUpdateDto;
+import com.unnamed.conectareparo.maintenance.entity.Maintenance;
+import com.unnamed.conectareparo.maintenance.entity.MaintenanceCategory;
+import com.unnamed.conectareparo.maintenance.entity.MaintenanceStatus;
+import com.unnamed.conectareparo.maintenance.mapper.MaintenanceMapper;
+import com.unnamed.conectareparo.maintenance.repository.MaintenanceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

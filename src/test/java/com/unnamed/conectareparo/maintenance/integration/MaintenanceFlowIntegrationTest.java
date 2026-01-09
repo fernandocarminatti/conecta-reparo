@@ -1,11 +1,11 @@
-package com.unnamed.conectareparo.integration;
+package com.unnamed.conectareparo.maintenance.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.unnamed.conectareparo.dto.MaintenanceDto;
-import com.unnamed.conectareparo.dto.MaintenanceResponseDto;
-import com.unnamed.conectareparo.dto.MaintenanceUpdateDto;
-import com.unnamed.conectareparo.entity.MaintenanceCategory;
-import com.unnamed.conectareparo.entity.MaintenanceStatus;
+import com.unnamed.conectareparo.maintenance.dto.MaintenanceDto;
+import com.unnamed.conectareparo.maintenance.dto.MaintenanceResponseDto;
+import com.unnamed.conectareparo.maintenance.dto.MaintenanceUpdateDto;
+import com.unnamed.conectareparo.maintenance.entity.MaintenanceCategory;
+import com.unnamed.conectareparo.maintenance.entity.MaintenanceStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;

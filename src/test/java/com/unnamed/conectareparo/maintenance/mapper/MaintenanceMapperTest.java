@@ -1,10 +1,10 @@
-package com.unnamed.conectareparo.mapper;
+package com.unnamed.conectareparo.maintenance.mapper;
 
-import com.unnamed.conectareparo.dto.MaintenanceDto;
-import com.unnamed.conectareparo.dto.MaintenanceResponseDto;
-import com.unnamed.conectareparo.entity.Maintenance;
-import com.unnamed.conectareparo.entity.MaintenanceCategory;
-import com.unnamed.conectareparo.entity.MaintenanceStatus;
+import com.unnamed.conectareparo.maintenance.dto.MaintenanceDto;
+import com.unnamed.conectareparo.maintenance.dto.MaintenanceResponseDto;
+import com.unnamed.conectareparo.maintenance.entity.Maintenance;
+import com.unnamed.conectareparo.maintenance.entity.MaintenanceCategory;
+import com.unnamed.conectareparo.maintenance.entity.MaintenanceStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
