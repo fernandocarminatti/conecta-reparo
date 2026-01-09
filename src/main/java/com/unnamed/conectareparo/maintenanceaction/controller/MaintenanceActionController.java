@@ -1,10 +1,10 @@
-package com.unnamed.conectareparo.controller;
+package com.unnamed.conectareparo.maintenanceaction.controller;
 
-import com.unnamed.conectareparo.dto.MaintenanceActionDto;
-import com.unnamed.conectareparo.dto.MaintenanceActionResponseDto;
-import com.unnamed.conectareparo.dto.MaintenanceActionUpdateDto;
-import com.unnamed.conectareparo.exception.ErrorResponse;
-import com.unnamed.conectareparo.service.MaintenanceActionService;
+import com.unnamed.conectareparo.maintenanceaction.dto.MaintenanceActionDto;
+import com.unnamed.conectareparo.maintenanceaction.dto.MaintenanceActionResponseDto;
+import com.unnamed.conectareparo.maintenanceaction.dto.MaintenanceActionUpdateDto;
+import com.unnamed.conectareparo.common.exception.ErrorResponse;
+import com.unnamed.conectareparo.maintenanceaction.service.MaintenanceActionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

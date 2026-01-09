@@ -1,5 +1,6 @@
-package com.unnamed.conectareparo.entity;
+package com.unnamed.conectareparo.maintenanceaction.entity;
 
+import com.unnamed.conectareparo.maintenance.entity.Maintenance;
 import jakarta.persistence.*;
 
 import java.time.ZonedDateTime;

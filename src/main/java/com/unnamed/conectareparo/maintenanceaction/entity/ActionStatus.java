@@ -1,4 +1,4 @@
-package com.unnamed.conectareparo.entity;
+package com.unnamed.conectareparo.maintenanceaction.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

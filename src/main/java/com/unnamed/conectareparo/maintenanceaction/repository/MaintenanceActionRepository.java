@@ -1,7 +1,7 @@
-package com.unnamed.conectareparo.repository;
+package com.unnamed.conectareparo.maintenanceaction.repository;
 
-import com.unnamed.conectareparo.entity.Maintenance;
-import com.unnamed.conectareparo.entity.MaintenanceAction;
+import com.unnamed.conectareparo.maintenance.entity.Maintenance;
+import com.unnamed.conectareparo.maintenanceaction.entity.MaintenanceAction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

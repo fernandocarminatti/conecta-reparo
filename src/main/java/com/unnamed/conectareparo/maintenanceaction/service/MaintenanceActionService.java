@@ -1,15 +1,16 @@
-package com.unnamed.conectareparo.service;
+package com.unnamed.conectareparo.maintenanceaction.service;
 
-import com.unnamed.conectareparo.dto.MaintenanceActionDto;
-import com.unnamed.conectareparo.dto.MaintenanceActionResponseDto;
-import com.unnamed.conectareparo.dto.MaintenanceActionUpdateDto;
-import com.unnamed.conectareparo.entity.ActionMaterial;
-import com.unnamed.conectareparo.entity.Maintenance;
-import com.unnamed.conectareparo.entity.MaintenanceAction;
-import com.unnamed.conectareparo.exception.MaintenanceAlreadyCompletedException;
-import com.unnamed.conectareparo.exception.ResourceNotFoundException;
-import com.unnamed.conectareparo.mapper.MaintenanceActionMapper;
-import com.unnamed.conectareparo.repository.MaintenanceActionRepository;
+import com.unnamed.conectareparo.maintenance.entity.Maintenance;
+import com.unnamed.conectareparo.maintenanceaction.dto.MaintenanceActionDto;
+import com.unnamed.conectareparo.maintenanceaction.dto.MaintenanceActionResponseDto;
+import com.unnamed.conectareparo.maintenanceaction.dto.MaintenanceActionUpdateDto;
+import com.unnamed.conectareparo.maintenanceaction.entity.ActionMaterial;
+import com.unnamed.conectareparo.maintenanceaction.entity.MaintenanceAction;
+import com.unnamed.conectareparo.maintenance.exception.MaintenanceAlreadyCompletedException;
+import com.unnamed.conectareparo.maintenanceaction.mapper.MaintenanceActionMapper;
+import com.unnamed.conectareparo.maintenanceaction.repository.MaintenanceActionRepository;
+import com.unnamed.conectareparo.common.exception.ResourceNotFoundException;
+import com.unnamed.conectareparo.maintenance.service.MaintenanceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

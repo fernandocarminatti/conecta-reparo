@@ -1,6 +1,6 @@
-package com.unnamed.conectareparo.dto;
+package com.unnamed.conectareparo.maintenanceaction.dto;
 
-import com.unnamed.conectareparo.entity.ActionStatus;
+import com.unnamed.conectareparo.maintenanceaction.entity.ActionStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.ZonedDateTime;
