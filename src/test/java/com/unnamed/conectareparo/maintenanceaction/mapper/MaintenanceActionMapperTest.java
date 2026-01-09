@@ -1,13 +1,13 @@
-package com.unnamed.conectareparo.mapper;
+package com.unnamed.conectareparo.maintenanceaction.mapper;
 
-import com.unnamed.conectareparo.dto.MaintenanceActionDto;
-import com.unnamed.conectareparo.dto.MaintenanceActionResponseDto;
-import com.unnamed.conectareparo.dto.MaterialDto;
-import com.unnamed.conectareparo.dto.MaterialResponseDto;
-import com.unnamed.conectareparo.entity.ActionMaterial;
-import com.unnamed.conectareparo.entity.ActionStatus;
-import com.unnamed.conectareparo.entity.Maintenance;
-import com.unnamed.conectareparo.entity.MaintenanceAction;
+import com.unnamed.conectareparo.maintenance.entity.Maintenance;
+import com.unnamed.conectareparo.maintenanceaction.dto.MaintenanceActionDto;
+import com.unnamed.conectareparo.maintenanceaction.dto.MaintenanceActionResponseDto;
+import com.unnamed.conectareparo.maintenanceaction.dto.MaterialDto;
+import com.unnamed.conectareparo.maintenanceaction.dto.MaterialResponseDto;
+import com.unnamed.conectareparo.maintenanceaction.entity.ActionMaterial;
+import com.unnamed.conectareparo.maintenanceaction.entity.ActionStatus;
+import com.unnamed.conectareparo.maintenanceaction.entity.MaintenanceAction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

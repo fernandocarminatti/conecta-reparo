@@ -1,12 +1,12 @@
-package com.unnamed.conectareparo.controller;
+package com.unnamed.conectareparo.maintenanceaction.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.unnamed.conectareparo.dto.MaintenanceActionDto;
-import com.unnamed.conectareparo.dto.MaintenanceActionResponseDto;
-import com.unnamed.conectareparo.dto.MaintenanceActionUpdateDto;
-import com.unnamed.conectareparo.entity.ActionStatus;
-import com.unnamed.conectareparo.exception.ResourceNotFoundException;
-import com.unnamed.conectareparo.service.MaintenanceActionService;
+import com.unnamed.conectareparo.common.exception.ResourceNotFoundException;
+import com.unnamed.conectareparo.maintenanceaction.dto.MaintenanceActionDto;
+import com.unnamed.conectareparo.maintenanceaction.dto.MaintenanceActionResponseDto;
+import com.unnamed.conectareparo.maintenanceaction.dto.MaintenanceActionUpdateDto;
+import com.unnamed.conectareparo.maintenanceaction.entity.ActionStatus;
+import com.unnamed.conectareparo.maintenanceaction.service.MaintenanceActionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
