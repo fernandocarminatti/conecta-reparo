@@ -1,7 +1,8 @@
-package com.unnamed.conectareparo.exception;
+package com.unnamed.conectareparo.common.exception;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.unnamed.conectareparo.maintenance.exception.MaintenanceAlreadyCompletedException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

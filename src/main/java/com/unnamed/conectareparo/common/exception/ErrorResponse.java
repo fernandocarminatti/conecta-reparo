@@ -1,4 +1,4 @@
-package com.unnamed.conectareparo.exception;
+package com.unnamed.conectareparo.common.exception;
 
 import java.time.LocalDateTime;
 
