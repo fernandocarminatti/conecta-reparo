@@ -67,87 +67,133 @@ conecta-reparo/
 
 ## Implementation Steps
 
-### Step 1: Create Backend Directory and Move Files
-```bash
-# Create backend directory
-mkdir -p backend
+### Phase 1: Prepare Repository
 
-# Move backend-specific files
-git mv src backend/
-git mv pom.xml backend/
-git mv mvnw backend/
-git mv mvnw.cmd backend/
-```
+1. **Verify clean state**
+   ```bash
+   git status
+   git checkout main && git pull
+   git checkout -b feature/monorepo-setup
+   ```
 
-### Step 2: Create Frontend Directory
-```bash
-mkdir -p frontend
-touch frontend/.gitkeep
-```
+2. **Backup important files (optional but recommended)**
+   ```bash
+   cp docker-compose.yml docker-compose.yml.backup
+   cp .env.example .env.example.backup 2>/dev/null || true
+   ```
 
-### Step 3: Create Nginx Directory
-```bash
-mkdir -p nginx
-touch nginx/.gitkeep
-```
+### Phase 2: Create Backend Directory
 
-### Step 4: Update Gitignore Files
+3. **Create backend directory**
+   ```bash
+   mkdir -p backend
+   ```
 
-Update root `.gitignore`:
-```gitignore
-# Backend
-backend/target/
-backend/.mvn/wrapper/maven-wrapper.jar
+4. **Move backend files (preserve git history)**
+   ```bash
+   git mv src backend/
+   git mv pom.xml backend/
+   git mv mvnw backend/
+   git mv mvnw.cmd backend/
+   ```
 
-# Frontend
-frontend/node_modules/
-frontend/.next/
-frontend/out/
+5. **Create backend-specific gitignore**
+   ```bash
+   cat > backend/.gitignore << 'EOF'
+   target/
+   !.mvn/wrapper/maven-wrapper.jar
+   *.jar
+   *.class
+   EOF
+   ```
 
-# Environment
-.env
-.env.local
-.env.*.local
+### Phase 3: Create Frontend & Nginx Directories
 
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
+6. **Create frontend directory**
+   ```bash
+   mkdir -p frontend
+   echo "# Next.js application placeholder" > frontend/.gitkeep
+   ```
 
-# OS
-.DS_Store
-Thumbs.db
-```
+7. **Create nginx directory**
+   ```bash
+   mkdir -p nginx
+   echo "# Nginx configuration placeholder" > nginx/.gitkeep
+   ```
 
-Create/update `backend/.gitignore`:
-```gitignore
-target/
-!.mvn/wrapper/maven-wrapper.jar
-*.jar
-*.class
-```
+### Phase 4: Update Root Gitignore
 
-### Step 5: Test Backend Build
-```bash
-cd backend
-./mvnw clean package -DskipTests
-```
+8. **Update root `.gitignore`**
+   ```gitignore
+   # Backend
+   backend/target/
+   backend/.mvn/wrapper/maven-wrapper.jar
 
-If build succeeds, continue. If not, investigate and fix.
+   # Frontend
+   frontend/node_modules/
+   frontend/.next/
+   frontend/out/
 
-### Step 6: Verify Structure
-```bash
-# Verify backend structure
-ls -la backend/
-ls -la backend/src/
+   # Environment
+   .env
+   .env.local
+   .env.*.local
 
-# Verify frontend directory exists
-ls -la frontend/
+   # IDE
+   .idea/
+   .vscode/
+   *.swp
+   *.swo
 
-# Verify nginx directory exists
-ls -la nginx/
-```
+   # OS
+   .DS_Store
+   Thumbs.db
+   ```
+
+### Phase 5: Verify & Test
+
+9. **Verify backend structure**
+   ```bash
+   ls -la backend/
+   ls -la backend/src/
+   ```
+
+10. **Test backend build**
+    ```bash
+    cd backend
+    ./mvnw clean package -DskipTests
+    ```
+
+11. **Verify frontend and nginx directories**
+    ```bash
+    ls -la frontend/
+    ls -la nginx/
+    ```
+
+### Phase 6: Commit Changes
+
+12. **Review changes**
+    ```bash
+    git status
+    git diff --stat
+    ```
+
+13. **Commit**
+    ```bash
+    git add .
+    git commit -m "refactor: restructure repository as monorepo
+
+    - Move Spring Boot backend to backend/ directory
+    - Create frontend/ directory for Next.js app
+    - Create nginx/ directory for reverse proxy config
+    - Update .gitignore for monorepo structure
+    - Preserve git history with git mv"
+    ```
+
+14. **Push to remote**
+    ```bash
+    git push -u origin feature/monorepo-setup
+    ```
 
 ## Acceptance Criteria
 
