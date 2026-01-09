@@ -1,14 +1,14 @@
-package com.unnamed.conectareparo.dto;
+package com.unnamed.conectareparo.maintenance.dto;
 
-import com.unnamed.conectareparo.entity.MaintenanceCategory;
-import com.unnamed.conectareparo.entity.MaintenanceStatus;
+import com.unnamed.conectareparo.maintenance.entity.MaintenanceCategory;
+import com.unnamed.conectareparo.maintenance.entity.MaintenanceStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
 /**
- * <p>Data Transfer Object for {@link com.unnamed.conectareparo.entity.Maintenance} http response.</p>
+ * <p>Data Transfer Object for {@link com.unnamed.conectareparo.maintenance.entity.Maintenance} http response.</p>
  */
 @Schema(description = "Data Transfer Object for maintenance response")
 public record MaintenanceResponseDto(

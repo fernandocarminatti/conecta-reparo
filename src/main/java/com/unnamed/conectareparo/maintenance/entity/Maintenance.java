@@ -1,4 +1,4 @@
-package com.unnamed.conectareparo.entity;
+package com.unnamed.conectareparo.maintenance.entity;
 
 import jakarta.persistence.*;
 

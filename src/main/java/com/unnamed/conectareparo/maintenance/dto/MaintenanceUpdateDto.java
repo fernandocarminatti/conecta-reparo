@@ -1,12 +1,12 @@
-package com.unnamed.conectareparo.dto;
+package com.unnamed.conectareparo.maintenance.dto;
 
-import com.unnamed.conectareparo.entity.MaintenanceCategory;
-import com.unnamed.conectareparo.entity.MaintenanceStatus;
+import com.unnamed.conectareparo.maintenance.entity.MaintenanceCategory;
+import com.unnamed.conectareparo.maintenance.entity.MaintenanceStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
 
 /**
- * Data Transfer Object for {@link com.unnamed.conectareparo.entity.Maintenance} update http request.
+ * Data Transfer Object for {@link com.unnamed.conectareparo.maintenance.entity.Maintenance} update http request.
  */
 @Schema(description = "Data Transfer Object for updating a maintenance request")
 public record MaintenanceUpdateDto (

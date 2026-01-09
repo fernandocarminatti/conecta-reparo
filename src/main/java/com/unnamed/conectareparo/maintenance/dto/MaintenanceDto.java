@@ -1,6 +1,6 @@
-package com.unnamed.conectareparo.dto;
+package com.unnamed.conectareparo.maintenance.dto;
 
-import com.unnamed.conectareparo.entity.MaintenanceCategory;
+import com.unnamed.conectareparo.maintenance.entity.MaintenanceCategory;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 
 /**
- * Data Transfer Object for creating {@link com.unnamed.conectareparo.entity.Maintenance} via http request.
+ * Data Transfer Object for creating {@link com.unnamed.conectareparo.maintenance.entity.Maintenance} via http request.
  */
 @Schema(description = "Data Transfer Object for creating a new maintenance request")
 public record MaintenanceDto(
