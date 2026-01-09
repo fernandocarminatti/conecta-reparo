@@ -1,5 +1,6 @@
-package com.unnamed.conectareparo.entity;
+package com.unnamed.conectareparo.pledge.entity;
 
+import com.unnamed.conectareparo.maintenance.entity.Maintenance;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

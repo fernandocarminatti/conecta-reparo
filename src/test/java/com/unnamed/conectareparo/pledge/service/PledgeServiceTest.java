@@ -1,12 +1,15 @@
-package com.unnamed.conectareparo.service;
+package com.unnamed.conectareparo.pledge.service;
 
-import com.unnamed.conectareparo.dto.PledgeDto;
-import com.unnamed.conectareparo.dto.PledgeResponseDto;
-import com.unnamed.conectareparo.dto.PledgeUpdateDto;
-import com.unnamed.conectareparo.entity.*;
-import com.unnamed.conectareparo.exception.ResourceNotFoundException;
-import com.unnamed.conectareparo.mapper.PledgeMapper;
-import com.unnamed.conectareparo.repository.PledgeRepository;
+import com.unnamed.conectareparo.maintenance.entity.Maintenance;
+import com.unnamed.conectareparo.maintenance.entity.MaintenanceStatus;
+import com.unnamed.conectareparo.maintenance.service.MaintenanceService;
+import com.unnamed.conectareparo.pledge.dto.PledgeDto;
+import com.unnamed.conectareparo.pledge.dto.PledgeResponseDto;
+import com.unnamed.conectareparo.pledge.dto.PledgeUpdateDto;
+import com.unnamed.conectareparo.pledge.entity.*;
+import com.unnamed.conectareparo.pledge.mapper.PledgeMapper;
+import com.unnamed.conectareparo.pledge.repository.PledgeRepository;
+import com.unnamed.conectareparo.common.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
