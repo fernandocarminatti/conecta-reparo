@@ -1,7 +1,7 @@
-package com.unnamed.conectareparo.dto;
+package com.unnamed.conectareparo.pledge.dto;
 
-import com.unnamed.conectareparo.entity.PledgeCategory;
-import com.unnamed.conectareparo.entity.PledgeStatus;
+import com.unnamed.conectareparo.pledge.entity.PledgeCategory;
+import com.unnamed.conectareparo.pledge.entity.PledgeStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

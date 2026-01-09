@@ -1,9 +1,9 @@
-package com.unnamed.conectareparo.mapper;
+package com.unnamed.conectareparo.pledge.mapper;
 
-import com.unnamed.conectareparo.dto.PledgeDto;
-import com.unnamed.conectareparo.dto.PledgeResponseDto;
-import com.unnamed.conectareparo.entity.Maintenance;
-import com.unnamed.conectareparo.entity.Pledge;
+import com.unnamed.conectareparo.maintenance.entity.Maintenance;
+import com.unnamed.conectareparo.pledge.dto.PledgeDto;
+import com.unnamed.conectareparo.pledge.dto.PledgeResponseDto;
+import com.unnamed.conectareparo.pledge.entity.Pledge;
 import org.springframework.stereotype.Component;
 
 @Component

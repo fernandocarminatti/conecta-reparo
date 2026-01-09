@@ -1,14 +1,15 @@
-package com.unnamed.conectareparo.service;
+package com.unnamed.conectareparo.pledge.service;
 
-import com.unnamed.conectareparo.dto.PledgeDto;
-import com.unnamed.conectareparo.dto.PledgeResponseDto;
-import com.unnamed.conectareparo.dto.PledgeUpdateDto;
-import com.unnamed.conectareparo.entity.Maintenance;
-import com.unnamed.conectareparo.entity.MaintenanceStatus;
-import com.unnamed.conectareparo.entity.Pledge;
-import com.unnamed.conectareparo.exception.ResourceNotFoundException;
-import com.unnamed.conectareparo.mapper.PledgeMapper;
-import com.unnamed.conectareparo.repository.PledgeRepository;
+import com.unnamed.conectareparo.maintenance.entity.Maintenance;
+import com.unnamed.conectareparo.maintenance.entity.MaintenanceStatus;
+import com.unnamed.conectareparo.pledge.dto.PledgeDto;
+import com.unnamed.conectareparo.pledge.dto.PledgeResponseDto;
+import com.unnamed.conectareparo.pledge.dto.PledgeUpdateDto;
+import com.unnamed.conectareparo.pledge.entity.Pledge;
+import com.unnamed.conectareparo.pledge.mapper.PledgeMapper;
+import com.unnamed.conectareparo.pledge.repository.PledgeRepository;
+import com.unnamed.conectareparo.common.exception.ResourceNotFoundException;
+import com.unnamed.conectareparo.maintenance.service.MaintenanceService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
