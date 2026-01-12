@@ -115,5 +115,121 @@ class PledgeTest {
                     () -> assertEquals("Initial Description", pledge.getDescription())
             );
         }
+
+        @Test
+        @DisplayName("Should not update volunteerName when it is whitespace only")
+        void shouldNotUpdateVolunteerName_whenWhitespaceOnly() {
+            pledge.updateDetails("     ", "new@contact.com", "New Description", null);
+
+            assertEquals("Initial Volunteer", pledge.getVolunteerName());
+            assertEquals("new@contact.com", pledge.getVolunteerContact());
+        }
+
+        @Test
+        @DisplayName("Should not update volunteerContact when it is whitespace only")
+        void shouldNotUpdateVolunteerContact_whenWhitespaceOnly() {
+            pledge.updateDetails("New Name", "     ", "New Description", null);
+
+            assertEquals("New Name", pledge.getVolunteerName());
+            assertEquals("initial@contact.com", pledge.getVolunteerContact());
+        }
+
+        @Test
+        @DisplayName("Should not change description when blank is passed")
+        void shouldNotChangeDescription_whenBlankIsPassed() {
+            pledge.updateDetails("Name", "Contact", "", null);
+
+            assertEquals("Initial Description", pledge.getDescription());
+        }
+
+        @Test
+        @DisplayName("Should not change description when null is passed")
+        void shouldNotChangeDescription_whenNullIsPassed() {
+            pledge.updateDetails("Name", "Contact", null, null);
+
+            assertEquals("Initial Description", pledge.getDescription());
+        }
+
+        @Test
+        @DisplayName("Should update category when provided")
+        void shouldUpdateCategory_whenProvided() {
+            pledge.updateDetails(null, null, null, PledgeCategory.MATERIAL);
+
+            assertEquals(PledgeCategory.MATERIAL, pledge.getType());
+        }
+
+        @Test
+        @DisplayName("Should not update category when null")
+        void shouldNotUpdateCategory_whenNull() {
+            pledge.updateDetails(null, null, null, null);
+
+            assertEquals(PledgeCategory.LABOR, pledge.getType());
+        }
+    }
+
+    @Nested
+    @DisplayName("Additional Status Transitions")
+    class AdditionalStatusTransitionTests {
+
+        @Test
+        @DisplayName("Should allow OFFERED → PENDING transition")
+        void shouldAllow_OfferedToPending() {
+            pledge.updateStatus(PledgeStatus.PENDING);
+            assertEquals(PledgeStatus.PENDING, pledge.getStatus());
+        }
+
+        @Test
+        @DisplayName("Should allow OFFERED → REJECTED transition (admin rejects)")
+        void shouldAllow_OfferedToRejected() {
+            pledge.updateStatus(PledgeStatus.REJECTED);
+            assertEquals(PledgeStatus.REJECTED, pledge.getStatus());
+        }
+
+        @Test
+        @DisplayName("Should allow OFFERED → CANCELED transition (volunteer cancels)")
+        void shouldAllow_OfferedToCanceled() {
+            pledge.updateStatus(PledgeStatus.CANCELED);
+            assertEquals(PledgeStatus.CANCELED, pledge.getStatus());
+        }
+
+        @Test
+        @DisplayName("Should allow PENDING → CANCELED transition")
+        void shouldAllow_PendingToCanceled() {
+            ReflectionTestUtils.setField(pledge, "status", PledgeStatus.PENDING);
+            pledge.updateStatus(PledgeStatus.CANCELED);
+            assertEquals(PledgeStatus.CANCELED, pledge.getStatus());
+        }
+
+        @Test
+        @DisplayName("Should not allow REJECTED → any other status")
+        void shouldNotAllow_RejectedToAny() {
+            ReflectionTestUtils.setField(pledge, "status", PledgeStatus.REJECTED);
+            assertThrows(IllegalStateException.class, () -> pledge.updateStatus(PledgeStatus.PENDING));
+            assertThrows(IllegalStateException.class, () -> pledge.updateStatus(PledgeStatus.COMPLETED));
+        }
+
+        @Test
+        @DisplayName("Should not allow CANCELED → any other status")
+        void shouldNotAllow_CanceledToAny() {
+            ReflectionTestUtils.setField(pledge, "status", PledgeStatus.CANCELED);
+            assertThrows(IllegalStateException.class, () -> pledge.updateStatus(PledgeStatus.PENDING));
+            assertThrows(IllegalStateException.class, () -> pledge.updateStatus(PledgeStatus.COMPLETED));
+        }
+
+        @Test
+        @DisplayName("Should not allow COMPLETED → any other status")
+        void shouldNotAllow_CompletedToAny() {
+            ReflectionTestUtils.setField(pledge, "status", PledgeStatus.COMPLETED);
+            assertThrows(IllegalStateException.class, () -> pledge.updateStatus(PledgeStatus.PENDING));
+            assertThrows(IllegalStateException.class, () -> pledge.updateStatus(PledgeStatus.CANCELED));
+        }
+
+        @Test
+        @DisplayName("Should do nothing when new status is null")
+        void shouldDoNothing_whenNewStatusIsNull() {
+            PledgeStatus initialStatus = pledge.getStatus();
+            pledge.updateStatus(null);
+            assertEquals(initialStatus, pledge.getStatus());
+        }
     }
 }

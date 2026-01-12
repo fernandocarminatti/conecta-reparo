@@ -220,4 +220,88 @@ class PledgeServiceTest {
         assertThrows(IllegalStateException.class, () -> pledgeService.createPledge(requestDto));
         verify(pledgeRepository, never()).save(any());
     }
+
+    @Test
+    @DisplayName("Should throw IllegalStateException when creating pledge for a canceled maintenance")
+    void createPledge_whenMaintenanceIsCanceled_shouldThrowException() {
+        PledgeDto requestDto = new PledgeDto(
+                maintenancePublicId,
+                "John Doe",
+                "555-1234",
+                "Too late", PledgeCategory.LABOR,
+                PledgeStatus.OFFERED);
+        ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.CANCELED);
+
+        when(maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId)).thenReturn(maintenance);
+
+        assertThrows(IllegalStateException.class, () -> pledgeService.createPledge(requestDto));
+        verify(pledgeRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should return a page of all pledges")
+    void getAllPledges_shouldReturnPageOfDtos() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Pledge> pledgePage = new PageImpl<>(List.of(pledge), pageable, 1);
+        when(pledgeRepository.findAll(pageable)).thenReturn(pledgePage);
+        when(pledgeMapper.toResponseDto(pledge)).thenReturn(pledgeResponseDto);
+
+        Page<PledgeResponseDto> resultPage = pledgeService.getAllPledges(pageable);
+
+        assertNotNull(resultPage);
+        assertEquals(1, resultPage.getTotalElements());
+        assertEquals(pledgeResponseDto, resultPage.getContent().get(0));
+    }
+
+    @Test
+    @DisplayName("Should return empty page when no pledges exist")
+    void getAllPledges_whenNoPledges_shouldReturnEmptyPage() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Pledge> emptyPage = Page.empty(pageable);
+        when(pledgeRepository.findAll(pageable)).thenReturn(emptyPage);
+
+        Page<PledgeResponseDto> resultPage = pledgeService.getAllPledges(pageable);
+
+        assertNotNull(resultPage);
+        assertTrue(resultPage.isEmpty());
+        verify(pledgeMapper, never()).toResponseDto(any());
+    }
+
+    @Test
+    @DisplayName("Should throw ResourceNotFoundException when pledge not found by public ID")
+    void getPledgeByPublicId_whenNotFound_shouldThrowException() {
+        UUID randomId = UUID.randomUUID();
+        when(pledgeRepository.findByPublicId(randomId)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () ->
+                pledgeService.getPledgeByPublicId(randomId)
+        );
+        verify(pledgeMapper, never()).toResponseDto(any());
+    }
+
+    @Test
+    @DisplayName("Should return pledge DTO when found by public ID")
+    void getPledgeByPublicId_whenFound_shouldReturnDto() {
+        when(pledgeRepository.findByPublicId(pledgePublicId)).thenReturn(Optional.of(pledge));
+        when(pledgeMapper.toResponseDto(pledge)).thenReturn(pledgeResponseDto);
+
+        PledgeResponseDto result = pledgeService.getPledgeByPublicId(pledgePublicId);
+
+        assertNotNull(result);
+        assertEquals(pledgeResponseDto, result);
+    }
+
+    @Test
+    @DisplayName("Should throw IllegalStateException when updating pledge in REJECTED state")
+    void updatePledge_whenInRejectedState_shouldThrowException() {
+        PledgeUpdateDto updateDto = new PledgeUpdateDto(null, null, null, null, PledgeStatus.COMPLETED);
+        ReflectionTestUtils.setField(pledge, "status", PledgeStatus.REJECTED);
+
+        when(pledgeRepository.findByPublicId(pledgePublicId)).thenReturn(Optional.of(pledge));
+
+        assertThrows(IllegalStateException.class, () ->
+                pledgeService.updatePledge(pledgePublicId, updateDto)
+        );
+        verify(pledgeRepository, never()).save(any());
+    }
 }
