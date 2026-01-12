@@ -25,15 +25,20 @@ public class MaintenanceActionMapper {
                 .map(this::toMaterialResponseDto)
                 .collect(Collectors.toList());
 
+        Maintenance maintenance = action.getMaintenance();
+
         return new MaintenanceActionResponseDto(
                 action.getPublicId(),
+                maintenance != null ? maintenance.getPublicId() : null,
+                maintenance != null ? maintenance.getTitle() : null,
                 action.getExecutedBy(),
                 action.getStartDate(),
                 action.getCompletionDate(),
                 action.getActionDescription(),
                 materialDtos,
                 action.getOutcomeStatus(),
-                action.getCreatedAt()
+                action.getCreatedAt(),
+                action.getUpdatedAt()
         );
     }
 

@@ -6,6 +6,7 @@ import com.unnamed.conectareparo.pledge.dto.PledgeUpdateDto;
 import com.unnamed.conectareparo.common.exception.ErrorResponse;
 import com.unnamed.conectareparo.pledge.service.PledgeService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -61,6 +62,52 @@ public class PledgeController {
     }
 
     @Operation(
+        summary = "Retrieves all pledges.",
+        description = "Fetches a paginated list of all pledges in the system."
+    )
+    @ApiResponse(
+        responseCode = "200",
+        description = "Pledges retrieved successfully.",
+        content = @Content(
+            mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = PledgeResponseDto.class))
+        )
+    )
+    @GetMapping
+    public ResponseEntity<Page<PledgeResponseDto>> getAllPledges(@ParameterObject Pageable pageable) {
+        Page<PledgeResponseDto> pledges = pledgeService.getAllPledges(pageable);
+        return ResponseEntity.ok(pledges);
+    }
+
+    @Operation(
+        summary = "Retrieve a pledge by its public ID.",
+        description = "Retrieves the details of a specific pledge using its public UUID."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Pledge retrieved successfully.",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = PledgeResponseDto.class)
+            )
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Pledge not found.",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
+    @GetMapping("/{pledgeId}")
+    public ResponseEntity<PledgeResponseDto> getPledgeByPublicId(@PathVariable UUID pledgeId) {
+        PledgeResponseDto pledge = pledgeService.getPledgeByPublicId(pledgeId);
+        return ResponseEntity.ok(pledge);
+    }
+
+    @Operation(
         summary = "Retrieves pledges for a specific maintenance ID.",
         description = "Fetches a paginated list of pledges associated with the given maintenance ID."
     )
@@ -82,7 +129,7 @@ public class PledgeController {
             )
         )
     })
-    @GetMapping
+    @GetMapping(params = "maintenanceId")
     public ResponseEntity<Page<PledgeResponseDto>> getPledgesForMaintenanceId(@RequestParam UUID maintenanceId, @ParameterObject Pageable pageable) {
         Page<PledgeResponseDto> pledges = pledgeService.getPledgesByMaintenanceId(pageable, maintenanceId);
         return ResponseEntity.ok(pledges);

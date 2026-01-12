@@ -61,9 +61,9 @@ public class MaintenanceService {
      * @param pageable The pagination information (page number, size, and sorting).
      * @return A {@link Page} of DTOs representing the maintenance tasks.
      */
-    public Page<MaintenanceResponseDto> getAllMaintenances(String status, String search, Pageable pageable) {
+    public Page<MaintenanceResponseDto> getAllMaintenances(String status, String category, String search, Pageable pageable) {
         Specification<Maintenance> spec = Specification
-                .allOf(List.of(MaintenanceSpecification.hasStatus(status), MaintenanceSpecification.searchByTerm(search)));
+                .allOf(List.of(MaintenanceSpecification.hasStatus(status), MaintenanceSpecification.hasCategory(category), MaintenanceSpecification.searchByTerm(search)));
         return maintenanceRepository.findAll(spec, pageable).map(maintenanceMapper::toResponseDto);
     }
 

@@ -14,4 +14,5 @@ public interface PledgeRepository extends JpaRepository<Pledge, Long> {
     Page<Pledge> findByMaintenanceId(UUID maintenanceId, Pageable pageable);
     Page<Pledge> findAllByMaintenancePublicId(UUID maintenanceId, Pageable pageable);
     Optional<Pledge> findByPublicId(UUID publicId);
+    Page<Pledge> findAll(Pageable pageable);
 }
