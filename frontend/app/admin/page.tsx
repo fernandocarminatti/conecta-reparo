@@ -156,7 +156,7 @@ export default function AdminDashboard() {
           iconColor="bg-blue-600"
         />
         <StatCard
-          title="Pledges Ativos"
+          title="Ofertas Ativas"
           value={18}
           change="+5 esta semana"
           changeType="positive"

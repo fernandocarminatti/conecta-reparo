@@ -54,6 +54,8 @@ export interface MaintenanceFormData {
 
 export interface MaintenanceActionResponseDto {
   id: string;
+  maintenanceId: string;
+  maintenanceTitle: string;
   executedBy: string;
   startDate: string;
   completionDate: string | null;
@@ -61,6 +63,17 @@ export interface MaintenanceActionResponseDto {
   materialsUsed: MaterialResponseDto[];
   outcomeStatus: ActionStatus;
   createdAt: string;
+  updatedAt: string;
+}
+
+export interface MaintenanceActionDetailResponseDto extends MaintenanceActionResponseDto {
+  maintenance: {
+    id: string;
+    title: string;
+    category: MaintenanceCategory;
+    status: MaintenanceStatus;
+    scheduledDate: string;
+  };
 }
 
 export interface MaterialResponseDto {

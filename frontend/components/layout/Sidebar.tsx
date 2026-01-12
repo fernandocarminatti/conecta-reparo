@@ -33,19 +33,19 @@ const navigation: NavItem[] = [
     href: '/admin/maintenances',
     icon: Wrench,
     children: [
-      { name: 'Listar Todas', href: '/admin/maintenances' },
-      { name: 'Criar Nova', href: '/admin/maintenances/new' },
-      { name: 'Historico', href: '/admin/history' },
+      { name: 'Todas as Manutenções', href: '/admin/maintenances' },
+      { name: 'Nova Manutenção', href: '/admin/maintenances/new' },
+      { name: 'Histórico', href: '/admin/history' },
     ],
   },
   {
-    name: 'Pledges',
+    name: 'Ofertas',
     href: '/admin/pledges',
     icon: Heart,
     children: [
-      { name: 'Todos os Pledges', href: '/admin/pledges' },
-      { name: 'Pendentes', href: '/admin/pledges/pending' },
-      { name: 'Aprovados', href: '/admin/pledges/approved' },
+      { name: 'Todos as Ofertas', href: '/admin/pledges' },
+      { name: 'Ofertas Pendentes', href: '/admin/pledges/pending' },
+      { name: 'Ofertas Aprovadas', href: '/admin/pledges/approved' },
     ],
   },
   {
@@ -54,9 +54,9 @@ const navigation: NavItem[] = [
     icon: ClipboardList,
     children: [
       { name: 'Todas as Ações', href: '/admin/actions' },
-      { name: 'Planejadas', href: '/admin/actions/planned' },
-      { name: 'Em Andamento', href: '/admin/actions/in-progress' },
-      { name: 'Concluídas', href: '/admin/actions/completed' },
+      { name: 'Ações Planejadas', href: '/admin/actions/planned' },
+      { name: 'Ações Em Andamento', href: '/admin/actions/in-progress' },
+      { name: 'Ações Concluídas', href: '/admin/actions/completed' },
     ],
   },
   {
