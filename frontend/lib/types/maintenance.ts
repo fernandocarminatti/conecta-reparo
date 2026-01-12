@@ -102,6 +102,18 @@ export interface PledgeResponseDto {
   status: PledgeStatus;
   createdAt: string;
   updatedAt: string;
+  maintenanceId?: string;
+  maintenanceTitle?: string;
+}
+
+export interface PledgeDetailResponseDto extends PledgeResponseDto {
+  maintenance: {
+    id: string;
+    title: string;
+    category: MaintenanceCategory;
+    status: MaintenanceStatus;
+    scheduledDate: string;
+  };
 }
 
 export interface PledgeDto {
@@ -115,7 +127,27 @@ export interface PledgeDto {
 export interface PledgeUpdateDto {
   status?: PledgeStatus;
   description?: string;
+  volunteerName?: string;
+  volunteerContact?: string;
+  type?: PledgeCategory;
 }
+
+export interface PledgeFormData {
+  volunteerName: string;
+  volunteerContact: string;
+  description: string;
+  type: PledgeCategory;
+  status: PledgeStatus;
+}
+
+export type PledgeFilter = {
+  status?: string;
+  type?: string;
+  search?: string;
+  page?: number;
+  size?: number;
+  sort?: string;
+};
 
 export interface PageResponse<T> {
   content: T[];
