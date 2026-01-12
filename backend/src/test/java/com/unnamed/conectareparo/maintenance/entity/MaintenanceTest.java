@@ -18,7 +18,6 @@ class MaintenanceTest {
 
     @BeforeEach
     void setUp() {
-        ;
         maintenance = new Maintenance(
                 "Initial Title",
                 "Initial Description",
@@ -119,6 +118,151 @@ class MaintenanceTest {
             assertAll(
                     () -> assertEquals("Initial Title", maintenance.getTitle()),
                     () -> assertEquals("New Description", maintenance.getDescription())
+            );
+        }
+
+        @Test
+        @DisplayName("Should not update title when it contains only whitespace")
+        void shouldNotUpdateTitle_whenItIsOnlyWhitespace() {
+            maintenance.updateDetails("     ", "New Description", null);
+
+            assertAll(
+                    () -> assertEquals("Initial Title", maintenance.getTitle()),
+                    () -> assertEquals("New Description", maintenance.getDescription())
+            );
+        }
+
+        @Test
+        @DisplayName("Should not change description when null is passed")
+        void shouldNotChangeDescription_whenNullIsPassed() {
+            Maintenance newMaintenance = new Maintenance("Title", "Original Description", MaintenanceCategory.ELECTRICAL, ZonedDateTime.now());
+            newMaintenance.updateDetails("New Title", null, null);
+
+            assertAll(
+                    () -> assertEquals("New Title", newMaintenance.getTitle()),
+                    () -> assertEquals("Original Description", newMaintenance.getDescription())
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("isCompleted Method")
+    class IsCompletedTests {
+
+        @Test
+        @DisplayName("Should return true when status is COMPLETED")
+        void isCompleted_shouldReturnTrue_whenStatusIsCompleted() {
+            ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.COMPLETED);
+
+            assertTrue(maintenance.isCompleted());
+        }
+
+        @Test
+        @DisplayName("Should return false when status is OPEN")
+        void isCompleted_shouldReturnFalse_whenStatusIsOpen() {
+            ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.OPEN);
+
+            assertFalse(maintenance.isCompleted());
+        }
+
+        @Test
+        @DisplayName("Should return false when status is IN_PROGRESS")
+        void isCompleted_shouldReturnFalse_whenStatusIsInProgress() {
+            ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.IN_PROGRESS);
+
+            assertFalse(maintenance.isCompleted());
+        }
+
+        @Test
+        @DisplayName("Should return false when status is CANCELED")
+        void isCompleted_shouldReturnFalse_whenStatusIsCanceled() {
+            ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.CANCELED);
+
+            assertFalse(maintenance.isCompleted());
+        }
+    }
+
+    @Nested
+    @DisplayName("Additional Status Transitions")
+    class AdditionalStatusTransitionTests {
+
+        @Test
+        @DisplayName("Should allow status transition from OPEN to CANCELED")
+        void shouldAllow_OpenToCanceled() {
+            ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.OPEN);
+
+            maintenance.changeStatus(MaintenanceStatus.CANCELED);
+
+            assertEquals(MaintenanceStatus.CANCELED, maintenance.getStatus());
+        }
+
+        @Test
+        @DisplayName("Should allow status transition from IN_PROGRESS to CANCELED")
+        void shouldAllow_InProgressToCanceled() {
+            ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.IN_PROGRESS);
+
+            maintenance.changeStatus(MaintenanceStatus.CANCELED);
+
+            assertEquals(MaintenanceStatus.CANCELED, maintenance.getStatus());
+        }
+
+        @Test
+        @DisplayName("Should allow status transition from OPEN to COMPLETED directly")
+        void shouldAllow_OpenToCompleted() {
+            ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.OPEN);
+
+            maintenance.changeStatus(MaintenanceStatus.COMPLETED);
+
+            assertEquals(MaintenanceStatus.COMPLETED, maintenance.getStatus());
+        }
+
+        @Test
+        @DisplayName("Should allow status transition from CANCELED to IN_PROGRESS (edge case)")
+        void shouldNotAllow_CanceledToInProgress() {
+            ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.CANCELED);
+
+            assertThrows(IllegalStateException.class, () ->
+                    maintenance.changeStatus(MaintenanceStatus.IN_PROGRESS)
+            );
+        }
+
+        @Test
+        @DisplayName("Should allow status transition from COMPLETED to IN_PROGRESS (edge case)")
+        void shouldNotAllow_CompletedToInProgress() {
+            ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.COMPLETED);
+
+            assertThrows(IllegalStateException.class, () ->
+                    maintenance.changeStatus(MaintenanceStatus.IN_PROGRESS)
+            );
+        }
+
+        @Test
+        @DisplayName("Should not allow status transition from COMPLETED to CANCELED")
+        void shouldNotAllow_CompletedToCanceled() {
+            ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.COMPLETED);
+
+            assertThrows(IllegalStateException.class, () ->
+                    maintenance.changeStatus(MaintenanceStatus.CANCELED)
+            );
+        }
+
+        @Test
+        @DisplayName("Should not allow status transition from CANCELED to COMPLETED")
+        void shouldNotAllow_CanceledToCompleted() {
+            ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.CANCELED);
+
+            assertThrows(IllegalStateException.class, () ->
+                    maintenance.changeStatus(MaintenanceStatus.COMPLETED)
+            );
+        }
+
+        @Test
+        @DisplayName("Should not allow status transition from CANCELED to OPEN")
+        void shouldNotAllow_CanceledToOpen() {
+            ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.CANCELED);
+
+            assertThrows(IllegalStateException.class, () ->
+                    maintenance.changeStatus(MaintenanceStatus.OPEN)
             );
         }
     }

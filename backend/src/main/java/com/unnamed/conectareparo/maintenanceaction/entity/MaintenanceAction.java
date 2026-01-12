@@ -111,7 +111,7 @@ public class MaintenanceAction {
     }
 
     public void updateDetails(String executedBy, ZonedDateTime startDate, ZonedDateTime completionDate, String actionDescription, ActionStatus outcomeStatus) {
-        if(executedBy != null){
+        if(executedBy != null && !executedBy.isBlank()){
             this.executedBy = executedBy;
         }
         if(startDate != null){

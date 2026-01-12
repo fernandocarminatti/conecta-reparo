@@ -181,4 +181,121 @@ class PledgeControllerTest {
                     .andExpect(status().isNotFound());
         }
     }
+
+    @Nested
+    @DisplayName("GET /api/v1/pledges/{pledgeId}")
+    class GetPledgeByIdTests {
+        @Test
+        @DisplayName("Should return 200 OK with pledge data when ID is found")
+        void shouldReturn200_whenPledgeIdIsFound() throws Exception {
+            when(pledgeService.getPledgeByPublicId(validPledgeId)).thenReturn(pledgeResponseDto);
+
+            mockMvc.perform(get("/api/v1/pledges/{pledgeId}", validPledgeId))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(validPledgeId.toString()))
+                    .andExpect(jsonPath("$.volunteerName").value("John Doe"));
+        }
+
+        @Test
+        @DisplayName("Should return 404 Not Found when pledge ID does not exist")
+        void shouldReturn404_whenPledgeIdDoesNotExist() throws Exception {
+            when(pledgeService.getPledgeByPublicId(notFoundPledgeId)).thenThrow(new ResourceNotFoundException("Pledge not found"));
+
+            mockMvc.perform(get("/api/v1/pledges/{pledgeId}", notFoundPledgeId))
+                    .andExpect(status().isNotFound());
+        }
+    }
+
+    @Nested
+    @DisplayName("Invalid Request Handling")
+    class InvalidRequestHandlingTests {
+
+        @Test
+        @DisplayName("Should return 400 Bad Request for invalid UUID format")
+        void shouldReturn400_whenUuidIsInvalid() throws Exception {
+            mockMvc.perform(get("/api/v1/pledges/{pledgeId}", "not-a-valid-uuid"))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Should return 400 Bad Request for malformed JSON body")
+        void shouldReturn400_whenJsonIsMalformed() throws Exception {
+            mockMvc.perform(post("/api/v1/pledges")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{invalid json: }"))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Should return 400 when volunteerName is too short")
+        void shouldReturn400_whenVolunteerNameTooShort() throws Exception {
+            PledgeDto requestDto = new PledgeDto(
+                    validMaintenanceId,
+                    "AB",
+                    "valid@contact.com",
+                    "Description",
+                    PledgeCategory.LABOR,
+                    PledgeStatus.OFFERED
+            );
+
+            mockMvc.perform(post("/api/v1/pledges")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(requestDto)))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Should return 400 when volunteerContact is too short")
+        void shouldReturn400_whenVolunteerContactTooShort() throws Exception {
+            PledgeDto requestDto = new PledgeDto(
+                    validMaintenanceId,
+                    "Valid Name",
+                    "abc",
+                    "Description",
+                    PledgeCategory.LABOR,
+                    PledgeStatus.OFFERED
+            );
+
+            mockMvc.perform(post("/api/v1/pledges")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(requestDto)))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Should return 400 when description is blank")
+        void shouldReturn400_whenDescriptionIsBlank() throws Exception {
+            PledgeDto requestDto = new PledgeDto(
+                    validMaintenanceId,
+                    "Valid Name",
+                    "valid@contact.com",
+                    "",
+                    PledgeCategory.LABOR,
+                    PledgeStatus.OFFERED
+            );
+
+            mockMvc.perform(post("/api/v1/pledges")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(requestDto)))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Should return 400 for empty request body")
+        void shouldReturn400_whenBodyIsEmpty() throws Exception {
+            mockMvc.perform(post("/api/v1/pledges")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(""))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Should return 400 when patching with malformed JSON")
+        void shouldReturn400_whenPatchJsonIsMalformed() throws Exception {
+            mockMvc.perform(patch("/api/v1/pledges/{pledgeId}", validPledgeId)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{malformed: json}"))
+                    .andExpect(status().isBadRequest());
+        }
+    }
 }

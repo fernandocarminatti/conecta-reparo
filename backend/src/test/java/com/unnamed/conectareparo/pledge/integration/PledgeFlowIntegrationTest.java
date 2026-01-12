@@ -3,6 +3,7 @@ package com.unnamed.conectareparo.pledge.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unnamed.conectareparo.maintenance.dto.MaintenanceDto;
 import com.unnamed.conectareparo.maintenance.dto.MaintenanceResponseDto;
+import com.unnamed.conectareparo.maintenance.dto.MaintenanceUpdateDto;
 import com.unnamed.conectareparo.maintenance.entity.MaintenanceCategory;
 import com.unnamed.conectareparo.pledge.dto.*;
 import com.unnamed.conectareparo.pledge.entity.PledgeCategory;
@@ -24,6 +25,7 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -130,6 +132,178 @@ class PledgeFlowIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createPledgeDto)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Unhappy Path: Should return 400 when creating pledge for completed maintenance")
+    void createPledge_forCompletedMaintenance_shouldReturn400() throws Exception {
+        MaintenanceDto maintenanceDto = new MaintenanceDto(
+                "Test Maintenance",
+                "Description",
+                MaintenanceCategory.ELECTRICAL,
+                ZonedDateTime.now().plusDays(10)
+        );
+
+        MvcResult maintenanceResult = mockMvc.perform(post("/api/v1/maintenances")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(maintenanceDto)))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        MaintenanceResponseDto maintenanceResponse = objectMapper.readValue(
+                maintenanceResult.getResponse().getContentAsString(),
+                MaintenanceResponseDto.class);
+
+        MaintenanceUpdateDto updateDto = new MaintenanceUpdateDto(
+                null, null, null, com.unnamed.conectareparo.maintenance.entity.MaintenanceStatus.COMPLETED);
+
+        mockMvc.perform(patch("/api/v1/maintenances/{publicId}", maintenanceResponse.id())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
+                .andExpect(status().isOk());
+
+        PledgeDto pledgeDto = new PledgeDto(
+                maintenanceResponse.id(),
+                "Volunteer",
+                "contact@example.com",
+                "I can help",
+                PledgeCategory.LABOR,
+                PledgeStatus.OFFERED
+        );
+
+        mockMvc.perform(post("/api/v1/pledges")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(pledgeDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Unhappy Path: Should return 400 when creating pledge for canceled maintenance")
+    void createPledge_forCanceledMaintenance_shouldReturn400() throws Exception {
+        MaintenanceDto maintenanceDto = new MaintenanceDto(
+                "Test Maintenance",
+                "Description",
+                MaintenanceCategory.PLUMBING,
+                ZonedDateTime.now().plusDays(10)
+        );
+
+        MvcResult maintenanceResult = mockMvc.perform(post("/api/v1/maintenances")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(maintenanceDto)))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        MaintenanceResponseDto maintenanceResponse = objectMapper.readValue(
+                maintenanceResult.getResponse().getContentAsString(),
+                MaintenanceResponseDto.class);
+
+        MaintenanceUpdateDto updateDto = new MaintenanceUpdateDto(
+                null, null, null, com.unnamed.conectareparo.maintenance.entity.MaintenanceStatus.CANCELED);
+
+        mockMvc.perform(patch("/api/v1/maintenances/{publicId}", maintenanceResponse.id())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
+                .andExpect(status().isOk());
+
+        PledgeDto pledgeDto = new PledgeDto(
+                maintenanceResponse.id(),
+                "Volunteer",
+                "contact@example.com",
+                "I can help",
+                PledgeCategory.MATERIAL,
+                PledgeStatus.OFFERED
+        );
+
+        mockMvc.perform(post("/api/v1/pledges")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(pledgeDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should return pledges for maintenance in list")
+    void getPledges_shouldShowAllPledgesForMaintenance() throws Exception {
+        PledgeDto pledgeDto1 = new PledgeDto(
+                parentMaintenanceId,
+                "Volunteer Alice",
+                "alice@example.com",
+                "Offering labor",
+                PledgeCategory.LABOR,
+                PledgeStatus.OFFERED
+        );
+
+        PledgeDto pledgeDto2 = new PledgeDto(
+                parentMaintenanceId,
+                "Volunteer Bob",
+                "bob@example.com",
+                "Offering materials",
+                PledgeCategory.MATERIAL,
+                PledgeStatus.OFFERED
+        );
+
+        mockMvc.perform(post("/api/v1/pledges")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(pledgeDto1)))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(post("/api/v1/pledges")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(pledgeDto2)))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/v1/pledges")
+                        .param("maintenanceId", parentMaintenanceId.toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(2)));
+    }
+
+    @Test
+    @DisplayName("Should handle status transitions in integration")
+    void statusTransitions_shouldWorkInIntegration() throws Exception {
+        PledgeDto createPledgeDto = new PledgeDto(
+                parentMaintenanceId,
+                "Volunteer Charlie",
+                "charlie@example.com",
+                "Offering help",
+                PledgeCategory.LABOR,
+                PledgeStatus.OFFERED
+        );
+
+        MvcResult createResult = mockMvc.perform(post("/api/v1/pledges")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createPledgeDto)))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        PledgeResponseDto createdPledge = objectMapper.readValue(
+                createResult.getResponse().getContentAsString(),
+                PledgeResponseDto.class);
+        UUID pledgeId = createdPledge.id();
+
+        assertEquals(PledgeStatus.OFFERED, createdPledge.status());
+
+        PledgeUpdateDto toPendingDto = new PledgeUpdateDto(null, null, null, null, PledgeStatus.PENDING);
+        mockMvc.perform(patch("/api/v1/pledges/{pledgeId}", pledgeId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(toPendingDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(PledgeStatus.PENDING.toString()));
+
+        PledgeUpdateDto toCompletedDto = new PledgeUpdateDto(null, null, null, null, PledgeStatus.COMPLETED);
+        mockMvc.perform(patch("/api/v1/pledges/{pledgeId}", pledgeId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(toCompletedDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(PledgeStatus.COMPLETED.toString()));
+    }
+
+    @Test
+    @DisplayName("Should return 404 when getting pledge by non-existent ID")
+    void getPledgeByNonExistentId_shouldReturn404() throws Exception {
+        UUID nonExistentPledgeId = UUID.randomUUID();
+
+        mockMvc.perform(get("/api/v1/pledges/{pledgeId}", nonExistentPledgeId))
+                .andExpect(status().isNotFound());
     }
 
     /**

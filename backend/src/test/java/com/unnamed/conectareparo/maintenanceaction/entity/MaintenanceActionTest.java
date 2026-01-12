@@ -83,6 +83,51 @@ class MaintenanceActionTest {
 
             assertEquals(initialCompletionDate, maintenanceAction.getCompletionDate(), "Completion date should not have been updated.");
         }
+
+        @Test
+        @DisplayName("Should not update when null startDate is provided")
+        void shouldNotUpdateStartDate_whenNullProvided() {
+            ZonedDateTime initialStartDate = maintenanceAction.getStartDate();
+
+            maintenanceAction.updateDetails(null, null, null, null, ActionStatus.FAILURE);
+
+            assertEquals(initialStartDate, maintenanceAction.getStartDate());
+            assertEquals(ActionStatus.FAILURE, maintenanceAction.getOutcomeStatus());
+        }
+
+        @Test
+        @DisplayName("Should not update when null outcomeStatus is provided")
+        void shouldNotUpdateOutcomeStatus_whenNullProvided() {
+            ActionStatus initialOutcomeStatus = maintenanceAction.getOutcomeStatus();
+
+            maintenanceAction.updateDetails("New Executor", null, null, "New description", null);
+
+            assertEquals(initialOutcomeStatus, maintenanceAction.getOutcomeStatus());
+            assertEquals("New Executor", maintenanceAction.getExecutedBy());
+            assertEquals("New description", maintenanceAction.getActionDescription());
+        }
+
+        @Test
+        @DisplayName("Should not update executedBy when it is whitespace only")
+        void shouldNotUpdateExecutedBy_whenWhitespaceOnly() {
+            String initialExecutedBy = maintenanceAction.getExecutedBy();
+
+            maintenanceAction.updateDetails("   ", null, null, "New description", null);
+
+            assertEquals(initialExecutedBy, maintenanceAction.getExecutedBy());
+            assertEquals("New description", maintenanceAction.getActionDescription());
+        }
+
+        @Test
+        @DisplayName("Should not update actionDescription when it is null")
+        void shouldNotUpdateActionDescription_whenNullProvided() {
+            String initialDescription = maintenanceAction.getActionDescription();
+
+            maintenanceAction.updateDetails("New Executor", null, null, null, null);
+
+            assertEquals(initialDescription, maintenanceAction.getActionDescription());
+            assertEquals("New Executor", maintenanceAction.getExecutedBy());
+        }
     }
 
     @Nested
