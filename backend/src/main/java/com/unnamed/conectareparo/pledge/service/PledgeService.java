@@ -58,6 +58,30 @@ public class PledgeService {
     }
 
     /**
+     * Retrieves a paginated list of all pledges in the system.
+     *
+     * @param pageable The pagination information (page, size, sort).
+     * @return A {@link Page} of DTOs representing all pledges.
+     */
+    public Page<PledgeResponseDto> getAllPledges(Pageable pageable) {
+        Page<Pledge> pledges = pledgeRepository.findAll(pageable);
+        return pledges.map(pledgeMapper::toResponseDto);
+    }
+
+    /**
+     * Retrieves a single pledge by its public ID.
+     *
+     * @param publicId The public UUID of the pledge to retrieve.
+     * @return A DTO representing the requested pledge.
+     * @throws ResourceNotFoundException if no pledge with the given public ID is found.
+     */
+    public PledgeResponseDto getPledgeByPublicId(UUID publicId) {
+        Pledge pledge = pledgeRepository.findByPublicId(publicId)
+                .orElseThrow(() -> new ResourceNotFoundException("Pledge not found"));
+        return pledgeMapper.toResponseDto(pledge);
+    }
+
+    /**
      * Retrieves a paginated list of all pledges associated with a specific maintenance task.
      *
      * @param pageable The pagination information (page, size, sort).
