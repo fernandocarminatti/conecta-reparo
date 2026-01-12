@@ -259,4 +259,181 @@ class MaintenanceActionServiceTest {
                 maintenanceActionService.updateMaintenanceAction(maintenancePublicId, actionPublicId, requestDto)
         );
     }
+
+    @Test
+    @DisplayName("Should throw MaintenanceAlreadyCompletedException when creating action for a canceled maintenance")
+    void createMaintenanceAction_whenMaintenanceIsCanceled_shouldThrowException() {
+        ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.CANCELED);
+        MaintenanceActionDto requestDto = new MaintenanceActionDto(
+                "John Doe",
+                startDate,
+                completionDate,
+                "Fixed it",
+                Collections.emptyList(),
+                ActionStatus.SUCCESS
+        );
+
+        when(maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId)).thenReturn(maintenance);
+
+        assertThrows(MaintenanceAlreadyCompletedException.class, () ->
+                maintenanceActionService.createMaintenanceAction(maintenancePublicId, requestDto)
+        );
+        verify(maintenanceActionRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should create action when maintenance is IN_PROGRESS")
+    void createMaintenanceAction_whenMaintenanceIsInProgress_shouldSucceed() {
+        ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.IN_PROGRESS);
+        MaintenanceActionDto requestDto = new MaintenanceActionDto(
+                "John Doe",
+                startDate,
+                completionDate,
+                "Fixed it",
+                Collections.emptyList(),
+                ActionStatus.SUCCESS
+        );
+        MaintenanceActionResponseDto responseDto = new MaintenanceActionResponseDto(
+                actionPublicId,
+                maintenancePublicId,
+                "Test Maintenance",
+                "John Doe",
+                startDate,
+                completionDate,
+                "Fixed it",
+                Collections.emptyList(),
+                ActionStatus.SUCCESS,
+                ZonedDateTime.now(),
+                ZonedDateTime.now()
+        );
+
+        when(maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId)).thenReturn(maintenance);
+        when(maintenanceActionMapper.toEntity(requestDto, maintenance)).thenReturn(maintenanceAction);
+        when(maintenanceActionRepository.save(maintenanceAction)).thenReturn(maintenanceAction);
+        when(maintenanceActionMapper.toResponseDto(maintenanceAction)).thenReturn(responseDto);
+
+        MaintenanceActionResponseDto result = maintenanceActionService.createMaintenanceAction(maintenancePublicId, requestDto);
+
+        assertNotNull(result);
+        verify(maintenanceActionRepository).save(maintenanceAction);
+    }
+
+    @Test
+    @DisplayName("Should throw ResourceNotFoundException when creating action for non-existent maintenance")
+    void createMaintenanceAction_whenMaintenanceNotFound_shouldThrowException() {
+        MaintenanceActionDto requestDto = new MaintenanceActionDto(
+                "John Doe",
+                startDate,
+                completionDate,
+                "Fixed it",
+                Collections.emptyList(),
+                ActionStatus.SUCCESS
+        );
+
+        when(maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId))
+                .thenThrow(new ResourceNotFoundException("Maintenance not found"));
+
+        assertThrows(ResourceNotFoundException.class, () ->
+                maintenanceActionService.createMaintenanceAction(maintenancePublicId, requestDto)
+        );
+        verify(maintenanceActionRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should return all actions with materials")
+    void getAllActions_shouldReturnAllActionsWithMaterials() {
+        MaintenanceActionResponseDto responseDto = new MaintenanceActionResponseDto(
+                actionPublicId,
+                maintenancePublicId,
+                "Test Maintenance",
+                "John Doe",
+                startDate,
+                completionDate,
+                "Fixed it",
+                Collections.emptyList(),
+                ActionStatus.SUCCESS,
+                ZonedDateTime.now(),
+                ZonedDateTime.now()
+        );
+
+        when(maintenanceActionRepository.findAllWithMaterials()).thenReturn(List.of(maintenanceAction));
+        when(maintenanceActionMapper.toResponseDto(maintenanceAction)).thenReturn(responseDto);
+
+        List<MaintenanceActionResponseDto> result = maintenanceActionService.getAllActions();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(responseDto, result.get(0));
+    }
+
+    @Test
+    @DisplayName("Should return empty list when no actions exist")
+    void getAllActions_whenNoActions_shouldReturnEmptyList() {
+        when(maintenanceActionRepository.findAllWithMaterials()).thenReturn(Collections.emptyList());
+
+        List<MaintenanceActionResponseDto> result = maintenanceActionService.getAllActions();
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Should return actions for valid maintenance")
+    void getMaintenanceActions_whenMaintenanceIsValid_shouldReturnActions() {
+        MaintenanceActionResponseDto responseDto = new MaintenanceActionResponseDto(
+                actionPublicId,
+                maintenancePublicId,
+                "Test Maintenance",
+                "John Doe",
+                startDate,
+                completionDate,
+                "Fixed it",
+                Collections.emptyList(),
+                ActionStatus.SUCCESS,
+                ZonedDateTime.now(),
+                ZonedDateTime.now()
+        );
+
+        when(maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId)).thenReturn(maintenance);
+        when(maintenanceActionRepository.findAllByMaintenanceWithMaterials(maintenance)).thenReturn(List.of(maintenanceAction));
+        when(maintenanceActionMapper.toResponseDto(maintenanceAction)).thenReturn(responseDto);
+
+        List<MaintenanceActionResponseDto> result = maintenanceActionService.getMaintenanceActions(maintenancePublicId);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(responseDto, result.get(0));
+    }
+
+    @Test
+    @DisplayName("Should throw ResourceNotFoundException when getting actions for non-existent maintenance")
+    void getMaintenanceActions_whenMaintenanceNotFound_shouldThrowException() {
+        when(maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId))
+                .thenThrow(new ResourceNotFoundException("Maintenance not found"));
+
+        assertThrows(ResourceNotFoundException.class, () ->
+                maintenanceActionService.getMaintenanceActions(maintenancePublicId)
+        );
+    }
+
+    @Test
+    @DisplayName("Should throw MaintenanceAlreadyCompletedException when updating action for a canceled maintenance")
+    void updateMaintenanceAction_whenMaintenanceIsCanceled_shouldThrowException() {
+        ReflectionTestUtils.setField(maintenance, "status", MaintenanceStatus.CANCELED);
+        MaintenanceActionUpdateDto requestDto = new MaintenanceActionUpdateDto(
+                "John Doe",
+                startDate,
+                completionDate,
+                "Fixed it",
+                Collections.emptyList(),
+                ActionStatus.SUCCESS
+        );
+
+        when(maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId)).thenReturn(maintenance);
+
+        assertThrows(MaintenanceAlreadyCompletedException.class, () ->
+                maintenanceActionService.updateMaintenanceAction(maintenancePublicId, actionPublicId, requestDto)
+        );
+        verify(maintenanceActionRepository, never()).save(any());
+    }
 }

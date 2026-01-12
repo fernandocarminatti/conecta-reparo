@@ -1,6 +1,7 @@
 package com.unnamed.conectareparo.maintenanceaction.service;
 
 import com.unnamed.conectareparo.maintenance.entity.Maintenance;
+import com.unnamed.conectareparo.maintenance.entity.MaintenanceStatus;
 import com.unnamed.conectareparo.maintenanceaction.dto.MaintenanceActionDto;
 import com.unnamed.conectareparo.maintenanceaction.dto.MaintenanceActionResponseDto;
 import com.unnamed.conectareparo.maintenanceaction.dto.MaintenanceActionUpdateDto;
@@ -49,8 +50,8 @@ public class MaintenanceActionService {
     @Transactional
     public MaintenanceActionResponseDto createMaintenanceAction(UUID maintenancePublicId, MaintenanceActionDto maintenanceActionDto) {
         Maintenance existingMaintenance = maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId);
-        if (existingMaintenance.isCompleted()){
-            throw new MaintenanceAlreadyCompletedException("Cannot add action to a completed maintenance.");
+        if (existingMaintenance.isCompleted() || existingMaintenance.getStatus() == MaintenanceStatus.CANCELED){
+            throw new MaintenanceAlreadyCompletedException("Cannot add action to a completed or canceled maintenance.");
         }
         MaintenanceAction newMaintenanceAction = maintenanceActionMapper.toEntity(maintenanceActionDto, existingMaintenance);
         MaintenanceAction savedMaintenance = maintenanceActionRepository.save(newMaintenanceAction);
@@ -115,8 +116,8 @@ public class MaintenanceActionService {
     @Transactional
     public MaintenanceActionResponseDto updateMaintenanceAction(UUID maintenancePublicId, UUID actionPublicId, MaintenanceActionUpdateDto updatedActionDto) {
         Maintenance existingMaintenance = maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId);
-        if (existingMaintenance.isCompleted()){
-            throw new MaintenanceAlreadyCompletedException("Cannot update action of a completed maintenance.");
+        if (existingMaintenance.isCompleted() || existingMaintenance.getStatus() == MaintenanceStatus.CANCELED){
+            throw new MaintenanceAlreadyCompletedException("Cannot update action of a completed or canceled maintenance.");
         }
         MaintenanceAction existingAction = maintenanceActionRepository.findByMaintenanceAndActionPublicId(existingMaintenance, actionPublicId)
                 .orElseThrow(() -> new ResourceNotFoundException("Action with ID " + actionPublicId + " not found for the specified maintenance."));

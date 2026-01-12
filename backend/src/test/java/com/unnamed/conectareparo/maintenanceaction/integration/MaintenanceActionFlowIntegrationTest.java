@@ -113,7 +113,7 @@ class MaintenanceActionFlowIntegrationTest {
 
     @Test
     @DisplayName("Unhappy Path: Should return 409 when creating an action for an COMPLETED maintenance")
-    void createAction_forOpenMaintenance_shouldReturn409() throws Exception {
+    void createAction_forCompletedMaintenance_shouldReturn409() throws Exception {
         completeMaintenance(maintenancePublicId);
         MaintenanceActionDto createActionDto = new MaintenanceActionDto(
                 "Mechanic Bob",
@@ -128,6 +128,100 @@ class MaintenanceActionFlowIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createActionDto)))
                 .andExpect(status().isConflict());
+    }
+
+    @Test
+    @DisplayName("Unhappy Path: Should return 409 when creating an action for a CANCELED maintenance")
+    void createAction_forCanceledMaintenance_shouldReturn409() throws Exception {
+        cancelMaintenance(maintenancePublicId);
+        MaintenanceActionDto createActionDto = new MaintenanceActionDto(
+                "Mechanic Bob",
+                ZonedDateTime.now(),
+                ZonedDateTime.now().plusHours(1),
+                "Work in progress",
+                Collections.emptyList(),
+                ActionStatus.PARTIAL_SUCCESS
+        );
+
+        mockMvc.perform(post("/api/v1/maintenances/{maintId}/actions", maintenancePublicId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createActionDto)))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    @DisplayName("Should create multiple actions for the same maintenance")
+    void createMultipleActions_shouldSucceed() throws Exception {
+        MaintenanceActionDto actionDto1 = new MaintenanceActionDto(
+                "Mechanic Bob",
+                ZonedDateTime.now(),
+                ZonedDateTime.now().plusHours(1),
+                "First action",
+                Collections.emptyList(),
+                ActionStatus.SUCCESS
+        );
+
+        mockMvc.perform(post("/api/v1/maintenances/{maintId}/actions", maintenancePublicId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(actionDto1)))
+                .andExpect(status().isCreated());
+
+        MaintenanceActionDto actionDto2 = new MaintenanceActionDto(
+                "Mechanic Alice",
+                ZonedDateTime.now().plusHours(2),
+                ZonedDateTime.now().plusHours(3),
+                "Second action",
+                Collections.emptyList(),
+                ActionStatus.PARTIAL_SUCCESS
+        );
+
+        mockMvc.perform(post("/api/v1/maintenances/{maintId}/actions", maintenancePublicId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(actionDto2)))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/v1/maintenances/{maintId}/actions", maintenancePublicId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
+    }
+
+    @Test
+    @DisplayName("Should return all actions without maintenance filter")
+    void getAllActions_withoutMaintenanceFilter_shouldReturnAll() throws Exception {
+        MaintenanceActionDto actionDto = new MaintenanceActionDto(
+                "Mechanic Bob",
+                ZonedDateTime.now(),
+                ZonedDateTime.now().plusHours(1),
+                "Action performed",
+                Collections.emptyList(),
+                ActionStatus.SUCCESS
+        );
+
+        mockMvc.perform(post("/api/v1/maintenances/{maintId}/actions", maintenancePublicId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(actionDto)))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/v1/actions"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    @DisplayName("Should return 404 when getting actions for non-existent maintenance")
+    void getActions_forNonExistentMaintenance_shouldReturn404() throws Exception {
+        UUID nonExistentMaintenanceId = UUID.randomUUID();
+
+        mockMvc.perform(get("/api/v1/maintenances/{maintId}/actions", nonExistentMaintenanceId))
+                .andExpect(status().isNotFound());
+    }
+
+    private void cancelMaintenance(UUID maintenanceId) throws Exception {
+        MaintenanceUpdateDto updateDto = new MaintenanceUpdateDto(null, null, null, MaintenanceStatus.CANCELED);
+        mockMvc.perform(patch("/api/v1/maintenances/{publicId}", maintenanceId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
+                .andExpect(status().isOk());
     }
 
     private UUID createMaintenanceAndGetId(String title) throws Exception {

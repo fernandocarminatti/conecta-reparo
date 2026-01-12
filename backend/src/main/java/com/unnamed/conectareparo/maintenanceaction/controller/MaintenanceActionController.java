@@ -6,6 +6,7 @@ import com.unnamed.conectareparo.maintenanceaction.dto.MaintenanceActionUpdateDt
 import com.unnamed.conectareparo.common.exception.ErrorResponse;
 import com.unnamed.conectareparo.maintenanceaction.service.MaintenanceActionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,6 +31,24 @@ public class MaintenanceActionController {
 
     public MaintenanceActionController(MaintenanceActionService maintenanceActionService) {
         this.maintenanceActionService = maintenanceActionService;
+    }
+
+    @Operation(
+        summary = "Retrieves all maintenance actions.",
+        description = "Fetches a list of all maintenance actions across all maintenances."
+    )
+    @ApiResponse(
+        responseCode = "200",
+        description = "Maintenance actions retrieved successfully.",
+        content = @Content(
+            mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = MaintenanceActionResponseDto.class))
+        )
+    )
+    @GetMapping("/api/v1/actions")
+    public ResponseEntity<List<MaintenanceActionResponseDto>> getAllActions() {
+        List<MaintenanceActionResponseDto> actionsList = maintenanceActionService.getAllActions();
+        return ResponseEntity.ok(actionsList);
     }
 
     @Operation(
