@@ -82,9 +82,10 @@ public class MaintenanceController {
     @GetMapping
     public ResponseEntity<Page<MaintenanceResponseDto>> getMaintenances(
             @RequestParam(required = false) String status,
+            @RequestParam(required = false) String category,
             @RequestParam(required = false) String search,
             @ParameterObject Pageable pageable) {
-        Page<MaintenanceResponseDto> foundMaintenances = maintenanceService.getAllMaintenances(status, search, pageable);
+        Page<MaintenanceResponseDto> foundMaintenances = maintenanceService.getAllMaintenances(status, category, search, pageable);
         return ResponseEntity.ok(foundMaintenances);
     }
 
