@@ -1,7 +1,10 @@
 import { 
   MaintenanceResponseDto, 
+  MaintenanceDetailResponseDto,
   MaintenanceDto, 
   MaintenanceUpdateDto,
+  MaintenanceActionResponseDto,
+  PledgeResponseDto,
   PageResponse,
   MaintenanceFilter 
 } from '@/lib/types/maintenance';
@@ -21,6 +24,7 @@ export const maintenanceApi = {
     const params = new URLSearchParams();
     
     if (filter.status) params.append('status', filter.status);
+    if (filter.category) params.append('category', filter.category);
     if (filter.search) params.append('search', filter.search);
     if (filter.page !== undefined) params.append('page', filter.page.toString());
     if (filter.size !== undefined) params.append('size', filter.size.toString());
@@ -50,6 +54,20 @@ export const maintenanceApi = {
     return handleResponse<MaintenanceResponseDto>(response);
   },
 
+  async getDetail(id: string): Promise<MaintenanceDetailResponseDto> {
+    const [maintenance, actions, pledges] = await Promise.all([
+      this.getById(id),
+      this.getActions(id),
+      this.getPledges(id),
+    ]);
+
+    return {
+      ...maintenance,
+      actions,
+      pledges,
+    };
+  },
+
   async create(data: MaintenanceDto): Promise<MaintenanceResponseDto> {
     const response = await fetch(`${API_BASE_URL}/api/v1/maintenances`, {
       method: 'POST',
@@ -74,7 +92,7 @@ export const maintenanceApi = {
     return handleResponse<MaintenanceResponseDto>(response);
   },
 
-  async getActions(maintenanceId: string): Promise<any[]> {
+  async getActions(maintenanceId: string): Promise<MaintenanceActionResponseDto[]> {
     const response = await fetch(`${API_BASE_URL}/api/v1/maintenances/${maintenanceId}/actions`, {
       method: 'GET',
       headers: {
@@ -82,7 +100,18 @@ export const maintenanceApi = {
       },
     });
 
-    return handleResponse<any[]>(response);
+    return handleResponse<MaintenanceActionResponseDto[]>(response);
+  },
+
+  async getPledges(maintenanceId: string): Promise<PledgeResponseDto[]> {
+    const response = await fetch(`${API_BASE_URL}/api/v1/pledges?maintenanceId=${maintenanceId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    return handleResponse<PledgeResponseDto[]>(response);
   },
 };
 

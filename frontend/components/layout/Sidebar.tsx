@@ -49,7 +49,7 @@ const navigation: NavItem[] = [
     ],
   },
   {
-    name: 'Ações de Manutenção',
+    name: 'Ações',
     href: '/admin/actions',
     icon: ClipboardList,
     children: [

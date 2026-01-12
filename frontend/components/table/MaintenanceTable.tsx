@@ -55,7 +55,7 @@ function StatusBadge({ status }: { status: MaintenanceStatus }) {
   const { bg, text, label } = styles[status];
 
   return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${bg} ${text}`}>
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-xs text-sm font-medium ${bg} ${text}`}>
       {label}
     </span>
   );
@@ -86,7 +86,7 @@ function CategoryBadge({ category }: { category: MaintenanceCategory }) {
   };
 
   return (
-    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${bg} ${text}`}>
+    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-xs text-sm font-medium ${bg} ${text}`}>
       <span>{icon}</span>
       {labels[category]}
     </span>
@@ -266,7 +266,7 @@ export function MaintenanceTable({
       sortable: true,
       render: (row) => (
         <div className="max-w-xs truncate">
-          <p className="font-medium text-gray-900">{row.title}</p>
+          <p className="text-sm font-bold text-gray-900">{row.title}</p>
           <p className="text-xs text-gray-500 truncate mt-0.5">{row.description}</p>
         </div>
       ),
@@ -298,7 +298,7 @@ export function MaintenanceTable({
       header: 'Criado em',
       sortable: true,
       render: (row) => (
-        <span className="text-gray-500 text-xs">
+        <span className="text-gray-600">
           {format(new Date(row.createdAt), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
         </span>
       ),
@@ -319,7 +319,7 @@ export function MaintenanceTable({
     {
       label: 'Ver Ações',
       icon: ClipboardList,
-      href: '/admin/maintenances/[id]/actions',
+      href: '/admin/maintenances/[id]',
     },
   ];
 

@@ -26,6 +26,8 @@ const statusOptions = [
   { value: 'CANCELED', label: 'Cancelado' },
 ];
 
+const PAGE_SIZE = 25;
+
 const categoryOptions = [
   { value: '', label: 'Todas as Categorias' },
   { value: 'BUILDING', label: '🏢 Construção' },
@@ -38,13 +40,6 @@ const categoryOptions = [
   { value: 'OTHERS', label: '📦 Outros' },
 ];
 
-const pageSizeOptions = [
-  { value: 10, label: '10 por página' },
-  { value: 25, label: '25 por página' },
-  { value: 50, label: '50 por página' },
-  { value: 100, label: '100 por página' },
-];
-
 export default function MaintenancesPage() {
   const [data, setData] = useState<MaintenanceResponseDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,7 +49,7 @@ export default function MaintenancesPage() {
     status: '',
     search: '',
     page: 0,
-    size: 10,
+    size: PAGE_SIZE,
     sort: 'createdAt,desc',
   });
   
@@ -153,7 +148,7 @@ export default function MaintenancesPage() {
                 placeholder="Buscar por título, descrição ou categoria..."
                 value={filter.search}
                 onChange={(e) => setFilter(prev => ({ ...prev, search: e.target.value }))}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xs text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-400"
               />
             </div>
           </form>
@@ -164,7 +159,7 @@ export default function MaintenancesPage() {
               <select
                 value={filter.status}
                 onChange={(e) => handleFilterChange('status', e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                className="px-3 py-2 border border-gray-300 rounded-xs text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
               >
                 {statusOptions.map(opt => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -175,19 +170,9 @@ export default function MaintenancesPage() {
             <select
               value={filter.category || ''}
               onChange={(e) => handleFilterChange('category', e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              className="px-3 py-2 border border-gray-300 rounded-xs text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
             >
               {categoryOptions.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-
-            <select
-              value={filter.size}
-              onChange={(e) => handleFilterChange('size', parseInt(e.target.value))}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-            >
-              {pageSizeOptions.map(opt => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </select>
@@ -212,8 +197,8 @@ export default function MaintenancesPage() {
       {pagination.totalPages > 1 && (
         <div className="flex items-center justify-between bg-white rounded-lg border border-gray-200 px-4 py-3">
           <div className="text-sm text-gray-500">
-            Mostrando {pagination.currentPage * (filter.size || 10) + 1} a{' '}
-            {Math.min((pagination.currentPage + 1) * (filter.size || 10), pagination.totalElements)} de{' '}
+            Mostrando {pagination.currentPage * PAGE_SIZE + 1} a{' '}
+            {Math.min((pagination.currentPage + 1) * PAGE_SIZE, pagination.totalElements)} de{' '}
             {pagination.totalElements} resultados
           </div>
           
