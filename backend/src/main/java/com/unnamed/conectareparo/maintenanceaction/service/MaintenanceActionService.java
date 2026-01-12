@@ -58,6 +58,18 @@ public class MaintenanceActionService {
     }
 
     /**
+     * Retrieves a list of all maintenance actions across all maintenances.
+     *
+     * @return A list of DTOs representing all maintenance actions.
+     */
+    public List<MaintenanceActionResponseDto> getAllActions() {
+        List<MaintenanceAction> actionsList = maintenanceActionRepository.findAllWithMaterials();
+        return actionsList.stream()
+                .map(maintenanceActionMapper::toResponseDto)
+                .toList();
+    }
+
+    /**
      * Retrieves a list of all maintenance actions associated with a specific maintenance task.
      * The associated materials for each action are eagerly fetched to prevent N+1 query issues.
      *

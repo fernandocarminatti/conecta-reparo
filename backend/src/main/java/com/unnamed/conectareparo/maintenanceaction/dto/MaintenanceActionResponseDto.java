@@ -14,7 +14,11 @@ import java.util.UUID;
 public record MaintenanceActionResponseDto(
         @Schema(description = "Unique identifier of the maintenance action", example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
         UUID id,
-        @Schema(description = "Identifier of the associated maintenance", example = "João Silva")
+        @Schema(description = "Public UUID of the associated maintenance", example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
+        UUID maintenanceId,
+        @Schema(description = "Title of the associated maintenance", example = "Repair kitchen sink")
+        String maintenanceTitle,
+        @Schema(description = "Identifier of the person who executed the maintenance action", example = "João Silva")
         String executedBy,
         @Schema(description = "Date and time when the maintenance action started in ISO 8601 format.", example = "2025-10-10T10:10:10Z")
         ZonedDateTime startDate,
@@ -24,8 +28,8 @@ public record MaintenanceActionResponseDto(
         String actionDescription,
         @Schema(description = "List of materials used during the maintenance action",
                 example = "[" +
-                        "{\"" +
-                        "materialName\": \"Cano PVC de 1 polegada\"," +
+                        "{" +
+                        "\"materialName\": \"Cano PVC de 1 polegada\"," +
                         " \"quantityUsed\": 1}," +
                         " {\"materialName\": \"Selante\"," +
                         " \"quantityUsed\": 2}" +
@@ -34,6 +38,8 @@ public record MaintenanceActionResponseDto(
         @Schema(description = "Outcome status of the maintenance action", example = "SUCCESS")
         ActionStatus outcomeStatus,
         @Schema(description = "Date and time when the maintenance action was created in ISO 8601 format.", example = "2025-10-10T10:10:10Z")
-        ZonedDateTime createdAt
+        ZonedDateTime createdAt,
+        @Schema(description = "Date and time when the maintenance action was last updated in ISO 8601 format.", example = "2025-10-10T10:10:10Z")
+        ZonedDateTime updatedAt
 ) {
 }
