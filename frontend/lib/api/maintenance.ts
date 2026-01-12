@@ -111,7 +111,8 @@ export const maintenanceApi = {
       },
     });
 
-    return handleResponse<PledgeResponseDto[]>(response);
+    const pageResponse = await handleResponse<PageResponse<PledgeResponseDto>>(response);
+    return pageResponse.content;
   },
 };
 
