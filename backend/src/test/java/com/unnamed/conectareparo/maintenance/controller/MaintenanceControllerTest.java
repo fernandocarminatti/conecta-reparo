@@ -103,7 +103,7 @@ class MaintenanceControllerTest {
         @DisplayName("Should return 200 OK with a page of maintenances")
         void shouldReturn200_withPageOfMaintenances() throws Exception {
             Page<MaintenanceResponseDto> page = new PageImpl<>(List.of(maintenanceResponseDto), PageRequest.of(0, 10), 1);
-            when(maintenanceService.getAllMaintenances(any(), any(), any(PageRequest.class))).thenReturn(page);
+            when(maintenanceService.getAllMaintenances(any(), any(), any(), any(PageRequest.class))).thenReturn(page);
 
             mockMvc.perform(get("/api/v1/maintenances")
                             .param("status", "open")
@@ -166,6 +166,89 @@ class MaintenanceControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(updateDto)))
                     .andExpect(status().isNotFound());
+        }
+    }
+
+    @Nested
+    @DisplayName("Invalid Request Handling")
+    class InvalidRequestHandlingTests {
+
+        @Test
+        @DisplayName("Should return 400 Bad Request for invalid UUID format")
+        void shouldReturn400_whenUuidIsInvalid() throws Exception {
+            mockMvc.perform(get("/api/v1/maintenances/{id}", "not-a-valid-uuid"))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Should return 400 Bad Request for malformed JSON body")
+        void shouldReturn400_whenJsonIsMalformed() throws Exception {
+            mockMvc.perform(post("/api/v1/maintenances")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{invalid json: }"))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Should return 400 when title is null")
+        void shouldReturn400_whenTitleIsNull() throws Exception {
+            MaintenanceDto requestDto = new MaintenanceDto(null, "Description", MaintenanceCategory.ELECTRICAL, validDate);
+
+            mockMvc.perform(post("/api/v1/maintenances")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(requestDto)))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Should return 400 when title contains only whitespace")
+        void shouldReturn400_whenTitleIsOnlyWhitespace() throws Exception {
+            MaintenanceDto requestDto = new MaintenanceDto("   ", "Description", MaintenanceCategory.ELECTRICAL, validDate);
+
+            mockMvc.perform(post("/api/v1/maintenances")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(requestDto)))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Should return 400 when category is invalid enum value")
+        void shouldReturn400_whenCategoryIsInvalid() throws Exception {
+            String invalidJson = "{\"title\": \"Test\", \"description\": \"Desc\", \"category\": \"INVALID_CATEGORY\", \"scheduledDate\": \"2025-12-31T10:00:00Z\"}";
+
+            mockMvc.perform(post("/api/v1/maintenances")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(invalidJson))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Should return 400 when scheduledDate format is invalid")
+        void shouldReturn400_whenScheduledDateFormatIsInvalid() throws Exception {
+            String invalidJson = "{\"title\": \"Test\", \"description\": \"Desc\", \"category\": \"ELECTRICAL\", \"scheduledDate\": \"invalid-date\"}";
+
+            mockMvc.perform(post("/api/v1/maintenances")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(invalidJson))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Should return 400 for empty request body")
+        void shouldReturn400_whenBodyIsEmpty() throws Exception {
+            mockMvc.perform(post("/api/v1/maintenances")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(""))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Should return 400 when patching with completely invalid JSON")
+        void shouldReturn400_whenPatchJsonIsMalformed() throws Exception {
+            mockMvc.perform(patch("/api/v1/maintenances/{id}", validPublicId)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{malformed: json: }"))
+                    .andExpect(status().isBadRequest());
         }
     }
 }

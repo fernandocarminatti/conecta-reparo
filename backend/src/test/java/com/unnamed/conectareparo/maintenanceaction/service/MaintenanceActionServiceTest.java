@@ -88,12 +88,15 @@ class MaintenanceActionServiceTest {
         );
         MaintenanceActionResponseDto responseDto = new MaintenanceActionResponseDto(
                 actionPublicId,
+                maintenancePublicId,
+                "Test Maintenance",
                 "John Doe",
                 startDate,
                 completionDate,
                 "Fixed it",
                 new ArrayList<>(),
                 ActionStatus.SUCCESS,
+                ZonedDateTime.now(),
                 ZonedDateTime.now()
         );
 
@@ -134,12 +137,15 @@ class MaintenanceActionServiceTest {
     void getSingleMaintenanceAction_whenFound_shouldReturnDto() {
         MaintenanceActionResponseDto responseDto = new MaintenanceActionResponseDto(
                 actionPublicId,
+                maintenancePublicId,
+                "Test Maintenance",
                 "John Doe",
                 startDate,
                 completionDate,
                 "Fixed it",
                 Collections.emptyList(),
                 ActionStatus.SUCCESS,
+                ZonedDateTime.now(),
                 ZonedDateTime.now()
         );
         when(maintenanceService.getMaintenanceEntityByPublicId(maintenancePublicId))
@@ -184,6 +190,8 @@ class MaintenanceActionServiceTest {
         );
         var responseDto = new MaintenanceActionResponseDto(
                 actionPublicId,
+                maintenancePublicId,
+                "Test Maintenance",
                 "Jane Doe",
                 startDate.plusHours(1),
                 completionDate.plusHours(1),
@@ -194,6 +202,7 @@ class MaintenanceActionServiceTest {
                         BigDecimal.ONE, "ltr"
                 )),
                 ActionStatus.PARTIAL_SUCCESS,
+                ZonedDateTime.now(),
                 ZonedDateTime.now()
         );
 

@@ -58,13 +58,16 @@ class MaintenanceActionControllerTest {
         randomPointInTime = ZonedDateTime.parse("2024-10-10T10:10:00Z");
         actionResponseDto = new MaintenanceActionResponseDto(
                 validActionId,
+                validMaintenanceId,
+                "Test Maintenance",
                 "John Doe",
                 ZonedDateTime.now(),
                 ZonedDateTime.now(),
                 "Action performed",
                 Collections.emptyList(),
                 ActionStatus.SUCCESS,
-                randomPointInTime
+                randomPointInTime,
+                ZonedDateTime.now()
         );
     }
 
@@ -145,13 +148,16 @@ class MaintenanceActionControllerTest {
                     ActionStatus.PARTIAL_SUCCESS);
             MaintenanceActionResponseDto updatedResponse = new MaintenanceActionResponseDto(
                     validActionId,
+                    validMaintenanceId,
+                    "Test Maintenance",
                     "Jane Doe",
                     randomPointInTime,
                     randomPointInTime,
                     "Updated action",
                     Collections.emptyList(),
                     ActionStatus.SUCCESS,
-                    randomPointInTime);
+                    randomPointInTime,
+                    ZonedDateTime.now());
 
             when(maintenanceActionService.updateMaintenanceAction(eq(validMaintenanceId), eq(validActionId), any(MaintenanceActionUpdateDto.class))).thenReturn(updatedResponse);
 

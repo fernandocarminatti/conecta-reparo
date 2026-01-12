@@ -32,7 +32,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class MaintenanceServiceTest {
@@ -97,7 +97,7 @@ class MaintenanceServiceTest {
 
         when(maintenanceRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
 
-        Page<MaintenanceResponseDto> resultPage = maintenanceService.getAllMaintenances(null, null, pageable);
+        Page<MaintenanceResponseDto> resultPage = maintenanceService.getAllMaintenances(null, null, null, pageable);
 
         assertNotNull(resultPage);
         assertTrue(resultPage.isEmpty());
@@ -194,7 +194,7 @@ class MaintenanceServiceTest {
         ))).thenReturn(maintenancePage);
         when(maintenanceMapper.toResponseDto(persistedMaintenance)).thenReturn(persistedMaintenanceResponseDto);
 
-        Page<MaintenanceResponseDto> resultPage = maintenanceService.getAllMaintenances(null, null, pageable);
+        Page<MaintenanceResponseDto> resultPage = maintenanceService.getAllMaintenances(null, null, null, pageable);
 
         assertAll(
                 () -> assertNotNull(resultPage),
@@ -258,5 +258,73 @@ class MaintenanceServiceTest {
         assertThrows(DataIntegrityViolationException.class, () -> {
             maintenanceService.createMaintenance(requestDto);
         });
+    }
+
+    @Test
+    @DisplayName("Should return OPEN and IN_PROGRESS maintenances for getActiveMaintenances")
+    void getActiveMaintenances_shouldReturnOnlyActiveStatuses() {
+        Maintenance openMaintenance = spy(new Maintenance("Open Task", "Desc", MaintenanceCategory.ELECTRICAL, ZonedDateTime.now()));
+        Maintenance inProgressMaintenance = spy(new Maintenance("In Progress Task", "Desc", MaintenanceCategory.PLUMBING, ZonedDateTime.now()));
+        Maintenance completedMaintenance = spy(new Maintenance("Completed Task", "Desc", MaintenanceCategory.HVAC, ZonedDateTime.now()));
+        Maintenance canceledMaintenance = spy(new Maintenance("Canceled Task", "Desc", MaintenanceCategory.BUILDING, ZonedDateTime.now()));
+
+        ReflectionTestUtils.setField(openMaintenance, "status", MaintenanceStatus.OPEN);
+        ReflectionTestUtils.setField(inProgressMaintenance, "status", MaintenanceStatus.IN_PROGRESS);
+        ReflectionTestUtils.setField(completedMaintenance, "status", MaintenanceStatus.COMPLETED);
+        ReflectionTestUtils.setField(canceledMaintenance, "status", MaintenanceStatus.CANCELED);
+
+        Page<Maintenance> activePage = new PageImpl<>(List.of(openMaintenance, inProgressMaintenance));
+        when(maintenanceRepository.findByStatusIn(anyList(), any(Pageable.class))).thenReturn(activePage);
+        when(maintenanceMapper.toResponseDto(openMaintenance)).thenReturn(persistedMaintenanceResponseDto);
+        when(maintenanceMapper.toResponseDto(inProgressMaintenance)).thenReturn(persistedMaintenanceResponseDto);
+
+        Page<MaintenanceResponseDto> resultPage = maintenanceService.getActiveMaintenances();
+
+        assertNotNull(resultPage);
+        assertEquals(2, resultPage.getTotalElements());
+        verify(maintenanceRepository).findByStatusIn(argThat(list ->
+                list.contains(MaintenanceStatus.OPEN) && list.contains(MaintenanceStatus.IN_PROGRESS)
+        ), any(Pageable.class));
+    }
+
+    @Test
+    @DisplayName("Should return empty page when no active maintenances exist")
+    void getActiveMaintenances_whenNoActive_shouldReturnEmptyPage() {
+        Page<Maintenance> emptyPage = Page.empty(Pageable.unpaged());
+        when(maintenanceRepository.findByStatusIn(anyList(), any(Pageable.class))).thenReturn(emptyPage);
+
+        Page<MaintenanceResponseDto> resultPage = maintenanceService.getActiveMaintenances();
+
+        assertNotNull(resultPage);
+        assertTrue(resultPage.isEmpty());
+        verify(maintenanceMapper, never()).toResponseDto(any());
+    }
+
+    @Test
+    @DisplayName("Should map entities to DTOs in getActiveMaintenances")
+    void getActiveMaintenances_shouldMapEntitiesToDtos() {
+        Maintenance openMaintenance = spy(new Maintenance("Active Task", "Description", MaintenanceCategory.ELECTRICAL, ZonedDateTime.now()));
+        ReflectionTestUtils.setField(openMaintenance, "status", MaintenanceStatus.OPEN);
+
+        MaintenanceResponseDto expectedDto = new MaintenanceResponseDto(
+                openMaintenance.getPublicId(),
+                "Active Task",
+                "Description",
+                MaintenanceCategory.ELECTRICAL,
+                openMaintenance.getScheduledDate(),
+                MaintenanceStatus.OPEN,
+                openMaintenance.getCreatedAt(),
+                openMaintenance.getUpdatedAt()
+        );
+
+        Page<Maintenance> activePage = new PageImpl<>(List.of(openMaintenance));
+        when(maintenanceRepository.findByStatusIn(anyList(), any(Pageable.class))).thenReturn(activePage);
+        when(maintenanceMapper.toResponseDto(openMaintenance)).thenReturn(expectedDto);
+
+        Page<MaintenanceResponseDto> resultPage = maintenanceService.getActiveMaintenances();
+
+        assertNotNull(resultPage);
+        assertEquals(1, resultPage.getTotalElements());
+        assertEquals(expectedDto, resultPage.getContent().get(0));
     }
 }
