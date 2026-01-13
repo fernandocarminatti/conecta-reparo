@@ -33,8 +33,8 @@ export function PledgeTable({
       className: 'whitespace-nowrap',
       render: (row: PledgeResponseDto) => (
         <div className="truncate max-w-[200px]">
-          <p className="text-sm font-bold text-gray-900">{row.volunteerName}</p>
-          <p className="text-xs text-gray-500 truncate">{row.volunteerContact}</p>
+          <p className="text-sm font-bold text-foreground">{row.volunteerName}</p>
+          <p className="text-xs text-muted-foreground truncate">{row.volunteerContact}</p>
         </div>
       ),
     },
@@ -43,7 +43,7 @@ export function PledgeTable({
       header: 'Descrição',
       sortable: false,
       render: (row: PledgeResponseDto) => (
-        <p className="text-sm text-gray-600 truncate max-w-[300px]">{row.description}</p>
+        <p className="text-sm text-muted-foreground truncate max-w-[300px]">{row.description}</p>
       ),
     },
     {
@@ -75,7 +75,7 @@ export function PledgeTable({
       width: 'w-36',
       className: 'whitespace-nowrap',
       render: (row: PledgeResponseDto) => (
-        <span className="text-sm text-gray-500">
+        <span className="text-sm text-muted-foreground">
           {format(new Date(row.createdAt), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
         </span>
       ),

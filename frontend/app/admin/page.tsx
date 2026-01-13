@@ -29,12 +29,12 @@ function StatCard({ title, value, change, changeType = 'neutral', icon: Icon, ic
       <CardContent className="pt-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-500">{title}</p>
-            <p className="text-3xl font-bold text-gray-900 mt-2">{value}</p>
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+            <p className="text-3xl font-bold text-foreground mt-2">{value}</p>
             {change && (
               <p className={`text-sm mt-2 flex items-center gap-1 ${
                 changeType === 'positive' ? 'text-green-600' : 
-                changeType === 'negative' ? 'text-red-600' : 'text-gray-500'
+                changeType === 'negative' ? 'text-red-600' : 'text-muted-foreground'
               }`}>
                 <TrendingUp className={`w-4 h-4 ${changeType === 'negative' ? 'rotate-180' : ''}`} />
                 {change}
@@ -124,8 +124,8 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
-          <p className="text-gray-500 mt-1">Visão geral do sistema de manutenção</p>
+          <h2 className="text-2xl font-bold text-foreground">Dashboard</h2>
+          <p className="text-muted-foreground mt-1">Visão geral do sistema de manutenção</p>
         </div>
         <Button asChild>
           <Link href="/admin/maintenances/new">
@@ -174,92 +174,92 @@ export default function AdminDashboard() {
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Atividades Recentes</h3>
-              <Link href="/admin/history" className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1">
+              <h3 className="text-lg font-semibold text-foreground">Atividades Recentes</h3>
+              <Link href="/admin/history" className="text-sm text-primary hover:text-primary/80 flex items-center gap-1">
                 Ver todas
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
-            <div className="divide-y divide-gray-100 -mx-6 px-6">
-              {recentActivities.map((activity) => (
-                <div key={activity.id} className="py-4 first:pt-0 last:pb-0 hover:bg-gray-50 transition-colors -mx-4 px-4">
-                  <div className="flex items-start gap-4">
-                    <ActivityIcon type={activity.type} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900">{activity.title}</p>
-                      <p className="text-sm text-gray-500 mt-0.5">{activity.description}</p>
-                      <div className="flex items-center gap-2 mt-2">
-                        <Badge variant={STATUS_CONFIG[activity.status].variant}>
-                          {activity.status === 'completed' && <CheckCircle className="w-3 h-3 mr-1" />}
-                          {activity.status === 'pending' && <Clock className="w-3 h-3 mr-1" />}
-                          {activity.status === 'in_progress' && <AlertCircle className="w-3 h-3 mr-1" />}
-                          {STATUS_CONFIG[activity.status].label}
-                        </Badge>
-                        <span className="text-xs text-gray-400">{activity.time}</span>
+              <div className="divide-y divide-border -mx-6 px-6">
+                {recentActivities.map((activity) => (
+                  <div key={activity.id} className="py-4 first:pt-0 last:pb-0 hover:bg-muted transition-colors -mx-4 px-4">
+                    <div className="flex items-start gap-4">
+                      <ActivityIcon type={activity.type} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground">{activity.title}</p>
+                        <p className="text-sm text-muted-foreground mt-0.5">{activity.description}</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <Badge variant={STATUS_CONFIG[activity.status].variant}>
+                            {activity.status === 'completed' && <CheckCircle className="w-3 h-3 mr-1" />}
+                            {activity.status === 'pending' && <Clock className="w-3 h-3 mr-1" />}
+                            {activity.status === 'in_progress' && <AlertCircle className="w-3 h-3 mr-1" />}
+                            {STATUS_CONFIG[activity.status].label}
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">{activity.time}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="pt-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Ações Rápidas</h3>
-            <div className="grid gap-4 sm:grid-cols-2 -mx-2 px-2">
-              <Link
-                href="/admin/maintenances/new"
-                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-maintenance-light hover:bg-maintenance-light/50 transition-colors group"
-              >
-                <div className="w-10 h-10 bg-maintenance-light rounded-lg flex items-center justify-center group-hover:bg-maintenance-light-hover transition-colors">
-                  <Plus className="w-5 h-5 text-maintenance" />
-                </div>
-                <div>
-                  <p className="font-medium text-gray-900">Nova Manutenção</p>
-                  <p className="text-sm text-gray-500">Criar solicitação</p>
-                </div>
-              </Link>
-              <Link
-                href="/admin/pledges"
-                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-pledge-light hover:bg-pledge-light/50 transition-colors group"
-              >
-                <div className="w-10 h-10 bg-pledge-light rounded-lg flex items-center justify-center group-hover:bg-pledge-light-hover transition-colors">
-                  <Heart className="w-5 h-5 text-pledge" />
-                </div>
-                <div>
-                  <p className="font-medium text-gray-900">Gerenciar Pledges</p>
-                  <p className="text-sm text-gray-500">Ver doações</p>
-                </div>
-              </Link>
-              <Link
-                href="/admin/actions"
-                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-action-light hover:bg-action-light/50 transition-colors group"
-              >
-                <div className="w-10 h-10 bg-action-light rounded-lg flex items-center justify-center group-hover:bg-action-light-hover transition-colors">
-                  <ClipboardList className="w-5 h-5 text-action" />
-                </div>
-                <div>
-                  <p className="font-medium text-gray-900">Ver Ações</p>
-                  <p className="text-sm text-gray-500">Todas as ações</p>
-                </div>
-              </Link>
-              <Link
-                href="/admin/history"
-                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition-colors group"
-              >
-                <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-gray-200 transition-colors">
-                  <Clock className="w-5 h-5 text-gray-600" />
-                </div>
-                <div>
-                  <p className="font-medium text-gray-900">Histórico</p>
-                  <p className="text-sm text-gray-500">Ver registros</p>
-                </div>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Ações Rápidas</h3>
+              <div className="grid gap-4 sm:grid-cols-2 -mx-2 px-2">
+                <Link
+                  href="/admin/maintenances/new"
+                  className="flex items-center gap-4 p-4 border border-border rounded-lg hover:bg-muted transition-colors group"
+                >
+                  <div className="w-10 h-10 bg-maintenance-light rounded-lg flex items-center justify-center group-hover:bg-maintenance-light-hover transition-colors">
+                    <Plus className="w-5 h-5 text-maintenance" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-foreground">Nova Manutenção</p>
+                    <p className="text-sm text-muted-foreground">Criar solicitação</p>
+                  </div>
+                </Link>
+                <Link
+                  href="/admin/pledges"
+                  className="flex items-center gap-4 p-4 border border-border rounded-lg hover:bg-muted transition-colors group"
+                >
+                  <div className="w-10 h-10 bg-pledge-light rounded-lg flex items-center justify-center group-hover:bg-pledge-light-hover transition-colors">
+                    <Heart className="w-5 h-5 text-pledge" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-foreground">Gerenciar Pledges</p>
+                    <p className="text-sm text-muted-foreground">Ver doações</p>
+                  </div>
+                </Link>
+                <Link
+                  href="/admin/actions"
+                  className="flex items-center gap-4 p-4 border border-border rounded-lg hover:bg-muted transition-colors group"
+                >
+                  <div className="w-10 h-10 bg-action-light rounded-lg flex items-center justify-center group-hover:bg-action-light-hover transition-colors">
+                    <ClipboardList className="w-5 h-5 text-action" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-foreground">Ver Ações</p>
+                    <p className="text-sm text-muted-foreground">Todas as ações</p>
+                  </div>
+                </Link>
+                <Link
+                  href="/admin/history"
+                  className="flex items-center gap-4 p-4 border border-border rounded-lg hover:bg-muted transition-colors group"
+                >
+                  <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center group-hover:bg-secondary/80 transition-colors">
+                    <Clock className="w-5 h-5 text-secondary-foreground" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-foreground">Histórico</p>
+                    <p className="text-sm text-muted-foreground">Ver registros</p>
+                  </div>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
       </div>
     </div>
   );

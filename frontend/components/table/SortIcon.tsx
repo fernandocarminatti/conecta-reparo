@@ -10,11 +10,11 @@ interface SortIconProps {
 
 export function SortIcon({ sortKey, currentSortKey, direction }: SortIconProps) {
   if (sortKey !== currentSortKey) {
-    return <ChevronsUpDown className="w-4 h-4 text-gray-400" />;
+    return <ChevronsUpDown className="w-4 h-4 text-muted-foreground" />;
   }
   return direction === 'asc' ? (
-    <ChevronUp className="w-4 h-4 text-blue-600" />
+    <ChevronUp className="w-4 h-4 text-primary" />
   ) : (
-    <ChevronDown className="w-4 h-4 text-blue-600" />
+    <ChevronDown className="w-4 h-4 text-primary" />
   );
 }

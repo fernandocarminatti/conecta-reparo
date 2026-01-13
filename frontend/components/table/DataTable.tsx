@@ -82,7 +82,7 @@ export function DataTable<T extends { id: string }>({
     return (
       <Card className="p-12">
         <div className="text-center">
-          <p className="text-gray-500">{emptyMessage}</p>
+          <p className="text-muted-foreground">{emptyMessage}</p>
         </div>
       </Card>
     );
@@ -98,7 +98,7 @@ export function DataTable<T extends { id: string }>({
                 <TableHead
                   key={column.key}
                   className={`${
-                    column.sortable ? 'cursor-pointer hover:bg-gray-100' : ''
+                    column.sortable ? 'cursor-pointer hover:bg-muted' : ''
                   } ${column.className || ''} ${column.width || ''}`}
                   onClick={() => column.sortable && handleSort(column.key)}
                 >
@@ -125,7 +125,7 @@ export function DataTable<T extends { id: string }>({
                 {columns.map((column) => (
                   <TableCell
                     key={column.key}
-                    className={`text-sm text-gray-900 ${column.className || ''} ${column.width || ''}`}
+                    className={`text-sm text-foreground ${column.className || ''} ${column.width || ''}`}
                   >
                     {column.render
                       ? column.render(row)

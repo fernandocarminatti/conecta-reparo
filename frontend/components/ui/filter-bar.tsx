@@ -32,14 +32,14 @@ export function FilterBar({
   return (
     <div
       className={cn(
-        'bg-white rounded-lg border border-gray-200 p-4',
+        'bg-card rounded-lg border border-border p-4',
         className
       )}
     >
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         {onSearchChange && (
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               type="text"
               placeholder={searchPlaceholder}

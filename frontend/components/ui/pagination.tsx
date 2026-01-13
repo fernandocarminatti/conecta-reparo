@@ -55,7 +55,7 @@ export function Pagination({
   if (totalPages <= 1) {
     return (
       <div className="flex items-center justify-between py-4">
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted-foreground">
           {totalElements === 0
             ? 'Nenhum registro encontrado'
             : `Mostrando ${startItem}-${endItem} de ${totalElements} resultados`}
@@ -68,7 +68,7 @@ export function Pagination({
 
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-muted-foreground">
         {totalElements === 0
           ? 'Nenhum registro encontrado'
           : `Mostrando ${startItem}-${endItem} de ${totalElements} resultados`}
@@ -88,7 +88,7 @@ export function Pagination({
           page === 'ellipsis' ? (
             <span
               key={`ellipsis-${index}`}
-              className="px-2 text-gray-500"
+              className="px-2 text-muted-foreground"
             >
               ...
             </span>

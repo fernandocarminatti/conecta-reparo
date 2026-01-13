@@ -79,20 +79,20 @@ function NavGroup({ item, isCollapsed }: { item: NavItem; isCollapsed: boolean }
           href={item.href}
           className={`flex items-center justify-center p-3 rounded-lg transition-colors ${
             isActive
-              ? 'bg-blue-50 text-blue-600'
-              : 'text-gray-600 hover:bg-gray-100'
+              ? 'bg-primary/10 text-primary'
+              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
           }`}
           title={item.name}
         >
           <item.icon className="w-5 h-5" />
         </Link>
         {item.children && (
-          <div className="absolute left-full top-0 ml-2 w-48 bg-white rounded-lg shadow-lg border hidden group-hover:block z-50">
+          <div className="absolute left-full top-0 ml-2 w-48 bg-popover rounded-lg shadow-lg border hidden group-hover:block z-50">
             {item.children.map((child) => (
               <Link
                 key={child.name}
                 href={child.href}
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 first:rounded-t-lg last:rounded-b-lg"
+                className="block px-4 py-2 text-sm hover:bg-muted first:rounded-t-lg last:rounded-b-lg"
               >
                 {child.name}
               </Link>
@@ -110,8 +110,8 @@ function NavGroup({ item, isCollapsed }: { item: NavItem; isCollapsed: boolean }
           onClick={() => setIsOpen(!isOpen)}
           className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors ${
             isActive
-              ? 'bg-blue-50 text-blue-600'
-              : 'text-gray-600 hover:bg-gray-100'
+              ? 'bg-primary/10 text-primary'
+              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
           }`}
         >
           <div className="flex items-center gap-3">
@@ -127,8 +127,8 @@ function NavGroup({ item, isCollapsed }: { item: NavItem; isCollapsed: boolean }
           href={item.href}
           className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
             isActive
-              ? 'bg-blue-50 text-blue-600'
-              : 'text-gray-600 hover:bg-gray-100'
+              ? 'bg-primary/10 text-primary'
+              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
           }`}
         >
           <div className="flex items-center gap-3">
@@ -147,8 +147,8 @@ function NavGroup({ item, isCollapsed }: { item: NavItem; isCollapsed: boolean }
                 href={child.href}
                 className={`block px-3 py-2 rounded-md text-sm transition-colors ${
                   isChildActive
-                    ? 'bg-blue-50 text-blue-600 font-medium'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-primary/10 text-primary font-medium'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
                 {child.name}
@@ -166,18 +166,18 @@ export function Sidebar() {
 
   return (
     <aside
-      className={`fixed left-0 top-0 h-full bg-white border-r border-gray-200 transition-all duration-300 z-40 ${
+      className={`fixed left-0 top-0 h-full bg-card border-r border-border transition-all duration-300 z-40 ${
         isCollapsed ? 'w-16' : 'w-64'
       }`}
     >
       <div className="flex flex-col h-full">
-        <div className={`flex items-center justify-between p-4 border-b border-gray-200 ${isCollapsed ? 'justify-center' : ''}`}>
+        <div className={`flex items-center justify-between p-4 border-b border-border ${isCollapsed ? 'justify-center' : ''}`}>
           {!isCollapsed && (
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Wrench className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <Wrench className="w-5 h-5 text-primary-foreground" />
               </div>
-              <span className="font-bold text-gray-900">Conecta Reparo</span>
+              <span className="font-bold text-foreground">Conecta Reparo</span>
             </div>
           )}
           <Button
@@ -197,14 +197,14 @@ export function Sidebar() {
         </nav>
 
         {!isCollapsed && (
-          <div className="p-4 border-t border-gray-200">
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
-              <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                <Users className="w-4 h-4 text-gray-600" />
+          <div className="p-4 border-t border-border">
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted">
+              <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
+                <Users className="w-4 h-4 text-secondary-foreground" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">Admin User</p>
-                <p className="text-xs text-gray-500 truncate">admin@conecta.com</p>
+                <p className="text-sm font-medium text-foreground truncate">Admin User</p>
+                <p className="text-xs text-muted-foreground truncate">admin@conecta.com</p>
               </div>
             </div>
           </div>

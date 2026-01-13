@@ -34,8 +34,8 @@ export function MaintenanceTable({
       className: 'whitespace-nowrap',
       render: (row: MaintenanceResponseDto) => (
         <div className="truncate max-w-[380px]">
-          <p className="text-sm font-bold text-gray-900">{row.title}</p>
-          <p className="text-xs text-gray-500 truncate">{row.description}</p>
+          <p className="text-sm font-bold text-foreground">{row.title}</p>
+          <p className="text-xs text-muted-foreground truncate">{row.description}</p>
         </div>
       ),
     },
@@ -73,7 +73,7 @@ export function MaintenanceTable({
       width: 'w-80',
       className: 'whitespace-nowrap',
       render: (row: MaintenanceResponseDto) => (
-        <span className="text-gray-600">
+        <span className="text-muted-foreground">
           {format(new Date(row.scheduledDate), 'dd/MM/yyyy', { locale: ptBR })}
         </span>
       ),
@@ -85,7 +85,7 @@ export function MaintenanceTable({
       width: 'w-80',
       className: 'whitespace-nowrap',
       render: (row: MaintenanceResponseDto) => (
-        <span className="text-gray-600">
+        <span className="text-muted-foreground">
           {format(new Date(row.createdAt), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
         </span>
       ),

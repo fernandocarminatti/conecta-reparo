@@ -93,8 +93,8 @@ export default function PledgesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Pledges</h2>
-          <p className="text-gray-500 mt-1">
+          <h2 className="text-2xl font-bold text-foreground">Pledges</h2>
+          <p className="text-muted-foreground mt-1">
             Gerencie as ofertas de voluntários ({pagination.totalElements} registros)
           </p>
         </div>
@@ -137,8 +137,8 @@ export default function PledgesPage() {
       />
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-red-600 text-sm">{error}</p>
+        <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
+          <p className="text-destructive text-sm">{error}</p>
         </div>
       )}
 
