@@ -101,9 +101,9 @@ function ActivityIcon({ type }: { type: RecentActivity['type'] }) {
     action: ClipboardList,
   };
   const colors = {
-    maintenance: 'bg-blue-100 text-blue-600',
-    pledge: 'bg-pink-100 text-pink-600',
-    action: 'bg-purple-100 text-purple-600',
+    maintenance: 'bg-maintenance-light text-maintenance',
+    pledge: 'bg-pledge-light text-pledge',
+    action: 'bg-action-light text-action',
   };
   const Icon = icons[type];
   return (
@@ -142,7 +142,7 @@ export default function AdminDashboard() {
           change="+12% este mês"
           changeType="positive"
           icon={Wrench}
-          iconColor="bg-blue-600"
+          iconColor="bg-maintenance"
         />
         <StatCard
           title="Ofertas Ativas"
@@ -150,7 +150,7 @@ export default function AdminDashboard() {
           change="+5 esta semana"
           changeType="positive"
           icon={Heart}
-          iconColor="bg-pink-500"
+          iconColor="bg-pledge"
         />
         <StatCard
           title="Ações Concluídas"
@@ -158,7 +158,7 @@ export default function AdminDashboard() {
           change="+23 este mês"
           changeType="positive"
           icon={ClipboardList}
-          iconColor="bg-purple-600"
+          iconColor="bg-action"
         />
         <StatCard
           title="Taxa de Conclusão"
@@ -211,10 +211,10 @@ export default function AdminDashboard() {
             <div className="grid gap-4 sm:grid-cols-2 -mx-2 px-2">
               <Link
                 href="/admin/maintenances/new"
-                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors group"
+                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-maintenance-light hover:bg-maintenance-light/50 transition-colors group"
               >
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                  <Plus className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-maintenance-light rounded-lg flex items-center justify-center group-hover:bg-maintenance-light-hover transition-colors">
+                  <Plus className="w-5 h-5 text-maintenance" />
                 </div>
                 <div>
                   <p className="font-medium text-gray-900">Nova Manutenção</p>
@@ -223,10 +223,10 @@ export default function AdminDashboard() {
               </Link>
               <Link
                 href="/admin/pledges"
-                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-pink-300 hover:bg-pink-50 transition-colors group"
+                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-pledge-light hover:bg-pledge-light/50 transition-colors group"
               >
-                <div className="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center group-hover:bg-pink-200 transition-colors">
-                  <Heart className="w-5 h-5 text-pink-600" />
+                <div className="w-10 h-10 bg-pledge-light rounded-lg flex items-center justify-center group-hover:bg-pledge-light-hover transition-colors">
+                  <Heart className="w-5 h-5 text-pledge" />
                 </div>
                 <div>
                   <p className="font-medium text-gray-900">Gerenciar Pledges</p>
@@ -235,10 +235,10 @@ export default function AdminDashboard() {
               </Link>
               <Link
                 href="/admin/actions"
-                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-colors group"
+                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-action-light hover:bg-action-light/50 transition-colors group"
               >
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors">
-                  <ClipboardList className="w-5 h-5 text-purple-600" />
+                <div className="w-10 h-10 bg-action-light rounded-lg flex items-center justify-center group-hover:bg-action-light-hover transition-colors">
+                  <ClipboardList className="w-5 h-5 text-action" />
                 </div>
                 <div>
                   <p className="font-medium text-gray-900">Ver Ações</p>

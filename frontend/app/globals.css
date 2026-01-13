@@ -24,6 +24,24 @@
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
   --radius: 0.125rem;
+
+  --pledge: oklch(0.82 0.06 350);
+  --pledge-foreground: oklch(0.35 0.06 350);
+  --pledge-light: oklch(0.95 0.02 350);
+  --pledge-light-hover: oklch(0.90 0.03 350);
+  --pledge-dark: oklch(0.65 0.08 350);
+
+  --maintenance: oklch(0.55 0.15 245);
+  --maintenance-foreground: oklch(0.985 0 0);
+  --maintenance-light: oklch(0.92 0.04 245);
+  --maintenance-light-hover: oklch(0.85 0.06 245);
+  --maintenance-dark: oklch(0.45 0.12 245);
+
+  --action: oklch(0.55 0.15 275);
+  --action-foreground: oklch(0.985 0 0);
+  --action-light: oklch(0.92 0.04 275);
+  --action-light-hover: oklch(0.85 0.06 275);
+  --action-dark: oklch(0.45 0.12 275);
 }
 
 .dark {
@@ -46,6 +64,24 @@
   --border: oklch(0.269 0 0);
   --input: oklch(0.269 0 0);
   --ring: oklch(0.439 0 0);
+
+  --pledge: oklch(0.65 0.12 350);
+  --pledge-foreground: oklch(0.95 0.02 350);
+  --pledge-light: oklch(0.25 0.05 350);
+  --pledge-light-hover: oklch(0.30 0.06 350);
+  --pledge-dark: oklch(0.55 0.10 350);
+
+  --maintenance: oklch(0.60 0.15 245);
+  --maintenance-foreground: oklch(0.985 0 0);
+  --maintenance-light: oklch(0.25 0.04 245);
+  --maintenance-light-hover: oklch(0.30 0.06 245);
+  --maintenance-dark: oklch(0.50 0.12 245);
+
+  --action: oklch(0.60 0.15 275);
+  --action-foreground: oklch(0.985 0 0);
+  --action-light: oklch(0.25 0.04 275);
+  --action-light-hover: oklch(0.30 0.06 275);
+  --action-dark: oklch(0.50 0.12 275);
 }
 
 @theme inline {
@@ -68,6 +104,21 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-pledge: var(--pledge);
+  --color-pledge-foreground: var(--pledge-foreground);
+  --color-pledge-light: var(--pledge-light);
+  --color-pledge-light-hover: var(--pledge-light-hover);
+  --color-pledge-dark: var(--pledge-dark);
+  --color-maintenance: var(--maintenance);
+  --color-maintenance-foreground: var(--maintenance-foreground);
+  --color-maintenance-light: var(--maintenance-light);
+  --color-maintenance-light-hover: var(--maintenance-light-hover);
+  --color-maintenance-dark: var(--maintenance-dark);
+  --color-action: var(--action);
+  --color-action-foreground: var(--action-foreground);
+  --color-action-light: var(--action-light);
+  --color-action-light-hover: var(--action-light-hover);
+  --color-action-dark: var(--action-dark);
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
