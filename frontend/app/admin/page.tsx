@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface StatCardProps {
   title: string;
@@ -123,13 +124,12 @@ export default function AdminDashboard() {
           <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
           <p className="text-gray-500 mt-1">Visão geral do sistema de manutenção</p>
         </div>
-        <Link
-          href="/admin/maintenances/new"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Nova Manutenção
-        </Link>
+        <Button asChild>
+          <Link href="/admin/maintenances/new">
+            <Plus className="w-4 h-4" />
+            Nova Manutenção
+          </Link>
+        </Button>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">

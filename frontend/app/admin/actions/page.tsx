@@ -6,12 +6,12 @@ import {
   Filter, 
   Plus, 
   Download,
-  RefreshCw,
-  ClipboardList
+  RefreshCw
 } from 'lucide-react';
 import { MaintenanceActionTable } from '@/components/table';
 import { maintenanceActionApi } from '@/lib/api/maintenance-action';
 import { MaintenanceActionResponseDto, ActionStatus } from '@/lib/types/maintenance';
+import { Button } from '@/components/ui/button';
 
 const statusOptions: { value: string; label: string }[] = [
   { value: '', label: 'Todos os Status' },
@@ -84,24 +84,19 @@ export default function ActionsPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button
-            onClick={handleRefresh}
-            className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-            title="Atualizar lista"
-          >
+          <Button variant="outline" onClick={handleRefresh} disabled={loading}>
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-          </button>
-          <button className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+          </Button>
+          <Button variant="outline">
             <Download className="w-4 h-4" />
             Exportar
-          </button>
-          <Link
-            href="/admin/maintenances/new"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            Nova Manutenção
-          </Link>
+          </Button>
+          <Button asChild>
+            <Link href="/admin/maintenances/new">
+              <Plus className="w-4 h-4" />
+              Nova Manutenção
+            </Link>
+          </Button>
         </div>
       </div>
 

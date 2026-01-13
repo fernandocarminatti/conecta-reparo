@@ -33,6 +33,7 @@ import {
   PledgeStatus
 } from '@/lib/types/maintenance';
 import { maintenanceApi } from '@/lib/api/maintenance';
+import { Button } from '@/components/ui/button';
 
 const statusOptions: { value: MaintenanceStatus; label: string; color: string }[] = [
   { value: 'OPEN', label: 'Aberto', color: 'bg-blue-100 text-blue-700' },
@@ -130,13 +131,12 @@ function MaintenanceActionsList({ actions, maintenanceId }: MaintenanceActionsLi
       <div className="text-center py-12 bg-gray-50 rounded-lg">
         <ClipboardList className="w-12 h-12 text-gray-300 mx-auto mb-3" />
         <p className="text-gray-500">Nenhuma ação registrada</p>
-        <Link
-          href={`/admin/maintenances/${maintenanceId}/actions/new`}
-          className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
-        >
-          <ClipboardList className="w-4 h-4" />
-          Nova Ação
-        </Link>
+        <Button asChild className="mt-3">
+          <Link href={`/admin/maintenances/${maintenanceId}/actions/new`}>
+            <ClipboardList className="w-4 h-4" />
+            Nova Ação
+          </Link>
+        </Button>
       </div>
     );
   }
@@ -202,13 +202,12 @@ function PledgesList({ pledges, maintenanceId }: PledgesListProps) {
       <div className="text-center py-12 bg-gray-50 rounded-lg">
         <Heart className="w-12 h-12 text-gray-300 mx-auto mb-3" />
         <p className="text-gray-500">Nenhum pledge recebido</p>
-        <Link
-          href={`/admin/pledges/new?maintenanceId=${maintenanceId}`}
-          className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors text-sm"
-        >
-          <Heart className="w-4 h-4" />
-          Adicionar Pledge
-        </Link>
+        <Button asChild className="mt-3">
+          <Link href={`/admin/pledges/new?maintenanceId=${maintenanceId}`}>
+            <Heart className="w-4 h-4" />
+            Adicionar Pledge
+          </Link>
+        </Button>
       </div>
     );
   }
@@ -362,26 +361,18 @@ function EditForm({ maintenance, onSave, onCancel }: EditFormProps) {
         </div>
 
         <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
-          <button
-            onClick={onCancel}
-            disabled={isSaving}
-            className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-900 hover:bg-gray-50 transition-colors"
-          >
+          <Button variant="outline" onClick={onCancel} disabled={isSaving}>
             <X className="w-4 h-4" />
             Cancelar
-          </button>
-          <button
-            onClick={handleSave}
-            disabled={!hasChanges || isSaving}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+          </Button>
+          <Button onClick={handleSave} disabled={!hasChanges || isSaving}>
             {isSaving ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
               <Save className="w-4 h-4" />
             )}
             Salvar Alterações
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -469,13 +460,10 @@ export default function MaintenanceDetailPage() {
             <p className="text-sm mt-1">{error}</p>
           </div>
         </div>
-        <button
-          onClick={fetchMaintenance}
-          className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
-        >
+        <Button variant="destructive" onClick={fetchMaintenance} className="mt-4">
           <RefreshCw className="w-4 h-4" />
           Tentar novamente
-        </button>
+        </Button>
       </div>
     );
   }
@@ -496,12 +484,11 @@ export default function MaintenanceDetailPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link
-            href="/admin/maintenances"
-            className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
+          <Button variant="ghost" asChild>
+            <Link href="/admin/maintenances">
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+          </Button>
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Manutenção</h2>
             <p className="text-gray-500 text-sm mt-1">

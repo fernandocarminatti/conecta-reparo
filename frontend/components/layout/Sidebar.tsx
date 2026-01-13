@@ -14,6 +14,7 @@ import {
   Settings,
   Users
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface NavItem {
   name: string;
@@ -165,13 +166,14 @@ export function Sidebar() {
               <span className="font-bold text-gray-900">Conecta Reparo</span>
             </div>
           )}
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors"
             title={isCollapsed ? 'Expandir menu' : 'Contrair menu'}
           >
-            {isCollapsed ? <Menu className="w-5 h-5" /> : <X className="w-5 h-5" />}
-          </button>
+            {isCollapsed ? <Menu className="w-4 h-4" /> : <X className="w-4 h-4" />}
+          </Button>
         </div>
 
         <nav className="flex-1 p-3 overflow-y-auto">

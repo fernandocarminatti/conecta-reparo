@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Bell, Search, User, LogOut, HelpCircle, Settings } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface HeaderProps {
   title: string;
@@ -29,24 +30,21 @@ export function Header({ title, subtitle }: HeaderProps) {
             />
           </div>
 
-          <button className="relative p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors">
-            <Bell className="w-5 h-5" />
+          <Button variant="ghost" size="icon" className="relative">
+            <Bell className="w-4 h-4" />
             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-          </button>
+          </Button>
 
-          <button className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors">
-            <HelpCircle className="w-5 h-5" />
-          </button>
+          <Button variant="ghost" size="icon">
+            <HelpCircle className="w-4 h-4" />
+          </Button>
 
           <div className="relative">
-            <button
-              onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            >
+            <Button variant="ghost" onClick={() => setShowUserMenu(!showUserMenu)}>
               <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                 <User className="w-4 h-4 text-blue-600" />
               </div>
-            </button>
+            </Button>
 
             {showUserMenu && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">

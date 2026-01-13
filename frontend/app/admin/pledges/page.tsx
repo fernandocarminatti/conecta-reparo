@@ -7,14 +7,12 @@ import {
   Filter, 
   Plus, 
   Download,
-  RefreshCw,
-  ChevronLeft,
-  ChevronRight,
-  Heart
+  RefreshCw
 } from 'lucide-react';
 import { PledgeTable } from '@/components/table';
 import { pledgeApi } from '@/lib/api/pledge';
 import { PledgeResponseDto, PledgeFilter, PledgeStatus, PledgeCategory } from '@/lib/types/maintenance';
+import { Button } from '@/components/ui/button';
 
 const statusOptions: { value: string; label: string }[] = [
   { value: '', label: 'Todos os Status' },
@@ -88,10 +86,6 @@ export default function PledgesPage() {
     setFilter(prev => ({ ...prev, sort: `${key},${direction}` }));
   };
 
-  const handlePageChange = (newPage: number) => {
-    setFilter(prev => ({ ...prev, page: newPage }));
-  };
-
   const handleRefresh = () => {
     fetchData();
   };
@@ -106,24 +100,19 @@ export default function PledgesPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button
-            onClick={handleRefresh}
-            className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-            title="Atualizar lista"
-          >
+          <Button variant="outline" onClick={handleRefresh} disabled={loading}>
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-          </button>
-          <button className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+          </Button>
+          <Button variant="outline">
             <Download className="w-4 h-4" />
             Exportar
-          </button>
-          <Link
-            href="/admin/pledges/new"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            Nova Oferta
-          </Link>
+          </Button>
+          <Button asChild>
+            <Link href="/admin/pledges/new">
+              <Plus className="w-4 h-4" />
+              Nova Oferta
+            </Link>
+          </Button>
         </div>
       </div>
 
@@ -180,63 +169,6 @@ export default function PledgesPage() {
         sortKey={sortKey}
         sortDirection={sortDirection}
       />
-
-      {pagination.totalPages > 1 && (
-        <div className="flex items-center justify-between bg-white rounded-lg border border-gray-200 px-4 py-3">
-          <div className="text-sm text-gray-500">
-            Mostrando {pagination.currentPage * PAGE_SIZE + 1} a{' '}
-            {Math.min((pagination.currentPage + 1) * PAGE_SIZE, pagination.totalElements)} de{' '}
-            {pagination.totalElements} resultados
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => handlePageChange(pagination.currentPage - 1)}
-              disabled={pagination.currentPage === 0}
-              className="p-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            
-            <div className="flex items-center gap-1">
-              {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
-                let pageNum: number;
-                if (pagination.totalPages <= 5) {
-                  pageNum = i;
-                } else if (pagination.currentPage < 3) {
-                  pageNum = i;
-                } else if (pagination.currentPage > pagination.totalPages - 3) {
-                  pageNum = pagination.totalPages - 5 + i;
-                } else {
-                  pageNum = pagination.currentPage - 2 + i;
-                }
-                
-                return (
-                  <button
-                    key={pageNum}
-                    onClick={() => handlePageChange(pageNum)}
-                    className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
-                      pagination.currentPage === pageNum
-                        ? 'bg-blue-600 text-white'
-                        : 'text-gray-600 hover:bg-gray-100'
-                    }`}
-                  >
-                    {pageNum + 1}
-                  </button>
-                );
-              })}
-            </div>
-            
-            <button
-              onClick={() => handlePageChange(pagination.currentPage + 1)}
-              disabled={pagination.currentPage >= pagination.totalPages - 1}
-              className="p-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
