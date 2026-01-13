@@ -3,8 +3,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { 
-  Search, 
-  Filter, 
   Plus, 
   Download,
   RefreshCw
@@ -13,6 +11,7 @@ import { MaintenanceTable } from '@/components/table';
 import { maintenanceApi } from '@/lib/api/maintenance';
 import { MaintenanceResponseDto, MaintenanceFilter, PageResponse } from '@/lib/types/maintenance';
 import { Button } from '@/components/ui/button';
+import { FilterBar } from '@/components/ui/filter-bar';
 
 const statusOptions = [
   { value: '', label: 'Todos os Status' },
@@ -83,19 +82,10 @@ export default function MaintenancesPage() {
     fetchData();
   }, [fetchData]);
 
-  const handleFilterChange = (key: keyof MaintenanceFilter, value: string | number) => {
-    setFilter(prev => ({ ...prev, [key]: value, page: 0 }));
-  };
-
   const handleSort = (key: string, direction: 'asc' | 'desc') => {
     setSortKey(key);
     setSortDirection(direction);
     setFilter(prev => ({ ...prev, sort: `${key},${direction}` }));
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchData();
   };
 
   const handleRefresh = () => {
@@ -128,47 +118,26 @@ export default function MaintenancesPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <form onSubmit={handleSearch} className="flex-1 max-w-md">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Buscar por título, descrição ou categoria..."
-                value={filter.search}
-                onChange={(e) => setFilter(prev => ({ ...prev, search: e.target.value }))}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-400"
-              />
-            </div>
-          </form>
-
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-gray-400" />
-              <select
-                value={filter.status}
-                onChange={(e) => handleFilterChange('status', e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
-              >
-                {statusOptions.map(opt => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
-            </div>
-
-            <select
-              value={filter.category || ''}
-              onChange={(e) => handleFilterChange('category', e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
-            >
-              {categoryOptions.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
+      <FilterBar
+        searchPlaceholder="Buscar por título, descrição ou categoria..."
+        searchValue={filter.search}
+        onSearchChange={(value) => setFilter(prev => ({ ...prev, search: value, page: 0 }))}
+        filters={[
+          {
+            key: 'status',
+            label: 'Status',
+            options: statusOptions,
+            value: filter.status,
+          },
+          {
+            key: 'category',
+            label: 'Categoria',
+            options: categoryOptions,
+            value: filter.category || '',
+          },
+        ]}
+        onFilterChange={(key, value) => setFilter(prev => ({ ...prev, [key]: value, page: 0 }))}
+      />
 
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">

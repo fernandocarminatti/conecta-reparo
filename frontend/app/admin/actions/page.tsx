@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { 
-  Filter, 
   Plus, 
   Download,
   RefreshCw
@@ -12,6 +11,7 @@ import { MaintenanceActionTable } from '@/components/table';
 import { maintenanceActionApi } from '@/lib/api/maintenance-action';
 import { MaintenanceActionResponseDto, ActionStatus } from '@/lib/types/maintenance';
 import { Button } from '@/components/ui/button';
+import { FilterBar } from '@/components/ui/filter-bar';
 
 const statusOptions: { value: string; label: string }[] = [
   { value: '', label: 'Todos os Status' },
@@ -100,31 +100,17 @@ export default function ActionsPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-gray-400" />
-            <span className="text-sm font-medium text-gray-700">Filtrar:</span>
-          </div>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
-          >
-            {statusOptions.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
-          {statusFilter && (
-            <button
-              onClick={() => setStatusFilter('')}
-              className="text-sm text-blue-600 hover:text-blue-700"
-            >
-              Limpar filtro
-            </button>
-          )}
-        </div>
-      </div>
+      <FilterBar
+        filters={[
+          {
+            key: 'status',
+            label: 'Status',
+            options: statusOptions,
+            value: statusFilter,
+          },
+        ]}
+        onFilterChange={(key, value) => setStatusFilter(value)}
+      />
 
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
