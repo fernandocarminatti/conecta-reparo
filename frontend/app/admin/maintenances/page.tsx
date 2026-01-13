@@ -138,7 +138,7 @@ export default function MaintenancesPage() {
                 placeholder="Buscar por título, descrição ou categoria..."
                 value={filter.search}
                 onChange={(e) => setFilter(prev => ({ ...prev, search: e.target.value }))}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xs text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-400"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-400"
               />
             </div>
           </form>
@@ -149,7 +149,7 @@ export default function MaintenancesPage() {
               <select
                 value={filter.status}
                 onChange={(e) => handleFilterChange('status', e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-xs text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
               >
                 {statusOptions.map(opt => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -160,7 +160,7 @@ export default function MaintenancesPage() {
             <select
               value={filter.category || ''}
               onChange={(e) => handleFilterChange('category', e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-xs text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
+              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
             >
               {categoryOptions.map(opt => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>

@@ -13,6 +13,7 @@ import {
 import { MaintenanceDto, MaintenanceCategory } from '@/lib/types/maintenance';
 import { maintenanceApi } from '@/lib/api/maintenance';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 
 const categoryOptions: { value: MaintenanceCategory; label: string; icon: string }[] = [
   { value: 'BUILDING', label: 'Construção', icon: '🏢' },
@@ -90,8 +91,10 @@ export default function NewMaintenancePage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-gray-200 p-6">
-        <div className="grid gap-6">
+      <form onSubmit={handleSubmit}>
+        <Card>
+          <CardContent className="pt-6 p-0">
+            <div className="grid gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-900 mb-1">Categoria</label>
             <select
@@ -161,6 +164,8 @@ export default function NewMaintenancePage() {
             </Button>
           </div>
         </div>
+        </CardContent>
+        </Card>
       </form>
     </div>
   );

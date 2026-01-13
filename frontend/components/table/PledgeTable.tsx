@@ -16,6 +16,7 @@ import { ptBR } from 'date-fns/locale';
 import { PledgeResponseDto, PledgeStatus, PledgeCategory } from '@/lib/types/maintenance';
 import { Badge } from '@/components/ui/badge';
 import { PLEDGE_STATUS_CONFIG, CATEGORY_CONFIG } from '@/lib/config/status-config';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface Column<T> {
   key: string;
@@ -150,15 +151,18 @@ export function PledgeTable({
 
   if (data.length === 0) {
     return (
-      <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
-        <p className="text-gray-500">{emptyMessage}</p>
-      </div>
+      <Card className="p-12">
+        <div className="text-center">
+          <p className="text-gray-500">{emptyMessage}</p>
+        </div>
+      </Card>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-      <div className="overflow-x-auto">
+    <Card className="overflow-hidden">
+      <CardContent className="p-0">
+        <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="bg-gray-50 border-b border-gray-200">
@@ -251,9 +255,10 @@ export function PledgeTable({
             ))}
           </tbody>
         </table>
-      </div>
-    </div>
-  );
-}
+        </div>
+        </CardContent>
+        </Card>
+      );
+    }
 
 export default PledgeTable;

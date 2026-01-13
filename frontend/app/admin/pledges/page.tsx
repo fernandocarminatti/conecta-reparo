@@ -135,7 +135,7 @@ export default function PledgesPage() {
               <select
                 value={filter.status}
                 onChange={(e) => handleFilterChange('status', e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-xs text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
               >
                 {statusOptions.map(opt => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -146,7 +146,7 @@ export default function PledgesPage() {
             <select
               value={filter.type || ''}
               onChange={(e) => handleFilterChange('type', e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-xs text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
+              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
             >
               {typeOptions.map(opt => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>

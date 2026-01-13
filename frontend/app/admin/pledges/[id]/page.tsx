@@ -28,6 +28,7 @@ import {
 } from '@/lib/types/maintenance';
 import { pledgeApi } from '@/lib/api/pledge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 
 const statusOptions: { value: PledgeStatus; label: string; color: string }[] = [
   { value: 'OFFERED', label: 'Oferecido', color: 'bg-blue-100 text-blue-700' },
@@ -320,28 +321,29 @@ export default function PledgeDetailPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200">
-        <div className="border-b border-gray-200">
-          <nav className="flex -mb-px">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === tab.id
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                <tab.icon className="w-4 h-4" />
-                {tab.label}
-              </button>
-            ))}
-          </nav>
-        </div>
+      <Card>
+        <CardContent className="pt-6 p-0">
+          <div className="border-b border-gray-200 pb-px">
+            <nav className="flex -mb-px">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                    activeTab === tab.id
+                      ? 'border-blue-600 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  <tab.icon className="w-4 h-4" />
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
+          </div>
 
-        <div className="p-6">
-          {activeTab === 'details' && (
+          <div className="p-6">
+            {activeTab === 'details' && (
             <div className="max-w-3xl">
               <div className="grid gap-6">
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -407,8 +409,9 @@ export default function PledgeDetailPage() {
               onCancel={() => setActiveTab('details')}
             />
           )}
-        </div>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

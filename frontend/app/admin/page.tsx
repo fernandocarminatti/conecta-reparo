@@ -12,6 +12,7 @@ import {
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface StatCardProps {
   title: string;
@@ -24,26 +25,28 @@ interface StatCardProps {
 
 function StatCard({ title, value, change, changeType = 'neutral', icon: Icon, iconColor }: StatCardProps) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-500">{title}</p>
-          <p className="text-3xl font-bold text-gray-900 mt-2">{value}</p>
-          {change && (
-            <p className={`text-sm mt-2 flex items-center gap-1 ${
-              changeType === 'positive' ? 'text-green-600' : 
-              changeType === 'negative' ? 'text-red-600' : 'text-gray-500'
-            }`}>
-              <TrendingUp className={`w-4 h-4 ${changeType === 'negative' ? 'rotate-180' : ''}`} />
-              {change}
-            </p>
-          )}
+    <Card className="hover:shadow-lg transition-shadow">
+      <CardContent className="pt-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-gray-500">{title}</p>
+            <p className="text-3xl font-bold text-gray-900 mt-2">{value}</p>
+            {change && (
+              <p className={`text-sm mt-2 flex items-center gap-1 ${
+                changeType === 'positive' ? 'text-green-600' : 
+                changeType === 'negative' ? 'text-red-600' : 'text-gray-500'
+              }`}>
+                <TrendingUp className={`w-4 h-4 ${changeType === 'negative' ? 'rotate-180' : ''}`} />
+                {change}
+              </p>
+            )}
+          </div>
+          <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${iconColor}`}>
+            <Icon className="w-6 h-6 text-white" />
+          </div>
         </div>
-        <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${iconColor}`}>
-          <Icon className="w-6 h-6 text-white" />
-        </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -168,93 +171,95 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="bg-white rounded-xl border border-gray-200">
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">Atividades Recentes</h3>
-            <Link href="/admin/history" className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1">
-              Ver todas
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-          <div className="divide-y divide-gray-100">
-            {recentActivities.map((activity) => (
-              <div key={activity.id} className="p-4 hover:bg-gray-50 transition-colors">
-                <div className="flex items-start gap-4">
-                  <ActivityIcon type={activity.type} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900">{activity.title}</p>
-                    <p className="text-sm text-gray-500 mt-0.5">{activity.description}</p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <Badge variant={STATUS_CONFIG[activity.status].variant}>
-                        {activity.status === 'completed' && <CheckCircle className="w-3 h-3 mr-1" />}
-                        {activity.status === 'pending' && <Clock className="w-3 h-3 mr-1" />}
-                        {activity.status === 'in_progress' && <AlertCircle className="w-3 h-3 mr-1" />}
-                        {STATUS_CONFIG[activity.status].label}
-                      </Badge>
-                      <span className="text-xs text-gray-400">{activity.time}</span>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Atividades Recentes</h3>
+              <Link href="/admin/history" className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1">
+                Ver todas
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+            <div className="divide-y divide-gray-100 -mx-6 px-6">
+              {recentActivities.map((activity) => (
+                <div key={activity.id} className="py-4 first:pt-0 last:pb-0 hover:bg-gray-50 transition-colors -mx-4 px-4">
+                  <div className="flex items-start gap-4">
+                    <ActivityIcon type={activity.type} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900">{activity.title}</p>
+                      <p className="text-sm text-gray-500 mt-0.5">{activity.description}</p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <Badge variant={STATUS_CONFIG[activity.status].variant}>
+                          {activity.status === 'completed' && <CheckCircle className="w-3 h-3 mr-1" />}
+                          {activity.status === 'pending' && <Clock className="w-3 h-3 mr-1" />}
+                          {activity.status === 'in_progress' && <AlertCircle className="w-3 h-3 mr-1" />}
+                          {STATUS_CONFIG[activity.status].label}
+                        </Badge>
+                        <span className="text-xs text-gray-400">{activity.time}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="bg-white rounded-xl border border-gray-200">
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">Ações Rápidas</h3>
-          </div>
-          <div className="p-6 grid gap-4 sm:grid-cols-2">
-            <Link
-              href="/admin/maintenances/new"
-              className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors group"
-            >
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                <Plus className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">Nova Manutenção</p>
-                <p className="text-sm text-gray-500">Criar solicitação</p>
-              </div>
-            </Link>
-            <Link
-              href="/admin/pledges"
-              className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-pink-300 hover:bg-pink-50 transition-colors group"
-            >
-              <div className="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center group-hover:bg-pink-200 transition-colors">
-                <Heart className="w-5 h-5 text-pink-600" />
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">Gerenciar Pledges</p>
-                <p className="text-sm text-gray-500">Ver doações</p>
-              </div>
-            </Link>
-            <Link
-              href="/admin/actions"
-              className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-colors group"
-            >
-              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors">
-                <ClipboardList className="w-5 h-5 text-purple-600" />
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">Ver Ações</p>
-                <p className="text-sm text-gray-500">Todas as ações</p>
-              </div>
-            </Link>
-            <Link
-              href="/admin/history"
-              className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition-colors group"
-            >
-              <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-gray-200 transition-colors">
-                <Clock className="w-5 h-5 text-gray-600" />
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">Histórico</p>
-                <p className="text-sm text-gray-500">Ver registros</p>
-              </div>
-            </Link>
-          </div>
-        </div>
+        <Card>
+          <CardContent className="pt-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Ações Rápidas</h3>
+            <div className="grid gap-4 sm:grid-cols-2 -mx-2 px-2">
+              <Link
+                href="/admin/maintenances/new"
+                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors group"
+              >
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                  <Plus className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900">Nova Manutenção</p>
+                  <p className="text-sm text-gray-500">Criar solicitação</p>
+                </div>
+              </Link>
+              <Link
+                href="/admin/pledges"
+                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-pink-300 hover:bg-pink-50 transition-colors group"
+              >
+                <div className="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center group-hover:bg-pink-200 transition-colors">
+                  <Heart className="w-5 h-5 text-pink-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900">Gerenciar Pledges</p>
+                  <p className="text-sm text-gray-500">Ver doações</p>
+                </div>
+              </Link>
+              <Link
+                href="/admin/actions"
+                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-colors group"
+              >
+                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors">
+                  <ClipboardList className="w-5 h-5 text-purple-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900">Ver Ações</p>
+                  <p className="text-sm text-gray-500">Todas as ações</p>
+                </div>
+              </Link>
+              <Link
+                href="/admin/history"
+                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition-colors group"
+              >
+                <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-gray-200 transition-colors">
+                  <Clock className="w-5 h-5 text-gray-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900">Histórico</p>
+                  <p className="text-sm text-gray-500">Ver registros</p>
+                </div>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
