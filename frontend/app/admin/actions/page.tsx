@@ -2,14 +2,14 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { 
-  Plus, 
+import {
+  Plus,
   Download,
   RefreshCw
 } from 'lucide-react';
 import { MaintenanceActionTable } from '@/components/table';
 import { maintenanceActionApi } from '@/lib/api/maintenance-action';
-import { MaintenanceActionResponseDto, ActionStatus } from '@/lib/types/maintenance';
+import { MaintenanceActionResponseDto } from '@/lib/types/maintenance';
 import { Button } from '@/components/ui/button';
 import { FilterBar } from '@/components/ui/filter-bar';
 
@@ -20,21 +20,25 @@ const statusOptions: { value: string; label: string }[] = [
   { value: 'FAILURE', label: 'Falha' },
 ];
 
+const PAGE_SIZE = 25;
+
 export default function ActionsPage() {
-  const [data, setData] = useState<MaintenanceActionResponseDto[]>([]);
+  const [allData, setAllData] = useState<MaintenanceActionResponseDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState('');
-  
+
   const [sortKey, setSortKey] = useState('createdAt');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+
+  const [currentPage, setCurrentPage] = useState(0);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const actions = await maintenanceActionApi.getAll();
-      setData(actions);
+      setAllData(actions);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao carregar ações');
     } finally {
@@ -52,23 +56,34 @@ export default function ActionsPage() {
   };
 
   const filteredData = statusFilter
-    ? data.filter(action => action.outcomeStatus === statusFilter)
-    : data;
+    ? allData.filter(action => action.outcomeStatus === statusFilter)
+    : allData;
 
   const sortedData = [...filteredData].sort((a, b) => {
-    let aVal: any = a[sortKey as keyof MaintenanceActionResponseDto];
-    let bVal: any = b[sortKey as keyof MaintenanceActionResponseDto];
-    
+    let aVal: string | number = a[sortKey as keyof MaintenanceActionResponseDto] as string | number;
+    let bVal: string | number = b[sortKey as keyof MaintenanceActionResponseDto] as string | number;
+
     if (sortKey === 'createdAt' || sortKey === 'startDate') {
-      aVal = new Date(aVal).getTime();
-      bVal = new Date(bVal).getTime();
+      aVal = new Date(aVal as string).getTime();
+      bVal = new Date(bVal as string).getTime();
     }
-    
+
     if (sortDirection === 'asc') {
       return aVal > bVal ? 1 : -1;
     }
     return aVal < bVal ? 1 : -1;
   });
+
+  const paginatedData = sortedData.slice(
+    currentPage * PAGE_SIZE,
+    (currentPage + 1) * PAGE_SIZE
+  );
+
+  const totalPages = Math.ceil(sortedData.length / PAGE_SIZE);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   const handleRefresh = () => {
     fetchData();
@@ -109,7 +124,10 @@ export default function ActionsPage() {
             value: statusFilter,
           },
         ]}
-        onFilterChange={(key, value) => setStatusFilter(value)}
+        onFilterChange={(key, value) => {
+          setStatusFilter(value);
+          setCurrentPage(0);
+        }}
       />
 
       {error && (
@@ -119,11 +137,18 @@ export default function ActionsPage() {
       )}
 
       <MaintenanceActionTable
-        data={sortedData}
+        data={paginatedData}
         loading={loading}
         onSort={handleSort}
         sortKey={sortKey}
         sortDirection={sortDirection}
+        pagination={{
+          currentPage,
+          totalPages,
+          totalElements: sortedData.length,
+          pageSize: PAGE_SIZE,
+          onPageChange: handlePageChange,
+        }}
       />
     </div>
   );

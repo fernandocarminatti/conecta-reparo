@@ -88,6 +88,10 @@ export default function MaintenancesPage() {
     setFilter(prev => ({ ...prev, sort: `${key},${direction}` }));
   };
 
+  const handlePageChange = (page: number) => {
+    setFilter(prev => ({ ...prev, page }));
+  };
+
   const handleRefresh = () => {
     fetchData();
   };
@@ -151,6 +155,13 @@ export default function MaintenancesPage() {
         onSort={handleSort}
         sortKey={sortKey}
         sortDirection={sortDirection}
+        pagination={{
+          currentPage: pagination.currentPage,
+          totalPages: pagination.totalPages,
+          totalElements: pagination.totalElements,
+          pageSize: PAGE_SIZE,
+          onPageChange: handlePageChange,
+        }}
       />
     </div>
   );

@@ -105,24 +105,38 @@ function NavGroup({ item, isCollapsed }: { item: NavItem; isCollapsed: boolean }
 
   return (
     <div className="mb-1">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors ${
-          isActive
-            ? 'bg-blue-50 text-blue-600'
-            : 'text-gray-600 hover:bg-gray-100'
-        }`}
-      >
-        <div className="flex items-center gap-3">
-          <item.icon className="w-5 h-5" />
-          <span className="font-medium">{item.name}</span>
-        </div>
-        {item.children && (
+      {item.children ? (
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors ${
+            isActive
+              ? 'bg-blue-50 text-blue-600'
+              : 'text-gray-600 hover:bg-gray-100'
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            <item.icon className="w-5 h-5" />
+            <span className="font-medium">{item.name}</span>
+          </div>
           <ChevronRight
             className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-90' : ''}`}
           />
-        )}
-      </button>
+        </button>
+      ) : (
+        <Link
+          href={item.href}
+          className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
+            isActive
+              ? 'bg-blue-50 text-blue-600'
+              : 'text-gray-600 hover:bg-gray-100'
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            <item.icon className="w-5 h-5" />
+            <span className="font-medium">{item.name}</span>
+          </div>
+        </Link>
+      )}
       {item.children && isOpen && (
         <div className="ml-8 mt-1 space-y-1">
           {item.children.map((child) => {
