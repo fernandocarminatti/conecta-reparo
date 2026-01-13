@@ -1,15 +1,16 @@
-import { 
-  Wrench, 
-  Heart, 
-  ClipboardList, 
-  TrendingUp, 
-  Clock, 
-  CheckCircle, 
+import {
+  Wrench,
+  Heart,
+  ClipboardList,
+  TrendingUp,
+  Clock,
+  CheckCircle,
   AlertCircle,
   ArrowRight,
   Plus
 } from 'lucide-react';
 import Link from 'next/link';
+import { Badge } from '@/components/ui/badge';
 
 interface StatCardProps {
   title: string;
@@ -102,31 +103,16 @@ function ActivityIcon({ type }: { type: RecentActivity['type'] }) {
   };
   const Icon = icons[type];
   return (
-    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${colors[type]}`}>
+    <div className={`w-10 h-10 rounded-md flex items-center justify-center ${colors[type]}`}>
       <Icon className="w-5 h-5" />
     </div>
   );
 }
 
-function StatusBadge({ status }: { status: RecentActivity['status'] }) {
-  const styles = {
-    pending: 'bg-yellow-100 text-yellow-700',
-    completed: 'bg-green-100 text-green-700',
-    in_progress: 'bg-blue-100 text-blue-700',
-  };
-  const labels = {
-    pending: 'Pendente',
-    completed: 'Concluído',
-    in_progress: 'Em Andamento',
-  };
-  return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${styles[status]}`}>
-      {status === 'completed' && <CheckCircle className="w-3 h-3 mr-1" />}
-      {status === 'pending' && <Clock className="w-3 h-3 mr-1" />}
-      {status === 'in_progress' && <AlertCircle className="w-3 h-3 mr-1" />}
-      {labels[status]}
-    </span>
-  );
+const STATUS_CONFIG: Record<string, { variant: "default" | "secondary" | "destructive" | "success" | "warning" | "outline"; label: string }> = {
+  pending: { variant: "warning", label: "Pendente" },
+  completed: { variant: "success", label: "Concluído" },
+  in_progress: { variant: "default", label: "Em Andamento" },
 }
 
 export default function AdminDashboard() {
@@ -199,7 +185,12 @@ export default function AdminDashboard() {
                     <p className="text-sm font-medium text-gray-900">{activity.title}</p>
                     <p className="text-sm text-gray-500 mt-0.5">{activity.description}</p>
                     <div className="flex items-center gap-2 mt-2">
-                      <StatusBadge status={activity.status} />
+                      <Badge variant={STATUS_CONFIG[activity.status].variant}>
+                        {activity.status === 'completed' && <CheckCircle className="w-3 h-3 mr-1" />}
+                        {activity.status === 'pending' && <Clock className="w-3 h-3 mr-1" />}
+                        {activity.status === 'in_progress' && <AlertCircle className="w-3 h-3 mr-1" />}
+                        {STATUS_CONFIG[activity.status].label}
+                      </Badge>
                       <span className="text-xs text-gray-400">{activity.time}</span>
                     </div>
                   </div>

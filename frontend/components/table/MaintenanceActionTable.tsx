@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { 
-  ChevronUp, 
-  ChevronDown, 
+import {
+  ChevronUp,
+  ChevronDown,
   ChevronsUpDown,
   MoreHorizontal,
   Eye,
@@ -14,6 +14,8 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { MaintenanceActionResponseDto, ActionStatus } from '@/lib/types/maintenance';
+import { Badge } from '@/components/ui/badge';
+import { ACTION_STATUS_CONFIG } from '@/lib/config/status-config';
 
 interface Column<T> {
   key: string;
@@ -56,22 +58,6 @@ function LoadingSpinner() {
     <div className="flex items-center justify-center py-12">
       <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
     </div>
-  );
-}
-
-function StatusBadge({ status }: { status: ActionStatus }) {
-  const styles: Record<ActionStatus, { bg: string; text: string; label: string }> = {
-    SUCCESS: { bg: 'bg-green-100', text: 'text-green-700', label: 'Sucesso' },
-    PARTIAL_SUCCESS: { bg: 'bg-yellow-100', text: 'text-yellow-700', label: 'Sucesso Parcial' },
-    FAILURE: { bg: 'bg-red-100', text: 'text-red-700', label: 'Falha' },
-  };
-
-  const { bg, text, label } = styles[status];
-
-  return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-xs text-sm font-medium ${bg} ${text}`}>
-      {label}
-    </span>
   );
 }
 
@@ -119,7 +105,10 @@ export function MaintenanceActionTable({
       key: 'outcomeStatus',
       header: 'Status',
       sortable: true,
-      render: (row) => <StatusBadge status={row.outcomeStatus} />,
+      render: (row) => {
+        const config = ACTION_STATUS_CONFIG[row.outcomeStatus];
+        return <Badge variant={config.variant}>{config.label}</Badge>;
+      },
     },
     {
       key: 'startDate',

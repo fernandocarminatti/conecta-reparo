@@ -1,14 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { 
-  ChevronUp, 
-  ChevronDown, 
+import {
+  ChevronUp,
+  ChevronDown,
   ChevronsUpDown,
   MoreHorizontal,
   Eye,
   Edit,
-  Trash2,
   ClipboardList,
   Loader2
 } from 'lucide-react';
@@ -16,6 +15,8 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { MaintenanceResponseDto, MaintenanceStatus, MaintenanceCategory } from '@/lib/types/maintenance';
+import { Badge } from '@/components/ui/badge';
+import { MAINTENANCE_STATUS_CONFIG, CATEGORY_CONFIG } from '@/lib/config/status-config';
 
 interface Column<T> {
   key: string;
@@ -42,55 +43,6 @@ interface DataTableProps<T> {
   onSort?: (key: string, direction: 'asc' | 'desc') => void;
   sortKey?: string;
   sortDirection?: 'asc' | 'desc';
-}
-
-function StatusBadge({ status }: { status: MaintenanceStatus }) {
-  const styles: Record<MaintenanceStatus, { bg: string; text: string; label: string }> = {
-    OPEN: { bg: 'bg-blue-100', text: 'text-blue-700', label: 'Aberto' },
-    IN_PROGRESS: { bg: 'bg-yellow-100', text: 'text-yellow-700', label: 'Em Andamento' },
-    COMPLETED: { bg: 'bg-green-100', text: 'text-green-700', label: 'Concluído' },
-    CANCELED: { bg: 'bg-red-100', text: 'text-red-700', label: 'Cancelado' },
-  };
-
-  const { bg, text, label } = styles[status];
-
-  return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-xs text-sm font-medium ${bg} ${text}`}>
-      {label}
-    </span>
-  );
-}
-
-function CategoryBadge({ category }: { category: MaintenanceCategory }) {
-  const styles: Record<MaintenanceCategory, { bg: string; text: string; icon: string }> = {
-    BUILDING: { bg: 'bg-gray-100', text: 'text-gray-700', icon: '🏢' },
-    ELECTRICAL: { bg: 'bg-yellow-100', text: 'text-yellow-700', icon: '⚡' },
-    PLUMBING: { bg: 'bg-blue-100', text: 'text-blue-700', icon: '🔧' },
-    HVAC: { bg: 'bg-cyan-100', text: 'text-cyan-700', icon: '❄️' },
-    FURNITURE: { bg: 'bg-orange-100', text: 'text-orange-700', icon: '🪑' },
-    GARDENING: { bg: 'bg-green-100', text: 'text-green-700', icon: '🌿' },
-    SECURITY: { bg: 'bg-red-100', text: 'text-red-700', icon: '🔒' },
-    OTHERS: { bg: 'bg-purple-100', text: 'text-purple-700', icon: '📦' },
-  };
-
-  const { bg, text, icon } = styles[category];
-  const labels: Record<MaintenanceCategory, string> = {
-    BUILDING: 'Construção',
-    ELECTRICAL: 'Elétrica',
-    PLUMBING: 'Hidráulica',
-    HVAC: 'HVAC',
-    FURNITURE: 'Mobília',
-    GARDENING: 'Jardinagem',
-    SECURITY: 'Segurança',
-    OTHERS: 'Outros',
-  };
-
-  return (
-    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-xs text-sm font-medium ${bg} ${text}`}>
-      <span>{icon}</span>
-      {labels[category]}
-    </span>
-  );
 }
 
 function SortIcon({ sortKey, currentSortKey, direction }: { sortKey: string; currentSortKey?: string; direction?: 'asc' | 'desc' }) {
@@ -275,13 +227,24 @@ export function MaintenanceTable({
       key: 'category',
       header: 'Categoria',
       sortable: true,
-      render: (row) => <CategoryBadge category={row.category} />,
+      render: (row) => {
+        const config = CATEGORY_CONFIG[row.category];
+        return (
+          <Badge variant={config.variant} className="gap-1">
+            <span>{config.icon}</span>
+            {config.label}
+          </Badge>
+        );
+      },
     },
     {
       key: 'status',
       header: 'Status',
       sortable: true,
-      render: (row) => <StatusBadge status={row.status} />,
+      render: (row) => {
+        const config = MAINTENANCE_STATUS_CONFIG[row.status];
+        return <Badge variant={config.variant}>{config.label}</Badge>;
+      },
     },
     {
       key: 'scheduledDate',

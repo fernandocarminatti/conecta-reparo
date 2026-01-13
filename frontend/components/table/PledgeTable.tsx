@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { 
-  ChevronUp, 
-  ChevronDown, 
+import {
+  ChevronUp,
+  ChevronDown,
   ChevronsUpDown,
   MoreHorizontal,
   Eye,
@@ -14,6 +14,8 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { PledgeResponseDto, PledgeStatus, PledgeCategory } from '@/lib/types/maintenance';
+import { Badge } from '@/components/ui/badge';
+import { PLEDGE_STATUS_CONFIG, CATEGORY_CONFIG } from '@/lib/config/status-config';
 
 interface Column<T> {
   key: string;
@@ -56,39 +58,6 @@ function LoadingSpinner() {
     <div className="flex items-center justify-center py-12">
       <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
     </div>
-  );
-}
-
-function StatusBadge({ status }: { status: PledgeStatus }) {
-  const styles: Record<PledgeStatus, { bg: string; text: string; label: string }> = {
-    OFFERED: { bg: 'bg-blue-100', text: 'text-blue-700', label: 'Oferecido' },
-    PENDING: { bg: 'bg-yellow-100', text: 'text-yellow-700', label: 'Pendente' },
-    REJECTED: { bg: 'bg-red-100', text: 'text-red-700', label: 'Rejeitado' },
-    COMPLETED: { bg: 'bg-green-100', text: 'text-green-700', label: 'Concluído' },
-    CANCELED: { bg: 'bg-gray-100', text: 'text-gray-700', label: 'Cancelado' },
-  };
-
-  const { bg, text, label } = styles[status];
-
-  return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-xs text-sm font-medium ${bg} ${text}`}>
-      {label}
-    </span>
-  );
-}
-
-function TypeBadge({ type }: { type: PledgeCategory }) {
-  const styles: Record<PledgeCategory, { bg: string; text: string; label: string }> = {
-    MATERIAL: { bg: 'bg-purple-100', text: 'text-purple-700', label: 'Material' },
-    LABOR: { bg: 'bg-cyan-100', text: 'text-cyan-700', label: 'Mão de Obra' },
-  };
-
-  const { bg, text, label } = styles[type];
-
-  return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-xs text-sm font-medium ${bg} ${text}`}>
-      {label}
-    </span>
   );
 }
 
@@ -136,13 +105,19 @@ export function PledgeTable({
       key: 'type',
       header: 'Tipo',
       sortable: true,
-      render: (row) => <TypeBadge type={row.type} />,
+      render: (row) => {
+        const config = CATEGORY_CONFIG[row.type];
+        return <Badge variant={config.variant}>{config.label}</Badge>;
+      },
     },
     {
       key: 'status',
       header: 'Status',
       sortable: true,
-      render: (row) => <StatusBadge status={row.status} />,
+      render: (row) => {
+        const config = PLEDGE_STATUS_CONFIG[row.status];
+        return <Badge variant={config.variant}>{config.label}</Badge>;
+      },
     },
     {
       key: 'createdAt',
