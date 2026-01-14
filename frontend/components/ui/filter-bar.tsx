@@ -2,13 +2,14 @@
 
 import { Search } from 'lucide-react';
 import { Input } from './input';
-import { Select } from './select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select';
 import { cn } from '@/lib/utils';
+import { StatusSelectOptions, CategorySelectOptions } from '@/lib/types/maintenance';
 
 export interface FilterOption {
   key: string;
   label: string;
-  options: { value: string; label: string }[];
+  options: StatusSelectOptions[] | CategorySelectOptions[];
   value?: string;
 }
 
@@ -51,19 +52,23 @@ export function FilterBar({
         )}
 
         {filters.length > 0 && (
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3 relative z-10">
             {filters.map((filter) => (
               <div key={filter.key} className="min-w-[140px]">
-                <Select
-                  value={filter.value ?? ''}
-                  onChange={(e) => onFilterChange?.(filter.key, e.target.value)}
-                  className="w-full"
+                <Select defaultValue={filter.value || undefined}
+                  onValueChange={(value) => onFilterChange?.(filter.key, value)}
                 >
-                  {filter.options.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder={filter.label} />
+                  </SelectTrigger>
+                  <SelectContent position="popper" align="start" className="w-[var(--radix-select-trigger-width)]">
+                    {filter.options.filter((opt) => opt.value !== '').map((opt) => (
+                      <SelectItem className="min-w-[140px]" key={opt.value} value={opt.value}>
+                        {opt.icon}
+                        <span>{opt.label}</span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
               </div>
             ))}

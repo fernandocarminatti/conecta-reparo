@@ -1,3 +1,5 @@
+import { PledgeResponseDto } from "./pledges";
+
 export type MaintenanceStatus = 'OPEN' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELED';
 export type MaintenanceCategory = 
   | 'BUILDING' 
@@ -9,10 +11,19 @@ export type MaintenanceCategory =
   | 'SECURITY' 
   | 'OTHERS';
 
-export type ActionStatus = 'SUCCESS' | 'PARTIAL_SUCCESS' | 'FAILURE';
+export type CategorySelectOptions = { 
+  value: string;
+  label: string;
+  icon: React.ReactNode
+}
 
-export type PledgeStatus = 'OFFERED' | 'PENDING' | 'REJECTED' | 'COMPLETED' | 'CANCELED';
-export type PledgeCategory = 'MATERIAL' | 'LABOR';
+export type StatusSelectOptions = { 
+  value: string;
+  label: string;
+  icon: React.ReactNode
+}
+
+export type ActionStatus = 'SUCCESS' | 'PARTIAL_SUCCESS' | 'FAILURE';
 
 export interface MaintenanceResponseDto {
   id: string;
@@ -104,91 +115,6 @@ export interface MaintenanceActionUpdateDto {
   completionDate?: string;
   actionDescription?: string;
   outcomeStatus?: ActionStatus;
-}
-
-export interface PledgeResponseDto {
-  id: string;
-  volunteerName: string;
-  volunteerContact: string;
-  description: string;
-  type: PledgeCategory;
-  status: PledgeStatus;
-  createdAt: string;
-  updatedAt: string;
-  maintenanceId?: string;
-  maintenanceTitle?: string;
-}
-
-export interface PledgeDetailResponseDto extends PledgeResponseDto {
-  maintenance: {
-    id: string;
-    title: string;
-    category: MaintenanceCategory;
-    status: MaintenanceStatus;
-    scheduledDate: string;
-  };
-}
-
-export interface PledgeDto {
-  volunteerName: string;
-  volunteerContact: string;
-  description: string;
-  type: PledgeCategory;
-  maintenanceId: string;
-}
-
-export interface PledgeUpdateDto {
-  status?: PledgeStatus;
-  description?: string;
-  volunteerName?: string;
-  volunteerContact?: string;
-  type?: PledgeCategory;
-}
-
-export interface PledgeFormData {
-  volunteerName: string;
-  volunteerContact: string;
-  description: string;
-  type: PledgeCategory;
-  status: PledgeStatus;
-}
-
-export type PledgeFilter = {
-  status?: string;
-  type?: string;
-  search?: string;
-  page?: number;
-  size?: number;
-  sort?: string;
-};
-
-export interface PageResponse<T> {
-  content: T[];
-  pageable: {
-    pageNumber: number;
-    pageSize: number;
-    sort: {
-      empty: boolean;
-      sorted: boolean;
-      unsorted: boolean;
-    };
-    offset: number;
-    paged: boolean;
-    unpaged: boolean;
-  };
-  last: boolean;
-  totalPages: number;
-  totalElements: number;
-  first: boolean;
-  size: number;
-  number: number;
-  sort: {
-    empty: boolean;
-    sorted: boolean;
-    unsorted: boolean;
-  };
-  numberOfElements: number;
-  empty: boolean;
 }
 
 export type MaintenanceFilter = {

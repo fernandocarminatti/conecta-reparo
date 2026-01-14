@@ -5,37 +5,52 @@ import Link from 'next/link';
 import { 
   Plus, 
   Download,
-  RefreshCw
+  RefreshCw,
+  Building2,
+  Wrench,
+  List,
+  Zap,
+  Snowflake,
+  Armchair,
+  Trees,
+  Lock,
+  Package,
+  CircleX,
+  CircleCheck,
+  CircleDotDashed,
+  Circle,
+  CircleMinus,
+  CircleFadingPlus,
+  CirclePile
 } from 'lucide-react';
 import { MaintenanceTable } from '@/components/table';
 import { maintenanceApi } from '@/lib/api/maintenance';
-import { MaintenanceResponseDto, MaintenanceFilter, PageResponse } from '@/lib/types/maintenance';
+import { MaintenanceResponseDto, MaintenanceFilter, StatusSelectOptions, CategorySelectOptions } from '@/lib/types/maintenance';
 import { Button } from '@/components/ui/button';
 import { FilterBar } from '@/components/ui/filter-bar';
 
-const statusOptions = [
-  { value: '', label: 'Todos os Status' },
-  { value: 'all', label: 'Todos' },
-  { value: 'active', label: 'Ativos' },
-  { value: 'inactive', label: 'Inativos' },
-  { value: 'OPEN', label: 'Aberto' },
-  { value: 'IN_PROGRESS', label: 'Em Andamento' },
-  { value: 'COMPLETED', label: 'Concluído' },
-  { value: 'CANCELED', label: 'Cancelado' },
+const statusOptions: StatusSelectOptions[] = [
+  { value: 'all', label: 'Todos', icon: <CirclePile className="w-4 h-4" /> },
+  { value: 'active', label: 'Ativos', icon: <CircleFadingPlus className="w-4 h-4" />},
+  { value: 'inactive', label: 'Inativos', icon: <CircleMinus className="w-4 h-4" /> },
+  { value: 'OPEN', label: 'Aberto', icon: <Circle className="w-4 h-4" /> },
+  { value: 'IN_PROGRESS', label: 'Em Andamento', icon: <CircleDotDashed className="w-4 h-4"/> },
+  { value: 'COMPLETED', label: 'Concluído', icon: <CircleCheck className="w-4 h-4" /> },
+  { value: 'CANCELED', label: 'Cancelado', icon: <CircleX className="w-4 h-4" /> },
 ];
 
 const PAGE_SIZE = 25;
 
-const categoryOptions = [
-  { value: '', label: 'Todas as Categorias' },
-  { value: 'BUILDING', label: '🏢 Construção' },
-  { value: 'ELECTRICAL', label: '⚡ Elétrica' },
-  { value: 'PLUMBING', label: '🔧 Hidráulica' },
-  { value: 'HVAC', label: '❄️ HVAC' },
-  { value: 'FURNITURE', label: '🪑 Mobília' },
-  { value: 'GARDENING', label: '🌿 Jardinagem' },
-  { value: 'SECURITY', label: '🔒 Segurança' },
-  { value: 'OTHERS', label: '📦 Outros' },
+const categoryOptions : CategorySelectOptions[] = [
+  { value: 'all', label: 'Todas', icon: <List className="w-4 h-4" /> },
+  { value: 'BUILDING', label: 'Construção', icon: <Building2 className="w-4 h-4" /> },
+  { value: 'ELECTRICAL', label: 'Elétrica', icon: <Zap className="w-4 h-4" /> },
+  { value: 'PLUMBING', label: 'Hidráulica', icon: <Wrench className="w-4 h-4" /> },
+  { value: 'HVAC', label: 'HVAC', icon: <Snowflake className="w-4 h-4" /> },
+  { value: 'FURNITURE', label: 'Mobília', icon: <Armchair className="w-4 h-4" /> },
+  { value: 'GARDENING', label: 'Jardinagem', icon: <Trees className="w-4 h-4" /> },
+  { value: 'SECURITY', label: 'Segurança', icon: <Lock className="w-4 h-4" /> },
+  { value: 'OTHERS', label: 'Outros', icon: <Package className="w-4 h-4" /> },
 ];
 
 export default function MaintenancesPage() {
@@ -46,6 +61,7 @@ export default function MaintenancesPage() {
   const [filter, setFilter] = useState<MaintenanceFilter>({
     status: '',
     search: '',
+    category: '',
     page: 0,
     size: PAGE_SIZE,
     sort: 'createdAt,desc',
@@ -137,10 +153,14 @@ export default function MaintenancesPage() {
             key: 'category',
             label: 'Categoria',
             options: categoryOptions,
-            value: filter.category || '',
+            value: filter.category,
           },
         ]}
-        onFilterChange={(key, value) => setFilter(prev => ({ ...prev, [key]: value, page: 0 }))}
+        onFilterChange={(key, value) => setFilter(prev =>
+          ({ ...prev,
+            [key]: value === 'all' ? '' : value,
+            page: 0 
+          }))}
       />
 
       {error && (
