@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { PledgeTable } from '@/components/table';
 import { pledgeApi } from '@/lib/api/pledge';
-import { PledgeResponseDto, PledgeFilter, PledgeStatus, PledgeCategory } from '@/lib/types/maintenance';
+import { PledgeResponseDto, PledgeFilter, PledgeStatus, PledgeCategory } from '@/lib/types/pledges';
 import { Button } from '@/components/ui/button';
 import { FilterBar } from '@/components/ui/filter-bar';
 
@@ -107,7 +107,7 @@ export default function PledgesPage() {
             Exportar
           </Button>
           <Button asChild>
-            <Link href="/admin/pledges/new">
+            <Link href="/admin/pledges/form">
               <Plus className="w-4 h-4" />
               Nova Oferta
             </Link>

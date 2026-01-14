@@ -8,192 +8,37 @@ import { ptBR } from 'date-fns/locale';
 import {
   ArrowLeft,
   Edit,
-  Save,
-  X,
-  Clock,
-  User,
-  Heart,
-  FileText,
   RefreshCw,
   AlertCircle,
-  CheckCircle,
   Loader2,
-  Eye
+  Eye,
+  User,
+  FileText,
+  Clock,
 } from 'lucide-react';
 import { 
   PledgeResponseDto, 
-  PledgeFormData,
-  PledgeStatus,
-  PledgeCategory
-} from '@/lib/types/maintenance';
+} from '@/lib/types/pledges';
 import { pledgeApi } from '@/lib/api/pledge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { PLEDGE_STATUS_CONFIG } from '@/lib/config/status-config';
 
-const statusOptions: { value: PledgeStatus; label: string; color: string }[] = [
-  { value: 'OFFERED', label: 'Oferecido', color: 'bg-blue-100 text-blue-700' },
-  { value: 'PENDING', label: 'Pendente', color: 'bg-yellow-100 text-yellow-700' },
-  { value: 'REJECTED', label: 'Rejeitado', color: 'bg-red-100 text-red-700' },
-  { value: 'COMPLETED', label: 'Concluído', color: 'bg-green-100 text-green-700' },
-  { value: 'CANCELED', label: 'Cancelado', color: 'bg-gray-100 text-gray-700' },
-];
-
-const typeOptions: { value: PledgeCategory; label: string; icon: string }[] = [
-  { value: 'MATERIAL', label: 'Material', icon: '📦' },
-  { value: 'LABOR', label: 'Mão de Obra', icon: '👷' },
-];
-
-type Tab = 'details' | 'edit';
-
-function StatusBadge({ status }: { status: PledgeStatus }) {
-  const option = statusOptions.find(o => o.value === status);
+function StatusBadge({ status }: { status: string }) {
+  const config = PLEDGE_STATUS_CONFIG[status as keyof typeof PLEDGE_STATUS_CONFIG];
   return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-xs text-sm font-medium ${option?.color || 'bg-gray-100 text-gray-700'}`}>
-      {option?.label || status}
-    </span>
+    <Badge variant={config?.variant || 'secondary'}>
+      {config?.label || status}
+    </Badge>
   );
 }
 
-function TypeBadge({ type }: { type: PledgeCategory }) {
-  const option = typeOptions.find(o => o.value === type);
+function TypeBadge({ type }: { type: string }) {
   return (
-    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-xs text-sm font-medium bg-purple-100 text-purple-700">
-      <span>{option?.icon}</span>
-      {option?.label || type}
-    </span>
-  );
-}
-
-interface EditFormProps {
-  pledge: PledgeResponseDto;
-  onSave: (data: Partial<PledgeFormData>) => Promise<void>;
-  onCancel: () => void;
-}
-
-function EditForm({ pledge, onSave, onCancel }: EditFormProps) {
-  const [formData, setFormData] = useState<PledgeFormData>({
-    volunteerName: pledge.volunteerName,
-    volunteerContact: pledge.volunteerContact,
-    description: pledge.description,
-    type: pledge.type,
-    status: pledge.status,
-  });
-  const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const updateField = (field: keyof PledgeFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleSave = async () => {
-    setIsSaving(true);
-    setError(null);
-    try {
-      await onSave(formData);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao salvar');
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const hasChanges = formData.volunteerName !== pledge.volunteerName ||
-    formData.volunteerContact !== pledge.volunteerContact ||
-    formData.description !== pledge.description ||
-    formData.type !== pledge.type ||
-    formData.status !== pledge.status;
-
-  return (
-    <div className="max-w-3xl">
-      {error && (
-        <div className="mb-4 bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-red-600 text-sm">{error}</p>
-        </div>
-      )}
-
-      <div className="grid gap-6">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label className="block text-sm font-medium text-gray-900 mb-1">Status</label>
-            <select
-              value={formData.status}
-              onChange={(e) => updateField('status', e.target.value as PledgeStatus)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
-            >
-              {statusOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-900 mb-1">Tipo</label>
-            <select
-              value={formData.type}
-              onChange={(e) => updateField('type', e.target.value as PledgeCategory)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
-            >
-              {typeOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-900 mb-1">
-            <User className="w-4 h-4 inline mr-1" />
-            Nome do Voluntário
-          </label>
-          <input
-            type="text"
-            value={formData.volunteerName}
-            onChange={(e) => updateField('volunteerName', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-400"
-            placeholder="Nome do voluntário"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-900 mb-1">Contato</label>
-          <input
-            type="text"
-            value={formData.volunteerContact}
-            onChange={(e) => updateField('volunteerContact', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-400"
-            placeholder="Email ou telefone"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-900 mb-1">
-            <FileText className="w-4 h-4 inline mr-1" />
-            Descrição
-          </label>
-          <textarea
-            value={formData.description}
-            onChange={(e) => updateField('description', e.target.value)}
-            rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-400 resize-none"
-            placeholder="Descrição do pledge"
-          />
-        </div>
-
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
-          <Button variant="outline" onClick={onCancel} disabled={isSaving}>
-            <X className="w-4 h-4" />
-            Cancelar
-          </Button>
-          <Button onClick={handleSave} disabled={!hasChanges || isSaving}>
-            {isSaving ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Save className="w-4 h-4" />
-            )}
-            Salvar Alterações
-          </Button>
-        </div>
-      </div>
-    </div>
+    <Badge variant="outline">
+      {type === 'MATERIAL' ? 'Material' : 'Mão de Obra'}
+    </Badge>
   );
 }
 
@@ -204,7 +49,6 @@ export default function PledgeDetailPage() {
   const [pledge, setPledge] = useState<PledgeResponseDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<Tab>('details');
 
   const fetchPledge = useCallback(async () => {
     if (!pledgeId) return;
@@ -216,7 +60,7 @@ export default function PledgeDetailPage() {
       const data = await pledgeApi.getById(pledgeId);
       setPledge(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao carregar pledge');
+      setError(err instanceof Error ? err.message : 'Erro ao carregar oferta');
     } finally {
       setLoading(false);
     }
@@ -226,55 +70,21 @@ export default function PledgeDetailPage() {
     fetchPledge();
   }, [fetchPledge]);
 
-  const handleSaveEdit = async (data: Partial<PledgeFormData>) => {
-    const updateDto: Record<string, any> = {};
-    
-    if (data.status !== undefined && data.status !== pledge?.status) {
-      updateDto.status = data.status;
-    }
-    if (data.description !== undefined && data.description !== pledge?.description) {
-      updateDto.description = data.description;
-    }
-    if (data.volunteerName !== undefined && data.volunteerName !== pledge?.volunteerName) {
-      updateDto.volunteerName = data.volunteerName;
-    }
-    if (data.volunteerContact !== undefined && data.volunteerContact !== pledge?.volunteerContact) {
-      updateDto.volunteerContact = data.volunteerContact;
-    }
-    if (data.type !== undefined && data.type !== pledge?.type) {
-      updateDto.type = data.type;
-    }
-
-    if (Object.keys(updateDto).length === 0) {
-      setActiveTab('details');
-      return;
-    }
-
-    const saved = await pledgeApi.update(pledgeId, updateDto);
-    setPledge(prev => prev ? { ...prev, ...saved } : null);
-    setActiveTab('details');
-  };
-
-  const tabs: { id: Tab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-    { id: 'details', label: 'Detalhes', icon: Eye },
-    { id: 'edit', label: 'Editar', icon: Edit },
-  ];
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
   if (error && !pledge) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-        <div className="flex items-center gap-3 text-red-700">
+      <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-6">
+        <div className="flex items-center gap-3 text-destructive">
           <AlertCircle className="w-6 h-6" />
           <div>
-            <h3 className="font-medium">Erro ao carregar pledge</h3>
+            <h3 className="font-medium">Erro ao carregar oferta</h3>
             <p className="text-sm mt-1">{error}</p>
           </div>
         </div>
@@ -289,7 +99,7 @@ export default function PledgeDetailPage() {
   if (!pledge) {
     return (
       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-        <p className="text-yellow-700">Pledge não encontrado</p>
+        <p className="text-yellow-700">Oferta não encontrada</p>
         <Link href="/admin/pledges" className="mt-4 inline-flex items-center gap-2 text-blue-600 hover:text-blue-700">
           <ArrowLeft className="w-4 h-4" />
           Voltar à lista
@@ -308,8 +118,8 @@ export default function PledgeDetailPage() {
             </Link>
           </Button>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Pledge</h2>
-            <p className="text-gray-500 text-sm mt-1">
+            <h2 className="text-2xl font-bold text-foreground">Oferta</h2>
+            <p className="text-muted-foreground text-sm mt-1">
               {pledge.volunteerName}
             </p>
           </div>
@@ -318,97 +128,74 @@ export default function PledgeDetailPage() {
         <div className="flex items-center gap-2">
           <StatusBadge status={pledge.status} />
           <TypeBadge type={pledge.type} />
+          <Button variant="outline" size="sm" asChild>
+            <Link href={`/admin/pledges/form?id=${pledge.id}&mode=edit`}>
+              <Edit className="w-4 h-4" />
+              Editar
+            </Link>
+          </Button>
         </div>
       </div>
 
       <Card>
         <CardContent className="pt-6 p-0">
-          <div className="border-b border-gray-200 pb-px">
-            <nav className="flex -mb-px">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
-                    activeTab === tab.id
-                      ? 'border-blue-600 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  <tab.icon className="w-4 h-4" />
-                  {tab.label}
-                </button>
-              ))}
-            </nav>
-          </div>
-
           <div className="p-6">
-            {activeTab === 'details' && (
             <div className="max-w-3xl">
               <div className="grid gap-6">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <h3 className="text-sm font-medium text-gray-500 mb-1">Status</h3>
+                    <h3 className="text-sm font-medium text-muted-foreground mb-1">Status</h3>
                     <dd className="mt-1"><StatusBadge status={pledge.status} /></dd>
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-500 mb-1">Tipo</h3>
+                    <h3 className="text-sm font-medium text-muted-foreground mb-1">Tipo</h3>
                     <dd className="mt-1"><TypeBadge type={pledge.type} /></dd>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium text-gray-500 mb-1">
+                  <h3 className="text-sm font-medium text-muted-foreground mb-1">
                     <User className="w-4 h-4 inline mr-1" />
                     Nome do Voluntário
                   </h3>
-                  <p className="text-gray-900 font-medium">{pledge.volunteerName}</p>
+                  <p className="text-foreground font-medium">{pledge.volunteerName}</p>
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium text-gray-500 mb-1">Contato</h3>
-                  <p className="text-gray-900">{pledge.volunteerContact}</p>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-1">Contato</h3>
+                  <p className="text-foreground">{pledge.volunteerContact}</p>
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium text-gray-500 mb-1">
+                  <h3 className="text-sm font-medium text-muted-foreground mb-1">
                     <FileText className="w-4 h-4 inline mr-1" />
                     Descrição
                   </h3>
-                  <p className="text-gray-900">{pledge.description}</p>
+                  <p className="text-foreground">{pledge.description}</p>
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <h3 className="text-sm font-medium text-gray-500 mb-1">
+                    <h3 className="text-sm font-medium text-muted-foreground mb-1">
                       <Clock className="w-4 h-4 inline mr-1" />
                       Criado em
                     </h3>
-                    <p className="text-gray-500 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       {format(new Date(pledge.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
                     </p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-500 mb-1">
+                    <h3 className="text-sm font-medium text-muted-foreground mb-1">
                       <Clock className="w-4 h-4 inline mr-1" />
                       Última atualização
                     </h3>
-                    <p className="text-gray-500 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       {format(new Date(pledge.updatedAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
                     </p>
                   </div>
                 </div>
               </div>
             </div>
-          )}
-
-          {activeTab === 'edit' && (
-            <EditForm
-              pledge={pledge}
-              onSave={handleSaveEdit}
-              onCancel={() => setActiveTab('details')}
-            />
-          )}
           </div>
         </CardContent>
       </Card>

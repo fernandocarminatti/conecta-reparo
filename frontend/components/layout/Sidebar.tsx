@@ -45,8 +45,7 @@ const navigation: NavItem[] = [
     icon: Heart,
     children: [
       { name: 'Todos as Ofertas', href: '/admin/pledges' },
-      { name: 'Ofertas Pendentes', href: '/admin/pledges/pending' },
-      { name: 'Ofertas Aprovadas', href: '/admin/pledges/approved' },
+      { name: 'Nova Oferta', href: '/admin/pledges/form' },
     ],
   },
   {
