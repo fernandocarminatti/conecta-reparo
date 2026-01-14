@@ -3,61 +3,89 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 import {
   ArrowLeft,
   Calendar,
   ClipboardList,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  Building2,
+  Zap,
+  Wrench,
+  Snowflake,
+  Armchair,
+  Trees,
+  Lock,
+  Package
 } from 'lucide-react';
-import { MaintenanceDto, MaintenanceCategory } from '@/lib/types/maintenance';
-import { maintenanceApi } from '@/lib/api/maintenance';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { MaintenanceCategory } from '@/lib/types/maintenance';
+import { maintenanceApi } from '@/lib/api/maintenance';
 
-const categoryOptions: { value: MaintenanceCategory; label: string; icon: string }[] = [
-  { value: 'BUILDING', label: 'Construção', icon: '🏢' },
-  { value: 'ELECTRICAL', label: 'Elétrica', icon: '⚡' },
-  { value: 'PLUMBING', label: 'Hidráulica', icon: '🔧' },
-  { value: 'HVAC', label: 'HVAC', icon: '❄️' },
-  { value: 'FURNITURE', label: 'Mobília', icon: '🪑' },
-  { value: 'GARDENING', label: 'Jardinagem', icon: '🌿' },
-  { value: 'SECURITY', label: 'Segurança', icon: '🔒' },
-  { value: 'OTHERS', label: 'Outros', icon: '📦' },
+const categoryOptions: { value: MaintenanceCategory; label: string; icon: React.ReactNode }[] = [
+  { value: 'BUILDING', label: 'Construção', icon: <Building2 className="w-4 h-4" /> },
+  { value: 'ELECTRICAL', label: 'Elétrica', icon: <Zap className="w-4 h-4" /> },
+  { value: 'PLUMBING', label: 'Hidráulica', icon: <Wrench className="w-4 h-4" /> },
+  { value: 'HVAC', label: 'HVAC', icon: <Snowflake className="w-4 h-4" /> },
+  { value: 'FURNITURE', label: 'Mobília', icon: <Armchair className="w-4 h-4" /> },
+  { value: 'GARDENING', label: 'Jardinagem', icon: <Trees className="w-4 h-4" /> },
+  { value: 'SECURITY', label: 'Segurança', icon: <Lock className="w-4 h-4" /> },
+  { value: 'OTHERS', label: 'Outros', icon: <Package className="w-4 h-4" /> },
 ];
+
+const formSchema = z.object({
+  title: z.string().min(3, 'Título deve ter pelo menos 3 caracteres'),
+  description: z.string().min(10, 'Descrição deve ter pelo menos 10 caracteres'),
+  category: z.enum(['BUILDING', 'ELECTRICAL', 'PLUMBING', 'HVAC', 'FURNITURE', 'GARDENING', 'SECURITY', 'OTHERS']),
+  scheduledDate: z.string().min(1, 'Data é obrigatória'),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 export default function NewMaintenancePage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [formData, setFormData] = useState<MaintenanceDto>({
-    title: '',
-    description: '',
-    category: 'OTHERS',
-    scheduledDate: new Date().toISOString().split('T')[0],
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: '',
+      description: '',
+      category: 'OTHERS',
+      scheduledDate: new Date().toISOString().split('T')[0],
+    },
+    mode: 'onChange',
   });
 
-  const updateField = (field: keyof MaintenanceDto, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const isValid = formData.title.trim() !== '' &&
-    formData.description.trim() !== '' &&
-    formData.scheduledDate !== '';
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!isValid) return;
-
+  const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
     setError(null);
 
     try {
-      const dataToSubmit: MaintenanceDto = {
-        ...formData,
-        scheduledDate: new Date(formData.scheduledDate).toISOString(),
+      const dataToSubmit = {
+        ...data,
+        scheduledDate: new Date(data.scheduledDate).toISOString(),
       };
 
       const created = await maintenanceApi.create(dataToSubmit);
@@ -69,9 +97,9 @@ export default function NewMaintenancePage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-md mx-auto space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" asChild>
+        <Button variant="ghost" size="sm" asChild>
           <Link href="/admin/maintenances">
             <ArrowLeft className="w-4 h-4" />
           </Link>
@@ -91,68 +119,91 @@ export default function NewMaintenancePage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit}>
-        <Card>
-          <CardContent className="pt-6 p-0">
-            <div className="grid gap-6">
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Categoria</label>
-            <select
-              value={formData.category}
-              onChange={(e) => updateField('category', e.target.value as MaintenanceCategory)}
-              className="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring bg-background"
-            >
-              {categoryOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.icon} {opt.label}
-                </option>
-              ))}
-            </select>
-          </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <ClipboardList className="w-4 h-4 inline mr-1" />
+                  Título
+                </FormLabel>
+                <FormControl>
+                  <Input placeholder="Título resumido do problema" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              <ClipboardList className="w-4 h-4 inline mr-1" />
-              Título
-            </label>
-            <input
-              type="text"
-              value={formData.title}
-              onChange={(e) => updateField('title', e.target.value)}
-              className="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring text-foreground placeholder:text-muted-foreground bg-background"
-              placeholder="Título resumido do problema"
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Descrição</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Descrição detalhada do problema que precisa ser resolvido"
+                    className="resize-none"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="category"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Categoria</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione uma categoria" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent position="popper" align="start" className="w-[var(--radix-select-trigger-width)]">
+                    {categoryOptions.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        <div className="flex items-center gap-2">
+                          {opt.icon}
+                          <span>{opt.label}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="scheduledDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  <Calendar className="w-4 h-4 inline mr-1" />
+                  Data Agendada
+                </FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Descrição</label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => updateField('description', e.target.value)}
-              rows={4}
-              className="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring text-foreground placeholder:text-muted-foreground resize-none bg-background"
-              placeholder="Descrição detalhada do problema que precisa ser resolvido"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              <Calendar className="w-4 h-4 inline mr-1" />
-              Data Agendada
-            </label>
-            <input
-              type="date"
-              value={formData.scheduledDate}
-              onChange={(e) => updateField('scheduledDate', e.target.value)}
-              className="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring text-foreground bg-background"
-            />
-          </div>
-
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
-            <Button variant="outline" asChild>
+          <div className="flex items-center justify-end gap-3 pt-4">
+            <Button variant="outline" size="sm" asChild>
               <Link href="/admin/maintenances">Cancelar</Link>
             </Button>
-            <Button type="submit" disabled={!isValid || isSubmitting}>
+            <Button type="submit" size="sm" disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -163,10 +214,8 @@ export default function NewMaintenancePage() {
               )}
             </Button>
           </div>
-        </div>
-        </CardContent>
-        </Card>
-      </form>
+        </form>
+      </Form>
     </div>
   );
 }

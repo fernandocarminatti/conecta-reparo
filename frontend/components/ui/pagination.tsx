@@ -25,7 +25,7 @@ export function Pagination({
     const pages: (number | 'ellipsis')[] = [];
     const maxVisiblePages = 5;
     let left = Math.max(0, currentPage - Math.floor(maxVisiblePages / 2));
-    let right = Math.min(totalPages - 1, left + maxVisiblePages - 1);
+    const right = Math.min(totalPages - 1, left + maxVisiblePages - 1);
 
     if (right - left + 1 < maxVisiblePages) {
       left = Math.max(0, right - maxVisiblePages + 1);
