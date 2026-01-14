@@ -4,10 +4,11 @@ import {
   MaintenanceDto, 
   MaintenanceUpdateDto,
   MaintenanceActionResponseDto,
-  PledgeResponseDto,
-  PageResponse,
   MaintenanceFilter 
 } from '@/lib/types/maintenance';
+
+import { PledgeResponseDto } from '@/lib/types/pledges'
+import { PageResponse } from '../types/pageresponse';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
