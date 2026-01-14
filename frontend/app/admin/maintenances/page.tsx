@@ -3,17 +3,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { 
-  Search, 
-  Filter, 
   Plus, 
   Download,
-  RefreshCw,
-  ChevronLeft,
-  ChevronRight
+  RefreshCw
 } from 'lucide-react';
 import { MaintenanceTable } from '@/components/table';
 import { maintenanceApi } from '@/lib/api/maintenance';
 import { MaintenanceResponseDto, MaintenanceFilter, PageResponse } from '@/lib/types/maintenance';
+import { Button } from '@/components/ui/button';
+import { FilterBar } from '@/components/ui/filter-bar';
 
 const statusOptions = [
   { value: '', label: 'Todos os Status' },
@@ -84,23 +82,14 @@ export default function MaintenancesPage() {
     fetchData();
   }, [fetchData]);
 
-  const handleFilterChange = (key: keyof MaintenanceFilter, value: string | number) => {
-    setFilter(prev => ({ ...prev, [key]: value, page: 0 }));
-  };
-
   const handleSort = (key: string, direction: 'asc' | 'desc') => {
     setSortKey(key);
     setSortDirection(direction);
     setFilter(prev => ({ ...prev, sort: `${key},${direction}` }));
   };
 
-  const handlePageChange = (newPage: number) => {
-    setFilter(prev => ({ ...prev, page: newPage }));
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchData();
+  const handlePageChange = (page: number) => {
+    setFilter(prev => ({ ...prev, page }));
   };
 
   const handleRefresh = () => {
@@ -111,78 +100,52 @@ export default function MaintenancesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Manutenções</h2>
-          <p className="text-gray-500 mt-1">
+          <h2 className="text-2xl font-bold text-foreground">Manutenções</h2>
+          <p className="text-muted-foreground mt-1">
             Gerencie as solicitações de manutenção ({pagination.totalElements} registros)
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button
-            onClick={handleRefresh}
-            className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-            title="Atualizar lista"
-          >
+          <Button variant="outline" onClick={handleRefresh} disabled={loading}>
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-          </button>
-          <button className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+          </Button>
+          <Button variant="outline">
             <Download className="w-4 h-4" />
             Exportar
-          </button>
-          <Link
-            href="/admin/maintenances/new"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            Nova Manutenção
-          </Link>
+          </Button>
+          <Button asChild>
+            <Link href="/admin/maintenances/new">
+              <Plus className="w-4 h-4" />
+              Nova Manutenção
+            </Link>
+          </Button>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <form onSubmit={handleSearch} className="flex-1 max-w-md">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Buscar por título, descrição ou categoria..."
-                value={filter.search}
-                onChange={(e) => setFilter(prev => ({ ...prev, search: e.target.value }))}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xs text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-400"
-              />
-            </div>
-          </form>
-
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-gray-400" />
-              <select
-                value={filter.status}
-                onChange={(e) => handleFilterChange('status', e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-xs text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
-              >
-                {statusOptions.map(opt => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
-            </div>
-
-            <select
-              value={filter.category || ''}
-              onChange={(e) => handleFilterChange('category', e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-xs text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
-            >
-              {categoryOptions.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
+      <FilterBar
+        searchPlaceholder="Buscar por título, descrição ou categoria..."
+        searchValue={filter.search}
+        onSearchChange={(value) => setFilter(prev => ({ ...prev, search: value, page: 0 }))}
+        filters={[
+          {
+            key: 'status',
+            label: 'Status',
+            options: statusOptions,
+            value: filter.status,
+          },
+          {
+            key: 'category',
+            label: 'Categoria',
+            options: categoryOptions,
+            value: filter.category || '',
+          },
+        ]}
+        onFilterChange={(key, value) => setFilter(prev => ({ ...prev, [key]: value, page: 0 }))}
+      />
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-red-600 text-sm">{error}</p>
+        <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
+          <p className="text-destructive text-sm">{error}</p>
         </div>
       )}
 
@@ -192,64 +155,14 @@ export default function MaintenancesPage() {
         onSort={handleSort}
         sortKey={sortKey}
         sortDirection={sortDirection}
+        pagination={{
+          currentPage: pagination.currentPage,
+          totalPages: pagination.totalPages,
+          totalElements: pagination.totalElements,
+          pageSize: PAGE_SIZE,
+          onPageChange: handlePageChange,
+        }}
       />
-
-      {pagination.totalPages > 1 && (
-        <div className="flex items-center justify-between bg-white rounded-lg border border-gray-200 px-4 py-3">
-          <div className="text-sm text-gray-500">
-            Mostrando {pagination.currentPage * PAGE_SIZE + 1} a{' '}
-            {Math.min((pagination.currentPage + 1) * PAGE_SIZE, pagination.totalElements)} de{' '}
-            {pagination.totalElements} resultados
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => handlePageChange(pagination.currentPage - 1)}
-              disabled={pagination.currentPage === 0}
-              className="p-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            
-            <div className="flex items-center gap-1">
-              {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
-                let pageNum: number;
-                if (pagination.totalPages <= 5) {
-                  pageNum = i;
-                } else if (pagination.currentPage < 3) {
-                  pageNum = i;
-                } else if (pagination.currentPage > pagination.totalPages - 3) {
-                  pageNum = pagination.totalPages - 5 + i;
-                } else {
-                  pageNum = pagination.currentPage - 2 + i;
-                }
-                
-                return (
-                  <button
-                    key={pageNum}
-                    onClick={() => handlePageChange(pageNum)}
-                    className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
-                      pagination.currentPage === pageNum
-                        ? 'bg-blue-600 text-white'
-                        : 'text-gray-600 hover:bg-gray-100'
-                    }`}
-                  >
-                    {pageNum + 1}
-                  </button>
-                );
-              })}
-            </div>
-            
-            <button
-              onClick={() => handlePageChange(pagination.currentPage + 1)}
-              disabled={pagination.currentPage >= pagination.totalPages - 1}
-              className="p-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

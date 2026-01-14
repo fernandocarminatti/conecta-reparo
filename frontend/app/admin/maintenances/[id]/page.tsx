@@ -33,6 +33,8 @@ import {
   PledgeStatus
 } from '@/lib/types/maintenance';
 import { maintenanceApi } from '@/lib/api/maintenance';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 
 const statusOptions: { value: MaintenanceStatus; label: string; color: string }[] = [
   { value: 'OPEN', label: 'Aberto', color: 'bg-blue-100 text-blue-700' },
@@ -130,13 +132,12 @@ function MaintenanceActionsList({ actions, maintenanceId }: MaintenanceActionsLi
       <div className="text-center py-12 bg-gray-50 rounded-lg">
         <ClipboardList className="w-12 h-12 text-gray-300 mx-auto mb-3" />
         <p className="text-gray-500">Nenhuma ação registrada</p>
-        <Link
-          href={`/admin/maintenances/${maintenanceId}/actions/new`}
-          className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
-        >
-          <ClipboardList className="w-4 h-4" />
-          Nova Ação
-        </Link>
+        <Button asChild className="mt-3">
+          <Link href={`/admin/maintenances/${maintenanceId}/actions/new`}>
+            <ClipboardList className="w-4 h-4" />
+            Nova Ação
+          </Link>
+        </Button>
       </div>
     );
   }
@@ -144,48 +145,50 @@ function MaintenanceActionsList({ actions, maintenanceId }: MaintenanceActionsLi
   return (
     <div className="space-y-4">
       {actions.map((action) => (
-        <div key={action.id} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <ActionStatusBadge status={action.outcomeStatus} />
-                <span className="text-sm text-gray-500">
-                  {format(new Date(action.startDate), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
-                </span>
-              </div>
-              <p className="text-gray-900">{action.actionDescription}</p>
-              <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
-                <span>Por: {action.executedBy}</span>
-                {action.completionDate && (
-                  <>
-                    <span>•</span>
-                    <span>
-                      Concluído: {format(new Date(action.completionDate), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
-                    </span>
-                  </>
+        <Card key={action.id} className="hover:shadow-md transition-shadow p-4">
+          <CardContent className="pt-4 p-0">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <ActionStatusBadge status={action.outcomeStatus} />
+                  <span className="text-sm text-gray-500">
+                    {format(new Date(action.startDate), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
+                  </span>
+                </div>
+                <p className="text-gray-900">{action.actionDescription}</p>
+                <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
+                  <span>Por: {action.executedBy}</span>
+                  {action.completionDate && (
+                    <>
+                      <span>•</span>
+                      <span>
+                        Concluído: {format(new Date(action.completionDate), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
+                      </span>
+                    </>
+                  )}
+                </div>
+                {action.materialsUsed && action.materialsUsed.length > 0 && (
+                  <div className="mt-3 pt-3 border-t border-gray-100">
+                    <p className="text-xs font-medium text-gray-500 mb-2">Materiais utilizados:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {action.materialsUsed.map((material) => (
+                        <span key={material.id} className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 rounded text-xs text-gray-700">
+                          {material.itemName}: {material.quantity} {material.unitOfMeasure}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 )}
               </div>
-              {action.materialsUsed && action.materialsUsed.length > 0 && (
-                <div className="mt-3 pt-3 border-t border-gray-100">
-                  <p className="text-xs font-medium text-gray-500 mb-2">Materiais utilizados:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {action.materialsUsed.map((material) => (
-                      <span key={material.id} className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 rounded text-xs text-gray-700">
-                        {material.itemName}: {material.quantity} {material.unitOfMeasure}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
+              <Link
+                href={`/admin/maintenances/${maintenanceId}/actions/${action.id}`}
+                className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
+              >
+                <Edit className="w-4 h-4" />
+              </Link>
             </div>
-            <Link
-              href={`/admin/maintenances/${maintenanceId}/actions/${action.id}`}
-              className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
-            >
-              <Edit className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       ))}
     </div>
   );
@@ -202,13 +205,12 @@ function PledgesList({ pledges, maintenanceId }: PledgesListProps) {
       <div className="text-center py-12 bg-gray-50 rounded-lg">
         <Heart className="w-12 h-12 text-gray-300 mx-auto mb-3" />
         <p className="text-gray-500">Nenhum pledge recebido</p>
-        <Link
-          href={`/admin/pledges/new?maintenanceId=${maintenanceId}`}
-          className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors text-sm"
-        >
-          <Heart className="w-4 h-4" />
-          Adicionar Pledge
-        </Link>
+        <Button asChild className="mt-3">
+          <Link href={`/admin/pledges/new?maintenanceId=${maintenanceId}`}>
+            <Heart className="w-4 h-4" />
+            Adicionar Pledge
+          </Link>
+        </Button>
       </div>
     );
   }
@@ -216,36 +218,38 @@ function PledgesList({ pledges, maintenanceId }: PledgesListProps) {
   return (
     <div className="space-y-4">
       {pledges.map((pledge) => (
-        <div key={pledge.id} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <PledgeStatusBadge status={pledge.status} />
-                <span className="text-xs text-gray-400">
-                  {format(new Date(pledge.createdAt), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
-                </span>
+        <Card key={pledge.id} className="hover:shadow-md transition-shadow p-4">
+          <CardContent className="pt-4 p-0">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <PledgeStatusBadge status={pledge.status} />
+                  <span className="text-xs text-gray-400">
+                    {format(new Date(pledge.createdAt), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
+                  </span>
+                </div>
+                <p className="font-medium text-gray-900">{pledge.volunteerName}</p>
+                <p className="text-sm text-gray-500">{pledge.volunteerContact}</p>
+                <p className="text-gray-700 mt-2">{pledge.description}</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                    pledge.type === 'MATERIAL' ? 'bg-purple-100 text-purple-700' : 'bg-cyan-100 text-cyan-700'
+                  }`}>
+                    {pledge.type === 'MATERIAL' ? 'Material' : 'Mão de Obra'}
+                  </span>
+                </div>
               </div>
-              <p className="font-medium text-gray-900">{pledge.volunteerName}</p>
-              <p className="text-sm text-gray-500">{pledge.volunteerContact}</p>
-              <p className="text-gray-700 mt-2">{pledge.description}</p>
-              <div className="flex items-center gap-2 mt-2">
-                <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                  pledge.type === 'MATERIAL' ? 'bg-purple-100 text-purple-700' : 'bg-cyan-100 text-cyan-700'
-                }`}>
-                  {pledge.type === 'MATERIAL' ? 'Material' : 'Mão de Obra'}
-                </span>
+              <div className="flex items-center gap-1">
+                <Link
+                  href={`/admin/pledges/${pledge.id}`}
+                  className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
+                >
+                  <Edit className="w-4 h-4" />
+                </Link>
               </div>
             </div>
-            <div className="flex items-center gap-1">
-              <Link
-                href={`/admin/pledges/${pledge.id}`}
-                className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
-              >
-                <Edit className="w-4 h-4" />
-              </Link>
-            </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       ))}
     </div>
   );
@@ -362,26 +366,18 @@ function EditForm({ maintenance, onSave, onCancel }: EditFormProps) {
         </div>
 
         <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
-          <button
-            onClick={onCancel}
-            disabled={isSaving}
-            className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-900 hover:bg-gray-50 transition-colors"
-          >
+          <Button variant="outline" onClick={onCancel} disabled={isSaving}>
             <X className="w-4 h-4" />
             Cancelar
-          </button>
-          <button
-            onClick={handleSave}
-            disabled={!hasChanges || isSaving}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+          </Button>
+          <Button onClick={handleSave} disabled={!hasChanges || isSaving}>
             {isSaving ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
               <Save className="w-4 h-4" />
             )}
             Salvar Alterações
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -469,13 +465,10 @@ export default function MaintenanceDetailPage() {
             <p className="text-sm mt-1">{error}</p>
           </div>
         </div>
-        <button
-          onClick={fetchMaintenance}
-          className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
-        >
+        <Button variant="destructive" onClick={fetchMaintenance} className="mt-4">
           <RefreshCw className="w-4 h-4" />
           Tentar novamente
-        </button>
+        </Button>
       </div>
     );
   }
@@ -496,12 +489,11 @@ export default function MaintenanceDetailPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link
-            href="/admin/maintenances"
-            className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
+          <Button variant="ghost" asChild>
+            <Link href="/admin/maintenances">
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+          </Button>
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Manutenção</h2>
             <p className="text-gray-500 text-sm mt-1">
@@ -516,110 +508,112 @@ export default function MaintenanceDetailPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200">
-        <div className="border-b border-gray-200">
-          <nav className="flex -mb-px">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === tab.id
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                <tab.icon className="w-4 h-4" />
-                {tab.label}
-                {tab.count !== undefined && tab.count > 0 && (
-                  <span className={`ml-1 px-2 py-0.5 rounded-full text-xs ${
-                    activeTab === tab.id ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'
-                  }`}>
-                    {tab.count}
-                  </span>
-                )}
-              </button>
-            ))}
-          </nav>
-        </div>
+      <Card>
+        <CardContent className="pt-6 p-0">
+          <div className="border-b border-gray-200 pb-px">
+            <nav className="flex -mb-px">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                    activeTab === tab.id
+                      ? 'border-blue-600 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  <tab.icon className="w-4 h-4" />
+                  {tab.label}
+                  {tab.count !== undefined && tab.count > 0 && (
+                    <span className={`ml-1 px-2 py-0.5 rounded-full text-xs ${
+                      activeTab === tab.id ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'
+                    }`}>
+                      {tab.count}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </nav>
+          </div>
 
-        <div className="p-6">
-          {activeTab === 'details' && (
-            <div className="max-w-3xl">
-              <div className="grid gap-6">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Informações Gerais</h3>
-                  <dl className="grid gap-4 sm:grid-cols-2">
+          <div className="p-6">
+            {activeTab === 'details' && (
+              <div className="max-w-3xl">
+                <div className="grid gap-6">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Informações Gerais</h3>
+                    <dl className="grid gap-4 sm:grid-cols-2">
+                      <div>
+                        <dt className="text-sm font-medium text-gray-500">Status</dt>
+                        <dd className="mt-1"><StatusBadge status={maintenance.status} /></dd>
+                      </div>
+                      <div>
+                        <dt className="text-sm font-medium text-gray-500">Categoria</dt>
+                        <dd className="mt-1"><CategoryBadge category={maintenance.category} /></dd>
+                      </div>
+                    </dl>
+                  </div>
+
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-500 mb-1">Título</h3>
+                    <p className="text-gray-900 font-medium">{maintenance.title}</p>
+                  </div>
+
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-500 mb-1">Descrição</h3>
+                    <p className="text-gray-900">{maintenance.description}</p>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
                     <div>
-                      <dt className="text-sm font-medium text-gray-500">Status</dt>
-                      <dd className="mt-1"><StatusBadge status={maintenance.status} /></dd>
+                      <h3 className="text-sm font-medium text-gray-500 mb-1">
+                        <Calendar className="w-4 h-4 inline mr-1" />
+                        Data Agendada
+                      </h3>
+                      <p className="text-gray-900">
+                        {maintenance.scheduledDate 
+                          ? format(new Date(maintenance.scheduledDate), 'dd/MM/yyyy', { locale: ptBR })
+                          : '-'}
+                      </p>
                     </div>
                     <div>
-                      <dt className="text-sm font-medium text-gray-500">Categoria</dt>
-                      <dd className="mt-1"><CategoryBadge category={maintenance.category} /></dd>
+                      <h3 className="text-sm font-medium text-gray-500 mb-1">
+                        <Clock className="w-4 h-4 inline mr-1" />
+                        Criado em
+                      </h3>
+                      <p className="text-gray-500 text-sm">
+                        {format(new Date(maintenance.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
+                      </p>
                     </div>
-                  </dl>
-                </div>
+                  </div>
 
-                <div>
-                  <h3 className="text-sm font-medium text-gray-500 mb-1">Título</h3>
-                  <p className="text-gray-900 font-medium">{maintenance.title}</p>
-                </div>
-
-                <div>
-                  <h3 className="text-sm font-medium text-gray-500 mb-1">Descrição</h3>
-                  <p className="text-gray-900">{maintenance.description}</p>
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-500 mb-1">
-                      <Calendar className="w-4 h-4 inline mr-1" />
-                      Data Agendada
-                    </h3>
-                    <p className="text-gray-900">
-                      {maintenance.scheduledDate 
-                        ? format(new Date(maintenance.scheduledDate), 'dd/MM/yyyy', { locale: ptBR })
-                        : '-'}
+                  <div className="pt-4 border-t border-gray-200">
+                    <p className="text-xs text-gray-400">
+                      Última atualização: {format(new Date(maintenance.updatedAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
                     </p>
                   </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-500 mb-1">
-                      <Clock className="w-4 h-4 inline mr-1" />
-                      Criado em
-                    </h3>
-                    <p className="text-gray-500 text-sm">
-                      {format(new Date(maintenance.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-gray-200">
-                  <p className="text-xs text-gray-400">
-                    Última atualização: {format(new Date(maintenance.updatedAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
-                  </p>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {activeTab === 'edit' && (
-            <EditForm
-              maintenance={maintenance}
-              onSave={handleSaveEdit}
-              onCancel={() => setActiveTab('details')}
-            />
-          )}
+            {activeTab === 'edit' && (
+              <EditForm
+                maintenance={maintenance}
+                onSave={handleSaveEdit}
+                onCancel={() => setActiveTab('details')}
+              />
+            )}
 
-          {activeTab === 'actions' && (
-            <MaintenanceActionsList actions={maintenance.actions} maintenanceId={maintenance.id} />
-          )}
+            {activeTab === 'actions' && (
+              <MaintenanceActionsList actions={maintenance.actions} maintenanceId={maintenance.id} />
+            )}
 
-          {activeTab === 'pledges' && (
-            <PledgesList pledges={maintenance.pledges} maintenanceId={maintenance.id} />
-          )}
-        </div>
-      </div>
+            {activeTab === 'pledges' && (
+              <PledgesList pledges={maintenance.pledges} maintenanceId={maintenance.id} />
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

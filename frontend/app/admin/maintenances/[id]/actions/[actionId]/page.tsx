@@ -25,6 +25,8 @@ import {
   ActionStatus 
 } from '@/lib/types/maintenance';
 import { maintenanceActionApi } from '@/lib/api/maintenance-action';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 
 const statusOptions: { value: ActionStatus; label: string; color: string }[] = [
   { value: 'SUCCESS', label: 'Sucesso', color: 'bg-green-100 text-green-700' },
@@ -162,26 +164,18 @@ function EditForm({ action, onSave, onCancel }: EditFormProps) {
         </div>
 
         <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
-          <button
-            onClick={onCancel}
-            disabled={isSaving}
-            className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-900 hover:bg-gray-50 transition-colors"
-          >
+          <Button variant="outline" onClick={onCancel} disabled={isSaving}>
             <X className="w-4 h-4" />
             Cancelar
-          </button>
-          <button
-            onClick={handleSave}
-            disabled={!hasChanges || isSaving}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+          </Button>
+          <Button onClick={handleSave} disabled={!hasChanges || isSaving}>
             {isSaving ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
               <Save className="w-4 h-4" />
             )}
             Salvar Alterações
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -266,13 +260,10 @@ export default function ActionDetailPage() {
             <p className="text-sm mt-1">{error}</p>
           </div>
         </div>
-        <button
-          onClick={fetchAction}
-          className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
-        >
+        <Button variant="destructive" onClick={fetchAction} className="mt-4">
           <RefreshCw className="w-4 h-4" />
           Tentar novamente
-        </button>
+        </Button>
       </div>
     );
   }
@@ -293,12 +284,11 @@ export default function ActionDetailPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link
-            href="/admin/actions"
-            className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
+          <Button variant="ghost" asChild>
+            <Link href="/admin/actions">
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+          </Button>
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Ação de Manutenção</h2>
             <p className="text-gray-500 text-sm mt-1 truncate max-w-md">
@@ -312,28 +302,29 @@ export default function ActionDetailPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200">
-        <div className="border-b border-gray-200">
-          <nav className="flex -mb-px">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === tab.id
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                <tab.icon className="w-4 h-4" />
-                {tab.label}
-              </button>
-            ))}
-          </nav>
-        </div>
+      <Card>
+        <CardContent className="pt-6 p-0">
+          <div className="border-b border-gray-200 pb-px">
+            <nav className="flex -mb-px">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                    activeTab === tab.id
+                      ? 'border-blue-600 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  <tab.icon className="w-4 h-4" />
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
+          </div>
 
-        <div className="p-6">
-          {activeTab === 'details' && (
+          <div className="p-6">
+            {activeTab === 'details' && (
             <div className="max-w-3xl">
               <div className="grid gap-6">
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -441,8 +432,9 @@ export default function ActionDetailPage() {
               onCancel={() => setActiveTab('details')}
             />
           )}
-        </div>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
