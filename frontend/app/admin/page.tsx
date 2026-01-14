@@ -128,7 +128,7 @@ export default function AdminDashboard() {
           <p className="text-muted-foreground mt-1">Visão geral do sistema de manutenção</p>
         </div>
         <Button asChild>
-          <Link href="/admin/maintenances/new">
+          <Link href="/admin/maintenances/form">
             <Plus className="w-4 h-4" />
             Nova Manutenção
           </Link>
@@ -210,7 +210,7 @@ export default function AdminDashboard() {
               <h3 className="text-lg font-semibold text-foreground mb-4">Ações Rápidas</h3>
               <div className="grid gap-4 sm:grid-cols-2 -mx-2 px-2">
                 <Link
-                  href="/admin/maintenances/new"
+                  href="/admin/maintenances/form"
                   className="flex items-center gap-4 p-4 border border-border rounded-lg hover:bg-muted transition-colors group"
                 >
                   <div className="w-10 h-10 bg-maintenance-light rounded-lg flex items-center justify-center group-hover:bg-maintenance-light-hover transition-colors">

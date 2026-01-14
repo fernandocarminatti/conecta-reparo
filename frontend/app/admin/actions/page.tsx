@@ -107,7 +107,7 @@ export default function ActionsPage() {
             Exportar
           </Button>
           <Button asChild>
-            <Link href="/admin/maintenances/new">
+            <Link href="/admin/maintenances/form">
               <Plus className="w-4 h-4" />
               Nova Manutenção
             </Link>

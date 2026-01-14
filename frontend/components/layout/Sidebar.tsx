@@ -35,7 +35,7 @@ const navigation: NavItem[] = [
     icon: Wrench,
     children: [
       { name: 'Todas as Manutenções', href: '/admin/maintenances' },
-      { name: 'Nova Manutenção', href: '/admin/maintenances/new' },
+      { name: 'Nova Manutenção', href: '/admin/maintenances/form' },
       { name: 'Histórico', href: '/admin/history' },
     ],
   },

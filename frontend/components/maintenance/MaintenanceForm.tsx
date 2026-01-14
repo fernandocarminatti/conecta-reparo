@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -25,6 +25,9 @@ import {
   ListChecks,
   CheckCircle2,
   Clock,
+  Edit,
+  Save,
+  X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -44,8 +47,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { MaintenanceCategory } from '@/lib/types/maintenance';
-import { maintenanceApi } from '@/lib/api/maintenance';
+import { MaintenanceCategory, MaintenanceStatus, MaintenanceResponseDto } from '@/lib/types/maintenance';
+import { MAINTENANCE_STATUS_CONFIG } from '@/lib/config/status-config';
 
 const categoryOptions: { value: MaintenanceCategory; label: string; icon: React.ReactNode }[] = [
   { value: 'BUILDING', label: 'Construção', icon: <Building2 className="w-4 h-4" /> },
@@ -80,125 +83,203 @@ const commonMaterials: Record<string, string[]> = {
   Outros: ['Materiais gerais'],
 };
 
-const formSchema = z.object({
+const statusOptions = Object.entries(MAINTENANCE_STATUS_CONFIG).map(([value, config]) => ({
+  value,
+  label: config.label,
+}));
+
+const createFormSchema = z.object({
   title: z.string().min(3, 'Título deve ter pelo menos 3 caracteres'),
   description: z.string().min(10, 'Descrição deve ter pelo menos 10 caracteres'),
   category: z.enum(['BUILDING', 'ELECTRICAL', 'PLUMBING', 'HVAC', 'FURNITURE', 'GARDENING', 'SECURITY', 'OTHERS']),
   scheduledDate: z.string().min(1, 'Data é obrigatória'),
 });
 
-type FormValues = z.infer<typeof formSchema>;
+const editFormSchema = createFormSchema.extend({
+  status: z.enum(['OPEN', 'IN_PROGRESS', 'COMPLETED', 'CANCELED']),
+});
 
-export default function NewMaintenancePage() {
+type CreateFormValues = z.infer<typeof createFormSchema>;
+type EditFormValues = z.infer<typeof editFormSchema>;
+
+interface MaintenanceFormProps {
+  initialData: MaintenanceResponseDto | null;
+  mode: 'create' | 'edit';
+  onSubmit: (data: CreateFormValues | EditFormValues) => Promise<void>;
+  onCancel?: () => void;
+  isSubmitting?: boolean;
+  error?: string | null;
+}
+
+export function MaintenanceForm({
+  initialData,
+  mode,
+  onSubmit,
+  onCancel,
+  isSubmitting = false,
+  error = null,
+}: MaintenanceFormProps) {
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(error);
 
-  const form = useForm<FormValues>({
+  const defaultValues = mode === 'create'
+    ? {
+        title: '',
+        description: '',
+        category: 'OTHERS' as MaintenanceCategory,
+        scheduledDate: new Date().toISOString().split('T')[0],
+      }
+    : {
+        title: initialData!.title,
+        description: initialData!.description,
+        category: initialData!.category,
+        scheduledDate: initialData!.scheduledDate ? initialData!.scheduledDate.split('T')[0] : '',
+        status: initialData!.status,
+      };
+
+  const formSchema = mode === 'edit' ? editFormSchema : createFormSchema;
+
+  const form = useForm<CreateFormValues | EditFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: '',
-      description: '',
-      category: 'OTHERS',
-      scheduledDate: new Date().toISOString().split('T')[0],
-    },
+    defaultValues: defaultValues as CreateFormValues | EditFormValues,
     mode: 'onChange',
   });
 
-  const onSubmit = async (data: FormValues) => {
-    setIsSubmitting(true);
-    setError(null);
-
+  const handleSubmit = async (data: CreateFormValues | EditFormValues) => {
+    setSubmitError(null);
     try {
-      const dataToSubmit = {
-        ...data,
-        scheduledDate: new Date(data.scheduledDate).toISOString(),
-      };
-
-      const created = await maintenanceApi.create(dataToSubmit);
-      router.push(`/admin/maintenances/${created.id}`);
+      await onSubmit(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao criar manutenção');
-      setIsSubmitting(false);
+      setSubmitError(err instanceof Error ? err.message : 'Erro ao salvar');
     }
   };
 
+  const pageTitle = mode === 'create' ? 'Nova Manutenção' : `Editar Manutenção - ${initialData?.title}`;
+  const pageDescription = mode === 'create'
+    ? 'Crie uma nova solicitação de manutenção'
+    : 'Edite os detalhes da manutenção';
+  const submitLabel = mode === 'create' ? 'Criar Manutenção' : 'Salvar Alterações';
+
   return (
-    <><div className="flex items-center gap-4 mb-6" >
-      <Button variant="ghost" size="sm" asChild>
-        <Link href="/admin/maintenances">
-          <ArrowLeft className="w-4 h-4" />
-        </Link>
-      </Button>
-      <div>
-        <h2 className="text-2xl font-bold text-foreground">Nova Manutenção</h2>
-        <p className="text-muted-foreground mt-1">Crie uma nova solicitação de manutenção</p>
+    <>
+      <div className="flex items-center gap-4 mb-6">
+        <Button variant="ghost" size="sm" asChild>
+          <Link href="/admin/maintenances">
+            <ArrowLeft className="w-4 h-4" />
+          </Link>
+        </Button>
+        <div>
+          <h2 className="text-2xl font-bold text-foreground">{pageTitle}</h2>
+          <p className="text-muted-foreground mt-1">{pageDescription}</p>
+        </div>
       </div>
-    </div>
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mx-auto max-w-[1600] mt-12">
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mx-auto max-w-[1600px] mt-12">
         <div className="lg:col-span-1 space-y-6">
-          {error && (
+          {(submitError || error) && (
             <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
               <div className="flex items-center gap-3">
                 <AlertCircle className="w-5 h-5 text-destructive" />
-                <p className="text-destructive text-sm">{error}</p>
+                <p className="text-destructive text-sm">{submitError || error}</p>
               </div>
             </div>
           )}
 
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      <ClipboardList className="w-4 h-4 inline mr-1" />
+                      Título
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="Título resumido do problema" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descrição</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Descrição detalhada do problema que precisa ser resolvido"
+                        className="resize-none min-h-[280]"
+                        {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+
+              <div className="flex gap-4 flex-wrap">
                 <FormField
                   control={form.control}
-                  name="title"
+                  name="category"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        <ClipboardList className="w-4 h-4 inline mr-1" />
-                        Título
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder="Título resumido do problema" {...field} />
-                      </FormControl>
+                    <FormItem className="flex-1 min-w-[200px]">
+                      <FormLabel>Categoria</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione uma categoria" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent position="popper" align="start">
+                          {categoryOptions.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              <div className="flex items-center gap-2">
+                                {opt.icon}
+                                <span>{opt.label}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )} />
 
                 <FormField
                   control={form.control}
-                  name="description"
+                  name="scheduledDate"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Descrição</FormLabel>
+                    <FormItem className="w-[160px] shrink-0">
+                      <FormLabel>
+                        <Calendar className="w-4 h-4 inline mr-1" />
+                        Data
+                      </FormLabel>
                       <FormControl>
-                        <Textarea
-                          placeholder="Descrição detalhada do problema que precisa ser resolvido"
-                          className="resize-none min-h-[280]"
-                          {...field} />
+                        <Input type="date" className="w-full" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
-                <div className="flex gap-4">
+
+                {mode === 'edit' && (
                   <FormField
                     control={form.control}
-                    name="category"
+                    name="status"
                     render={({ field }) => (
-                      <FormItem className="flex-1">
-                        <FormLabel>Categoria</FormLabel>
+                      <FormItem className="w-[180px] shrink-0">
+                        <FormLabel>Status</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger className="w-[240]">
-                              <SelectValue placeholder="Selecione uma categoria" />
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione status" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent position="popper" align="start" className="w-[var(--radix-select-trigger-width)]">
-                            {categoryOptions.map((opt) => (
+                          <SelectContent position="popper" align="start">
+                            {statusOptions.map((opt) => (
                               <SelectItem key={opt.value} value={opt.value}>
-                                <div className="flex items-center gap-2">
-                                  {opt.icon}
-                                  <span>{opt.label}</span>
-                                </div>
+                                {opt.label}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -206,46 +287,37 @@ export default function NewMaintenancePage() {
                         <FormMessage />
                       </FormItem>
                     )} />
-                  <FormField
-                    control={form.control}
-                    name="scheduledDate"
-                    render={({ field }) => (
-                      <FormItem className="w-[160px] shrink-0">
-                        <FormLabel>
-                          <Calendar className="w-4 h-4 inline mr-1" />
-                          Data
-                        </FormLabel>
-                        <FormControl>
-                          <Input type="date" className="w-full" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                </div>
-              </form>
-              <div className="flex items-center justify-end gap-3 pt-4">
-                <Button variant="outline" size="sm" asChild>
-                  <Link href="/admin/maintenances">Cancelar</Link>
-                </Button>
-                <Button type="button" size="sm" disabled={isSubmitting} onClick={form.handleSubmit(onSubmit)}>
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Criando...
-                    </>
-                  ) : (
-                    'Criar Manutenção'
-                  )}
-                </Button>
+                )}
               </div>
-            </Form>
+            </form>
+
+            <div className="flex items-center justify-end gap-3 pt-4">
+              <Button variant="outline" size="sm" onClick={onCancel || (() => router.push('/admin/maintenances'))}>
+                <X className="w-4 h-4 mr-1" />
+                Cancelar
+              </Button>
+              <Button type="button" size="sm" disabled={isSubmitting} onClick={form.handleSubmit(handleSubmit)}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin mr-1" />
+                    {mode === 'create' ? 'Criando...' : 'Salvando...'}
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 mr-1" />
+                    {submitLabel}
+                  </>
+                )}
+              </Button>
+            </div>
+          </Form>
         </div>
 
         <div className="space-y-6">
           <div className="bg-muted/50 rounded-lg p-5 space-y-5 sticky top-6">
             <h3 className="font-semibold text-foreground flex items-center gap-2">
               <Lightbulb className="w-5 h-5 text-amber-500" />
-              Guia de Criação
+              Guia de {mode === 'create' ? 'Criação' : 'Edição'}
             </h3>
             <div className="space-y-3">
               <h4 className="text-sm font-medium text-foreground flex items-center gap-2">
@@ -254,8 +326,8 @@ export default function NewMaintenancePage() {
               </h4>
               <div className="text-sm text-muted-foreground space-y-2">
                 <div className="flex items-center gap-2">
-                  <span className="bg-primary text-primary-foreground px-1.5 py-0.5 rounded text-xs">1</span>
-                  <span>Criação (você está aqui)</span>
+                  <span className={`px-1.5 py-0.5 rounded text-xs ${mode === 'create' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>1</span>
+                  <span>{mode === 'create' ? 'Criação (você está aqui)' : 'Criação'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="bg-muted text-muted-foreground px-1.5 py-0.5 rounded text-xs">2</span>
@@ -274,7 +346,7 @@ export default function NewMaintenancePage() {
             <div className="space-y-3">
               <h4 className="text-sm font-medium text-foreground flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-green-600" />
-                Antes de criar:
+                {mode === 'create' ? 'Antes de criar:' : 'Antes de editar:'}
               </h4>
               <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside ml-2">
                 <li>Verifique se já há materiais disponíveis</li>
@@ -317,6 +389,9 @@ export default function NewMaintenancePage() {
             </div>
           </div>
         </div>
-      </div></>
+      </div>
+    </>
   );
 }
+
+export default MaintenanceForm;
